@@ -1,0 +1,5 @@
+--- P: EvoMaster options
++++ V: EvoMaster options
+@@
+ --endpointPrefix /JWT
++--endpointExclude /JWT/votings/login

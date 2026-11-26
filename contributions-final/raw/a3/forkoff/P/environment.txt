@@ -1,0 +1,15 @@
+date_utc: 2026-10-20T19:31:01Z
+max_time: 5m
+runs: 3
+webgoat_target: http://localhost:8080
+auth_config: webgoat-em.yaml
+extra_args: --endpointPrefix /JWT --notRecognizedCredentialEvidence false --notRecognizedUserAttribution false
+schema_base_path: /WebGoat
+evomaster_image: evomaster-a3:b9a4cdd80388
+evomaster_digest: evomaster-a3@sha256:bc61d3f421184f3cd55e7b6946a456b9af3f5b14592c2b4d82286e38869b3589
+evomaster_image_id: sha256:bc61d3f421184f3cd55e7b6946a456b9af3f5b14592c2b4d82286e38869b3589
+webgoat_container_image: webgoat/webgoat
+webgoat_image_id: sha256:157df88eacf392acf110e24fa973aa72cb3484c16abdd7f17b142b5973d8b54c
+webgoat_digest: webgoat/webgoat@sha256:157df88eacf392acf110e24fa973aa72cb3484c16abdd7f17b142b5973d8b54c
+docker_version: 29.1.3
+host: Linux 7.0.0-31-generic x86_64

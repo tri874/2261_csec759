@@ -1,0 +1,11 @@
+# EvoMaster auth config (A3 synthetic case): two valid users identified by a
+# fixed Authorization header, as in case K.
+auth:
+  - name: FOO
+    fixedHeaders:
+      - name: Authorization
+        value: FOO
+  - name: BAR
+    fixedHeaders:
+      - name: Authorization
+        value: BAR

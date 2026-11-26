@@ -1,0 +1,11 @@
+# EvoMaster auth config for case H4: FOO is valid; ZED is a misconfigured user
+# (the API does not accept the value ZED), so ZED's 401s are correct.
+auth:
+  - name: FOO
+    fixedHeaders:
+      - name: Authorization
+        value: FOO
+  - name: ZED
+    fixedHeaders:
+      - name: Authorization
+        value: ZED

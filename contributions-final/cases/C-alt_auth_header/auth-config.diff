@@ -1,0 +1,39 @@
+--- webgoat-em.yaml	2026-09-30 17:32:19
++++ webgoat-em-c-auth.yaml	2026-10-01 17:02:22
+@@ -1,19 +1,13 @@
+-# webgoat-em.yaml
++# Assignment 2, matched control C-alt (Authorization header version).
+ #
+-# WFC-format auth config for WebGoat.
+-#
+-# WebGoat uses classic session-cookie login (Spring form login), NOT a
+-# JSON token response -- this is why "expectCookies: true" replaces the
+-# "token:" block used in capital-em.yaml / crapi-em.yaml.
+-#
+-# The two accounts below must be registered in WebGoat first, through
+-# http://localhost:8080/WebGoat/registration (see environment/setup.md).
+-#
+-# The login endpoint is relative to --bbTargetUrl, which is the host root
+-# (http://localhost:8080), so it must include the /WebGoat base path.
+-
++# Identical to webgoat-em.yaml except that both users also send an
++# Authorization header, the credential POST /JWT/refresh/checkout checks for.
++# Any value works for that endpoint (WebGoat answers 200 with lesson feedback).
+ auth:
+   - name: userA
++    fixedHeaders:
++      - name: Authorization
++        value: Bearer a2-control
+     loginEndpointAuth:
+       payloadUserPwd:
+         username: useraa
+@@ -21,6 +15,9 @@
+         usernameField: username
+         passwordField: password
+   - name: userB
++    fixedHeaders:
++      - name: Authorization
++        value: Bearer a2-control
+     loginEndpointAuth:
+       payloadUserPwd:
+         username: userbb

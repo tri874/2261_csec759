@@ -1,0 +1,12 @@
+date_utc: 2026-10-20T23:50:49Z
+upstream: https://github.com/WebFuzzing/EvoMaster.git tag v6.2.0 commit efad6f2bd7ff0025852a6203d307303c568e763a
+patch: patches/evomaster-v6.2.0-a3.patch sha256 b9a4cdd80388c9db556840a1cd167f481c3b554cde96d34bd4e7cccf4d98ee74
+extra_patch: patches/evomaster-a3-diagnostics.patch sha256 fbe4a119831cffbfd7a7b32d06c12632e954a61915db993ced5dab9fe9c47e8b
+extra_patch: patches/evomaster-a3-fix-replay-stopping.patch sha256 3eec7e4a35f1184e180801d5ca7dc840deaab78c7926fdbdf6926a8f9f5c1e87
+maven_image: maven:3.9.9-eclipse-temurin-17 (maven@sha256:f58d59b6273e785ac0a4477f6e9b5ba1d7731c75b906c0f7b34076f1851318cc)
+jar_sha256: 0648f725cd8f5c40bb1f0a64d1eff8d031a326e339649d51edb1e3cb9e9f6f54
+image: evomaster-a3-v2:69c1b7d
+image_id: sha256:08dc7740cad2ac11bffea598054a94f6e77f1b0e6239aa951a225e75bbaa6c0a
+base_image: FROM amazoncorretto:21-alpine-jdk
+docker_version: 29.1.3
+host: Linux 7.0.0-31-generic x86_64

@@ -1,0 +1,5 @@
+case,role,variant,budget,runs_ok,expected,confirmed_305,unconfirmed_950,tp,fp,fn,precision,recall,security_s_median,security_s_range,replay_calls_median,constructed_tests_median,evaluated_actions_median,elapsed_s_median,other_faults_distinct,failed_runs
+H1,variant: second credential,baseline,1m,1/1,none,POST:/api/vault (1/1),none,0,1,0,0.00,n/a,1,1-1,,,16044,62,109:3|202:3,
+H1,variant: second credential,proto,1m,1/1,none,none,POST:/api/vault (1/1),0,0,0,n/a,n/a,1,1-1,8,4,16065,62,109:3|202:3,
+K,regression (A2 known example),baseline,1m,1/1,POST:/api/resources/,POST:/api/resources/ (1/1),none,1,0,0,1.00,1.00,1,1-1,,,19062,62,109:3|202:3,
+K,regression (A2 known example),proto,1m,1/1,POST:/api/resources/,POST:/api/resources/ (1/1),none,1,0,0,1.00,1.00,1,1-1,2,1,19146,62,109:3|202:3,

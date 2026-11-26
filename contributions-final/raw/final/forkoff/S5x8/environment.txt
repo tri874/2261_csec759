@@ -1,0 +1,14 @@
+date_utc: 2026-11-13T00:23:56Z
+max_time: 5m
+runs: 3
+target: http://localhost:8084
+case_dir: /home/user/2261_csec759/csec759_assignment1/cases/final_scaling/E5_U8
+spec_file: openapi.json
+auth_config: em.yaml
+extra_args: --notRecognizedCredentialEvidence false --notRecognizedUserAttribution false
+reset_cmd: docker restart final-scale >/dev/null && for i in $(seq 60); do [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8084/api/resources/1)" != 000 ] && exit 0; sleep 1; done; exit 1
+evomaster_image: evomaster-final:5b1bbe97bf05
+evomaster_digest: evomaster-final@sha256:7574768f71257f3be471793619dac61b39b8e8ac5eb7a8dd270cec104f3c6642
+evomaster_image_id: sha256:7574768f71257f3be471793619dac61b39b8e8ac5eb7a8dd270cec104f3c6642
+docker_version: 29.1.3
+host: Linux 7.0.0-31-generic x86_64

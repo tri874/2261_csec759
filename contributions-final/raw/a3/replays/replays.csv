@@ -1,0 +1,19 @@
+id,case,request,expected,observed,match
+H1-1,H1,"PUT /api/resources/7 as FOO (FOO is recognized)",201,201,yes
+H1-2,H1,"PUT /api/resources/8 without credentials",401,401,yes
+H1-3,H1,"POST /api/vault as FOO, wrong key",401,401,yes
+H1-4,H1,"POST /api/vault as BAR, same wrong key",401,401,yes
+H1-5,H1,"POST /api/vault as FOO, key k3y",204,204,yes
+H1c-1,H1c,"PUT /api/resources/7 as FOO (FOO is recognized)",201,201,yes
+H1c-2,H1c,"POST /api/vault as FOO, wrong key",401,401,yes
+H1c-3,H1c,"POST /api/vault as FOO, key k3y",401,401,yes
+H1c-4,H1c,"POST /api/vault as BAR, wrong key",204,204,yes
+H2-1,H2,"PUT /api/resources/7 as FOO (FOO is recognized)",201,201,yes
+H2-2,H2,"PUT /api/resources/8 as BAR (BAR is recognized)",201,201,yes
+H2-3,H2,"DELETE /api/admin/cache as FOO",401,401,yes
+H2-4,H2,"DELETE /api/admin/cache as BAR",401,401,yes
+H4-1,H4,"PUT /api/resources/7 as ZED (ZED not recognized)",401,401,yes
+H4-2,H4,"PUT /api/resources/7 as FOO",201,201,yes
+H4-3,H4,"GET /api/catalog?region=eu as ZED",200,200,yes
+H4-4,H4,"GET /api/catalog?region=eu without credentials",200,200,yes
+H4-5,H4,"GET /api/catalog?region=restricted as FOO",403,403,yes

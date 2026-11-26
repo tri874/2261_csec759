@@ -1,0 +1,30 @@
+# EvoMaster auth config (WFC format) for crAPI v1.1.6, final project.
+#
+# Two of crAPI's seeded users (services/identity/.../constant/TestUsers.java),
+# both with role ROLE_PREDEFINE, so neither has privileges the other lacks.
+# Login: POST /identity/api/auth/login with a JSON body; the response field
+# "token" is a JWT sent back as "Authorization: Bearer <token>".
+#
+# crAPI has endpoints that change a user's password or email, so a run can
+# invalidate these credentials; scripts/final_crapi.sh resets the database
+# before every run.
+
+auth:
+  - name: adam
+    loginEndpointAuth:
+      payloadRaw: '{"email": "adam007@example.com", "password": "adam007!123"}'
+  - name: pogba
+    loginEndpointAuth:
+      payloadRaw: '{"email": "pogba006@example.com", "password": "pogba006!123"}'
+
+authTemplate:
+  loginEndpointAuth:
+    endpoint: /identity/api/auth/login
+    verb: POST
+    contentType: application/json
+    token:
+      extractFrom: body
+      extractSelector: /token
+      sendIn: header
+      sendName: Authorization
+      sendTemplate: "Bearer {token}"

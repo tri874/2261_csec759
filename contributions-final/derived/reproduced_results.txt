@@ -1,0 +1,38 @@
+
+=== webgoat ===  (10 successful run(s))
+  search budget per run: 1h
+  fault codes used for Table III: 100=H500, 200=Schema, 305=Not-Recognized
+run                   H500          Schema  Not-Recognized         Leakage    Missed-Check
+run_1                   28             323               5               0               0
+run_2                   28             323               5               0               0
+run_3                   28             323               5               0               0
+run_4                   28             323               5               0               0
+run_5                   28             323               5               0               0
+run_6                   28             323               5               0               0
+run_7                   28             324               5               0               0
+run_8                   28             324               5               0               0
+run_9                   28             324               5               0               0
+run_10                  28             324               5               0               0
+------------------------------------------------------------------------------------------
+  H500           :  28.00  (min=28, max=28, sd=0.00)
+  Schema         : 323.40  (min=323, max=324, sd=0.52)
+  Not-Recognized :   5.00  (min=5, max=5, sd=0.00)
+  Leakage        :   0.00  (min=0, max=0, sd=0.00)
+  Missed-Check   :   0.00  (min=0, max=0, sd=0.00)
+  Other fault codes (not in Table III):
+    code 107:   4.00  (min=4, max=4, sd=0.00)  HTTP Violation: no-415-if-no-payload
+    code 109:   5.00  (min=5, max=5, sd=0.00)  HTTP Violation: no-401-if-no-authenticate
+    code 113:   7.00  (min=7, max=7, sd=0.00)  HTTP Violation: Resource Still Accessible After Successful DELETE
+    code 117:   1.00  (min=1, max=1, sd=0.00)  HTTP Violation: The Verb PUT Must Make a Full Replacement
+    code 202:   5.00  (min=5, max=5, sd=0.00)  Schema Violation: no-401-if-no-auth
+    code 301:  10.50  (min=10, max=11, sd=0.53)  Cross-Site Scripting (XSS)
+    code 309:  19.10  (min=16, max=25, sd=2.60)  Leaked Stack Trace
+    code 310:   3.00  (min=3, max=3, sd=0.00)  Hidden Accessible Endpoint
+
+
+=== Table III style summary (averages only) ===
+SUT                        H500          Schema  Not-Recognized         Leakage    Missed-Check   runs
+------------------------------------------------------------------------------------------------------
+webgoat                    28.0           323.4             5.0             0.0             0.0   n=10
+
+Wrote derived/summary.csv

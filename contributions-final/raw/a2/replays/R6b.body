@@ -1,0 +1,9 @@
+{
+  "assignment" : "JWTRefreshEndpoint",
+  "attemptWasMade" : true,
+  "feedback" : "Not a valid JWT token, please try again",
+  "feedbackArgs" : null,
+  "lessonCompleted" : false,
+  "output" : null,
+  "outputArgs" : null
+}

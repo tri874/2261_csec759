@@ -1,0 +1,6 @@
+HTTP/1.1 302 
+Set-Cookie: JSESSIONID=F8C2A33F8F3E0C4640D444B789FA63EC; Path=/WebGoat; HttpOnly
+Location: http://localhost:8080/WebGoat/login
+Content-Length: 0
+Date: Thu, 01 Oct 2026 21:23:43 GMT
+

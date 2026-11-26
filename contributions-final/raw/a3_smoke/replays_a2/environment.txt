@@ -1,0 +1,5 @@
+date_utc: 2026-10-20T16:08:16Z
+webgoat_url: http://localhost:8080/WebGoat
+k_url: http://localhost:8081
+webgoat_image: sha256:157df88eacf392acf110e24fa973aa72cb3484c16abdd7f17b142b5973d8b54c
+k_image: sha256:b2f2503e64b2bfbf7fc6fdbff828bb1b5bd80730e66e46b1ff1c6a80b760457f

@@ -1,0 +1,33 @@
+# Assignment 2, matched control C-alt (Authorization header version).
+#
+# Identical to webgoat-em.yaml except that both users also send an
+# Authorization header, the credential POST /JWT/refresh/checkout checks for.
+# Any value works for that endpoint (WebGoat answers 200 with lesson feedback).
+auth:
+  - name: userA
+    fixedHeaders:
+      - name: Authorization
+        value: Bearer a2-control
+    loginEndpointAuth:
+      payloadUserPwd:
+        username: useraa
+        password: userAA
+        usernameField: username
+        passwordField: password
+  - name: userB
+    fixedHeaders:
+      - name: Authorization
+        value: Bearer a2-control
+    loginEndpointAuth:
+      payloadUserPwd:
+        username: userbb
+        password: userBB
+        usernameField: username
+        passwordField: password
+
+authTemplate:
+  loginEndpointAuth:
+    endpoint: /WebGoat/login
+    verb: POST
+    contentType: application/x-www-form-urlencoded
+    expectCookies: true

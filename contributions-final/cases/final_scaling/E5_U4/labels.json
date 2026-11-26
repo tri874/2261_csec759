@@ -1,0 +1,35 @@
+{
+  "E": 5,
+  "U": 4,
+  "users": [
+    "U0",
+    "U1",
+    "U2",
+    "U3"
+  ],
+  "endpoints": [
+    {
+      "operation": "GET:/api/e0",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e1",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e2",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e3",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e4",
+      "kind": "plain"
+    }
+  ],
+  "expected_not_recognized": [
+    "GET:/api/e0"
+  ]
+}

@@ -1,0 +1,5 @@
+variant,case,status,end_utc
+baseline,K,exit_0,2026-10-20T16:01:23Z
+proto,K,exit_0,2026-10-20T16:03:28Z
+baseline,H1,exit_0,2026-10-20T16:05:30Z
+proto,H1,exit_0,2026-10-20T16:07:45Z

@@ -1,0 +1,6 @@
+HTTP/1.1 200 
+Set-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3OTMzNzY0OTYsImFkbWluIjoiZmFsc2UiLCJ1c2VyIjoiVG9tIn0.2HxgVFAl3MX1cgFHokA_RTBIEDoo3EQnzGh4kZ1Ltxu9O9LcNglWmqUgG56bVOcOjute9u5VXZNy2XbtOTuWRg
+Content-Type: application/json
+Content-Length: 0
+Date: Tue, 20 Oct 2026 16:08:16 GMT
+

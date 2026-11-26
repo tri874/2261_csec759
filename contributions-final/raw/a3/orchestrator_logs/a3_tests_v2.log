@@ -1,0 +1,65 @@
+
+##### 16:25:46 EvoMaster tests touched by the patch (slow)
+[INFO] EvoMaster .......................................... SUCCESS [  0.868 s]
+[INFO] org.evomaster:evomaster-core-parent ................ SUCCESS [  0.010 s]
+[INFO] org.evomaster:evomaster-client-java ................ SUCCESS [  0.009 s]
+[INFO] org.evomaster:evomaster-test-utils-java ............ SUCCESS [  1.543 s]
+[INFO] org.evomaster:evomaster-client-java-postgres-test-utils SUCCESS [  0.062 s]
+[INFO] evomaster-test-utils ............................... SUCCESS [  0.014 s]
+[INFO] evomaster-test-utils-js ............................ SUCCESS [  0.060 s]
+[INFO] evomaster-test-utils-py ............................ SUCCESS [  0.041 s]
+[INFO] org.evomaster:evomaster-client-java-sql-dto ........ SUCCESS [  0.051 s]
+[INFO] org.evomaster:evomaster-client-java-controller-api . SUCCESS [  0.140 s]
+[INFO] org.evomaster:evomaster-client-java-instrumentation-shared SUCCESS [  0.068 s]
+[INFO] evomaster-core-extra ............................... SUCCESS [  0.007 s]
+[INFO] extra-shared ....................................... SUCCESS [  0.039 s]
+[INFO] evomaster-dbconstraint ............................. SUCCESS [  0.093 s]
+[INFO] asyncapi-parser .................................... SUCCESS [  0.117 s]
+[INFO] solver ............................................. SUCCESS [  0.058 s]
+[INFO] org.evomaster:evomaster-client-java-util ........... SUCCESS [  0.048 s]
+[INFO] org.evomaster:evomaster-client-java-distance-heuristics SUCCESS [  0.034 s]
+[INFO] org.evomaster:evomaster-client-java-instrumentation  SUCCESS [  0.964 s]
+[INFO] org.evomaster:evomaster-ci-utils ................... SUCCESS [  0.037 s]
+[INFO] org.evomaster:evomaster-client-java-sql ............ SUCCESS [  0.135 s]
+[INFO] org.evomaster:evomaster-client-java-controller ..... SUCCESS [ 20.415 s]
+[INFO] arazzo-parser ...................................... SUCCESS [  0.228 s]
+[INFO] evomaster-core ..................................... SUCCESS [ 13.726 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  39.991 s
+[INFO] Finished at: 2026-10-21T16:26:29Z
+[INFO] ------------------------------------------------------------------------
+[INFO] evomaster-test-utils ............................... SUCCESS [  0.008 s]
+[INFO] evomaster-test-utils-js ............................ SUCCESS [  0.049 s]
+[INFO] evomaster-test-utils-py ............................ SUCCESS [  0.064 s]
+[INFO] org.evomaster:evomaster-client-java-sql-dto ........ SUCCESS [  0.045 s]
+[INFO] org.evomaster:evomaster-client-java-controller-api . SUCCESS [  0.094 s]
+[INFO] org.evomaster:evomaster-client-java-instrumentation-shared SUCCESS [  0.036 s]
+[INFO] evomaster-core-extra ............................... SUCCESS [  0.007 s]
+[INFO] extra-shared ....................................... SUCCESS [  0.045 s]
+[INFO] evomaster-dbconstraint ............................. SUCCESS [  0.056 s]
+[INFO] asyncapi-parser .................................... SUCCESS [  0.064 s]
+[INFO] solver ............................................. SUCCESS [  0.044 s]
+[INFO] org.evomaster:evomaster-client-java-util ........... SUCCESS [  0.049 s]
+[INFO] org.evomaster:evomaster-client-java-distance-heuristics SUCCESS [  0.045 s]
+[INFO] org.evomaster:evomaster-client-java-instrumentation  SUCCESS [  0.531 s]
+[INFO] org.evomaster:evomaster-ci-utils ................... SUCCESS [  0.030 s]
+[INFO] org.evomaster:evomaster-client-java-sql ............ SUCCESS [  0.116 s]
+[INFO] org.evomaster:evomaster-client-java-controller ..... SUCCESS [ 19.227 s]
+[INFO] arazzo-parser ...................................... SUCCESS [  0.211 s]
+[INFO] evomaster-core ..................................... SUCCESS [  5.312 s]
+[INFO] evomaster-core-tests ............................... SUCCESS [  0.005 s]
+[INFO] evomaster-e2e-tests ................................ SUCCESS [  0.004 s]
+[INFO] evomaster-e2e-tests-utils .......................... SUCCESS [ 11.446 s]
+[INFO] evomaster-e2e-tests-spring ......................... SUCCESS [  0.004 s]
+[INFO] evomaster-e2e-tests-spring-rest-openapi-v3 ......... SUCCESS [04:22 min]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:02 min
+[INFO] Finished at: 2026-10-21T16:31:36Z
+[INFO] ------------------------------------------------------------------------
+unit tests exit status: 0; e2e tests exit status: 0
+
+##### 16:31:38 done: tests (image evomaster-a3:b9a4cdd80388)

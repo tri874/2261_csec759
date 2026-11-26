@@ -1,0 +1,7 @@
+case,operation,label,evidence
+crapi,POST:/identity/api/auth/login,no_fault,"crAPI v1.1.6 AuthController.authenticateUser returns 401 on BadCredentialsException (wrong password), for every user; replays in raw/final/*/crapi/run_*/ A3-DIAG lines: pogba gets the same 401 for the same body; see notes/final_labels.md"
+wgfull,GET:/WebGoat/JWT/votings/login,no_fault,"A2: 401 from the JWT lesson's own user check, not the WebGoat login (cases/P_webgoat_jwt, replays R1-R7)"
+wgfull,POST:/WebGoat/JWT/refresh/checkout,no_fault,"A2: 401 when the lesson's Authorization header is missing or invalid"
+wgfull,POST:/WebGoat/JWT/refresh/login,no_fault,"A2: 401 for wrong lesson credentials in the body"
+wgfull,POST:/WebGoat/JWT/refresh/newToken,no_fault,"A2: 401 when the lesson refresh token is missing or invalid"
+wgfull,POST:/WebGoat/JWT/votings/{title},no_fault,"A2: 401 when the lesson access_token cookie is missing"

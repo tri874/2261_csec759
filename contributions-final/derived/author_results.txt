@@ -1,0 +1,2 @@
+SUT     H500    Schema    Not-Recognized    Leakage    Missed-Check
+webgoat 32.0    2192.2    5.0               0.0        0.0

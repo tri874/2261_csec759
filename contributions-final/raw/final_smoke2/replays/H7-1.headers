@@ -1,0 +1,8 @@
+HTTP/1.1 201 CREATED
+Server: Werkzeug/3.1.9 Python/3.12.16
+Date: Thu, 12 Nov 2026 21:19:31 GMT
+Content-Type: application/json
+Content-Length: 9
+Location: /api/items/1
+Connection: close
+

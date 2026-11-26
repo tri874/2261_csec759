@@ -1,0 +1,5 @@
+run: 3
+seed: 3
+start_utc: 2026-11-13T16:39:20Z
+end_utc: 2026-11-13T17:11:03Z
+exit_status: 0

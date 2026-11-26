@@ -1,0 +1,2289 @@
+* [34m
+ _____          ___  ___          _
+|  ___|         |  \/  |         | |
+| |____   _____ | .  . | __ _ ___| |_ ___ _ __
+|  __\ \ / / _ \| |\/| |/ _` / __| __/ _ \ '__|
+| |___\ V / (_) | |  | | (_| \__ \ ||  __/ |
+\____/ \_/ \___/\_|  |_/\__,_|___/\__\___|_|
+
+                    [0m
+* EvoMaster version: 6.2.0
+* Loading configuration file from: /em/config/webgoat-em.yaml
+* [31mWARNING: You have not setup 'ratePerMinute'. If you are doing testing of a remote service which you do not own, you might want to put a rate-limiter to prevent EvoMaster from bombarding such service with HTTP requests. EvoMaster automatically honors 429 responses, and waits accordingly based on the returned Retry-After header. Still, you might also want to use 'ratePerMinute' if you are just testing EvoMaster out on some public APIs.[0m
+* [31mWARNING: [33mYou are modifying the value of some internal settings. In general, this is not recommended, especially if it is first time you use EvoMaster, unless you are an experienced user. Involved features: [appendToStatisticsFile, bbSwaggerUrl, bbTargetUrl, problemType, runningInDocker, seed, statisticsColumnId, statisticsFile, writeStatistics]. Especially for beginners, you should only modify the 'important' settings:[0m[34m [base, blackBox, configPath, dtoForRequestPayload, endpointExclude, endpointFocus, endpointPrefix, endpointTagFilter, fieldsToSkipInAssertions, header0, header1, header2, maxTestsPerTestSuite, maxTime, outputFilePrefix, outputFileSuffix, outputFolder, outputFormat, overlay, overlayFileSuffixes, overlayLenient, overrideOpenAPIUrl, prematureStop, ratePerMinute, schema, sutControllerHost, sutControllerPort, testTimeout].[0m[33m For more information, see the documentation at:[0m[34m https://github.com/WebFuzzing/EvoMaster/blob/master/docs/options.md[0m[0m
+* [32mYou are running EvoMaster inside Docker. To access the generated test suite under '/generated_tests', you will need to mount a folder or volume. Also references to host machine on 'localhost' would need to be replaced with 'host.docker.internal'. If this is the first time you run EvoMaster in Docker, you are strongly recommended to first check the documentation at:[0m [34mhttps://github.com/WebFuzzing/EvoMaster/blob/master/docs/docker.md[0m
+* Initializing...
+* There are 204 usable RESTful API endpoints defined in the schema configuration
+* [31mThere are 7 detected issues when analyzing the schema. These are not necessarily problems in the schema, but possible (temporary) limitations of EvoMaster itself.[0m
+* [33m0: Not supported content types for body payload in POST:/WebGoat/xxe/simple : */*. It will be treated as TEXT.[0m
+* [33m1: Not supported content types for body payload in POST:/WebGoat/xxe/blind : */*. It will be treated as TEXT.[0m
+* [33m2: Not supported content types for body payload in POST:/WebGoat/PathTraversal/zip-slip : */*. It will be treated as TEXT.[0m
+* [33m3: Not supported content types for body payload in POST:/WebGoat/PathTraversal/profile-upload : */*. It will be treated as TEXT.[0m
+* [33m4: Not supported content types for body payload in POST:/WebGoat/PathTraversal/profile-upload-remove-user-input : */*. It will be treated as TEXT.[0m
+* [33m5: Not supported content types for body payload in POST:/WebGoat/PathTraversal/profile-upload-fix : */*. It will be treated as TEXT.[0m
+* [33m6: No fields for object definition: valueTemplate[0m
+* [33m[WARNING] [0m[33mSome experimental settings have been activated. Those might not work as expected, or simply straight out crash. Furthermore, they might simply be incomplete features still under development. Activated experimental settings: [enableStaticFlakyInference, skipAIModelUpdateWhenResponseIsNot2xxOr400][0m
+* Starting phase SEARCH
+* Starting to generate test cases
+[2K* Consumed search budget: 0.717%
+[2K* Covered targets: 0
+[2K* Time per test: 858.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:27 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:27 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:27 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:27 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:27 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:27 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 1.140%
+[2K* Covered targets: 78
+[2K* Time per test: 71.2ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 1.666%
+[2K* Covered targets: 78
+[2K* Time per test: 86.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 2.107%
+[2K* Covered targets: 108
+[2K* Time per test: 96.3ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 2.713%
+[2K* Covered targets: 108
+[2K* Time per test: 119.5ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 3.171%
+[2K* Covered targets: 120
+[2K* Time per test: 130.2ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:33:30.423 [main] WARN  o.e.c.s.s.time.SearchTimeController - The SUT sent a 'Connection: close' HTTP header. This should be avoided, if possible
+Oct 01, 2026 5:33:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 3.628%
+[2K* Covered targets: 120
+[2K* Time per test: 100.3ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 4.063%
+[2K* Covered targets: 275
+[2K* Time per test: 87.6ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A05:33:31.447 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userB' on endpoint: /WebGoat/JWT/votings/login
+[2K* Consumed search budget: 4.494%
+[2K* Covered targets: 275
+[2K* Time per test: 67.3ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 4.929%
+[2K* Covered targets: 275
+[2K* Time per test: 64.1ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 5.348%
+[2K* Covered targets: 586
+[2K* Time per test: 54.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 5.774%
+[2K* Covered targets: 586
+[2K* Time per test: 55.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A05:33:33.433 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userB' on endpoint: /WebGoat/JWT/refresh/login
+05:33:33.447 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userB' on endpoint: /WebGoat/JWT/refresh/newToken
+05:33:33.505 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userB' on endpoint: /WebGoat/JWT/votings/{title}
+[2K* Consumed search budget: 6.194%
+[2K* Covered targets: 806
+[2K* Time per test: 33.5ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 6.623%
+[2K* Covered targets: 806
+[2K* Time per test: 34.1ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 7.051%
+[2K* Covered targets: 962
+[2K* Time per test: 34.2ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 7.468%
+[2K* Covered targets: 962
+[2K* Time per test: 37.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 7.890%
+[2K* Covered targets: 962
+[2K* Time per test: 36.8ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 8.309%
+[2K* Covered targets: 1279
+[2K* Time per test: 35.4ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 8.821%
+[2K* Covered targets: 1279
+[2K* Time per test: 33.6ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 9.249%
+[2K* Covered targets: 1327
+[2K* Time per test: 37.7ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 9.957%
+[2K* Covered targets: 1327
+[2K* Time per test: 45.2ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 10.378%
+[2K* Covered targets: 1353
+[2K* Time per test: 39.8ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:33:39.016 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userA' on endpoint: /WebGoat/JWT/votings/login
+[2K* Consumed search budget: 10.800%
+[2K* Covered targets: 1353
+[2K* Time per test: 34.7ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 11.229%
+[2K* Covered targets: 1401
+[2K* Time per test: 33.2ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A05:33:40.274 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userA' on endpoint: /WebGoat/JWT/refresh/checkout
+05:33:40.284 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userA' on endpoint: /WebGoat/JWT/refresh/login
+05:33:40.294 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userA' on endpoint: /WebGoat/JWT/refresh/newToken
+05:33:40.328 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userA' on endpoint: /WebGoat/JWT/votings/{title}
+[2K* Consumed search budget: 11.648%
+[2K* Covered targets: 1401
+[2K* Time per test: 19.6ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 12.092%
+[2K* Covered targets: 1452
+[2K* Time per test: 20.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 12.517%
+[2K* Covered targets: 1452
+[2K* Time per test: 21.4ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 12.946%
+[2K* Covered targets: 1452
+[2K* Time per test: 20.9ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 13.363%
+[2K* Covered targets: 1731
+[2K* Time per test: 5.9ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 13.783%
+[2K* Covered targets: 1731
+[2K* Time per test: 3.9ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 14.213%
+[2K* Covered targets: 2060
+[2K* Time per test: 7.7ms (1.2 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 14.644%
+[2K* Covered targets: 2060
+[2K* Time per test: 11.8ms (1.4 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 15.063%
+[2K* Covered targets: 2060
+[2K* Time per test: 16.3ms (1.6 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:33:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 15.513%
+[2K* Covered targets: 2060
+[2K* Time per test: 20.5ms (1.7 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 15.931%
+[2K* Covered targets: 2060
+[2K* Time per test: 25.1ms (1.9 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:33:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 16.378%
+[2K* Covered targets: 2060
+[2K* Time per test: 29.7ms (2.0 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 16.804%
+[2K* Covered targets: 2060
+[2K* Time per test: 33.9ms (2.1 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 17.237%
+[2K* Covered targets: 2078
+[2K* Time per test: 37.9ms (2.3 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 17.758%
+[2K* Covered targets: 2078
+[2K* Time per test: 38.7ms (2.2 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 18.186%
+[2K* Covered targets: 2079
+[2K* Time per test: 35.0ms (2.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:48 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:48 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 18.696%
+[2K* Covered targets: 2079
+[2K* Time per test: 40.1ms (2.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 19.315%
+[2K* Covered targets: 2080
+[2K* Time per test: 46.6ms (2.0 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:33:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 20.393%
+[2K* Covered targets: 2080
+[2K* Time per test: 58.5ms (2.1 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:33:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 21.701%
+[2K* Covered targets: 2080
+[2K* Time per test: 73.0ms (2.2 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1AOct 01, 2026 5:33:52 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:52 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:52 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:52 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 22.129%
+[2K* Covered targets: 2083
+[2K* Time per test: 72.5ms (2.1 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 22.548%
+[2K* Covered targets: 2083
+[2K* Time per test: 70.2ms (1.9 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:33:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:54 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 22.981%
+[2K* Covered targets: 2083
+[2K* Time per test: 73.1ms (2.2 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 23.404%
+[2K* Covered targets: 2085
+[2K* Time per test: 73.0ms (2.2 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:54 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:54 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:54 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 23.888%
+[2K* Covered targets: 2085
+[2K* Time per test: 71.2ms (2.1 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:33:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 24.309%
+[2K* Covered targets: 2085
+[2K* Time per test: 72.6ms (2.2 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 24.841%
+[2K* Covered targets: 2085
+[2K* Time per test: 70.5ms (2.3 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1A[2K* Consumed search budget: 25.374%
+[2K* Covered targets: 2085
+[2K* Time per test: 56.8ms (2.2 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:33:56 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:57 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:57 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:33:57 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 25.804%
+[2K* Covered targets: 2085
+[2K* Time per test: 40.2ms (2.1 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:57 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 26.234%
+[2K* Covered targets: 2087
+[2K* Time per test: 42.2ms (2.2 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:33:57 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:58 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:58 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 26.699%
+[2K* Covered targets: 2087
+[2K* Time per test: 39.8ms (2.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:58 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 27.481%
+[2K* Covered targets: 2090
+[2K* Time per test: 43.8ms (2.1 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:33:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:33:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 28.014%
+[2K* Covered targets: 2090
+[2K* Time per test: 39.2ms (2.0 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 28.433%
+[2K* Covered targets: 2090
+[2K* Time per test: 40.1ms (2.1 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1A[2K* Consumed search budget: 28.889%
+[2K* Covered targets: 2090
+[2K* Time per test: 38.3ms (2.3 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:01 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 29.313%
+[2K* Covered targets: 2090
+[2K* Time per test: 40.4ms (2.3 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:01 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:01 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:01 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 29.731%
+[2K* Covered targets: 2090
+[2K* Time per test: 39.2ms (2.3 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 30.972%
+[2K* Covered targets: 2090
+[2K* Time per test: 53.1ms (2.4 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1A[2K* Consumed search budget: 31.582%
+[2K* Covered targets: 2090
+[2K* Time per test: 58.7ms (2.5 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1AOct 01, 2026 5:34:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 32.163%
+[2K* Covered targets: 2093
+[2K* Time per test: 58.6ms (2.5 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:34:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 32.623%
+[2K* Covered targets: 2093
+[2K* Time per test: 53.2ms (2.3 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 33.073%
+[2K* Covered targets: 2093
+[2K* Time per test: 55.3ms (2.4 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 33.558%
+[2K* Covered targets: 2093
+[2K* Time per test: 50.2ms (2.2 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 34.053%
+[2K* Covered targets: 2093
+[2K* Time per test: 50.7ms (2.4 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 34.531%
+[2K* Covered targets: 2093
+[2K* Time per test: 39.1ms (2.4 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:08 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 35.203%
+[2K* Covered targets: 2094
+[2K* Time per test: 37.1ms (2.3 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 35.712%
+[2K* Covered targets: 2094
+[2K* Time per test: 39.7ms (2.4 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 36.152%
+[2K* Covered targets: 2094
+[2K* Time per test: 42.1ms (2.7 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 36.578%
+[2K* Covered targets: 2094
+[2K* Time per test: 45.4ms (2.8 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 37.008%
+[2K* Covered targets: 2096
+[2K* Time per test: 43.7ms (2.7 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 37.437%
+[2K* Covered targets: 2096
+[2K* Time per test: 42.6ms (2.6 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 37.855%
+[2K* Covered targets: 2096
+[2K* Time per test: 43.9ms (2.5 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 38.454%
+[2K* Covered targets: 2096
+[2K* Time per test: 48.2ms (2.4 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:12 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:12 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:12 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:12 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 38.998%
+[2K* Covered targets: 2096
+[2K* Time per test: 53.3ms (2.7 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 39.421%
+[2K* Covered targets: 2096
+[2K* Time per test: 54.1ms (2.7 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 39.851%
+[2K* Covered targets: 2096
+[2K* Time per test: 45.4ms (2.5 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1A[2K* Consumed search budget: 40.322%
+[2K* Covered targets: 2096
+[2K* Time per test: 40.1ms (2.4 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1AOct 01, 2026 5:34:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 40.879%
+[2K* Covered targets: 2096
+[2K* Time per test: 43.3ms (2.5 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1AOct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 41.307%
+[2K* Covered targets: 2096
+[2K* Time per test: 39.8ms (2.4 actions)
+[2K* Time since last improvement: 6s
+[1A[1A[1A[1AOct 01, 2026 5:34:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 41.736%
+[2K* Covered targets: 2096
+[2K* Time per test: 29.3ms (2.2 actions)
+[2K* Time since last improvement: 6s
+[1A[1A[1A[1AOct 01, 2026 5:34:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:34:16.907 [main] WARN  o.e.c.problem.httpws.auth.AuthUtils - Got 401 although having auth for 'userB' on endpoint: /WebGoat/JWT/refresh/checkout
+[2K* Consumed search budget: 42.164%
+[2K* Covered targets: 2097
+[2K* Time per test: 27.2ms (1.9 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:34:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 42.585%
+[2K* Covered targets: 2097
+[2K* Time per test: 28.3ms (2.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:34:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 43.388%
+[2K* Covered targets: 2097
+[2K* Time per test: 33.2ms (1.9 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 44.353%
+[2K* Covered targets: 2097
+[2K* Time per test: 44.4ms (1.9 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 44.808%
+[2K* Covered targets: 2097
+[2K* Time per test: 43.3ms (1.9 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 45.238%
+[2K* Covered targets: 2097
+[2K* Time per test: 44.7ms (1.8 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 45.722%
+[2K* Covered targets: 2097
+[2K* Time per test: 48.1ms (2.0 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1AOct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 46.145%
+[2K* Covered targets: 2097
+[2K* Time per test: 49.7ms (2.2 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1AOct 01, 2026 5:34:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 46.565%
+[2K* Covered targets: 2097
+[2K* Time per test: 50.0ms (2.2 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:34:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 47.085%
+[2K* Covered targets: 2098
+[2K* Time per test: 49.5ms (2.2 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:34:24 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:24 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 48.324%
+[2K* Covered targets: 2098
+[2K* Time per test: 42.5ms (2.1 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1A[2K* Consumed search budget: 49.159%
+[2K* Covered targets: 2098
+[2K* Time per test: 52.0ms (2.2 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:25 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:25 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 49.579%
+[2K* Covered targets: 2098
+[2K* Time per test: 51.8ms (2.2 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 50.039%
+[2K* Covered targets: 2098
+[2K* Time per test: 51.2ms (2.1 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1AOct 01, 2026 5:34:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 50.464%
+[2K* Covered targets: 2098
+[2K* Time per test: 52.8ms (2.1 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1A[2K* Consumed search budget: 51.283%
+[2K* Covered targets: 2098
+[2K* Time per test: 56.1ms (1.9 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1AOct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 51.718%
+[2K* Covered targets: 2098
+[2K* Time per test: 56.2ms (1.9 actions)
+[2K* Time since last improvement: 6s
+[1A[1A[1A[1AOct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 52.144%
+[2K* Covered targets: 2098
+[2K* Time per test: 30.5ms (1.9 actions)
+[2K* Time since last improvement: 6s
+[1A[1A[1A[1AOct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 52.573%
+[2K* Covered targets: 2098
+[2K* Time per test: 30.6ms (2.1 actions)
+[2K* Time since last improvement: 7s
+[1A[1A[1A[1AOct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:29 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 52.993%
+[2K* Covered targets: 2098
+[2K* Time per test: 29.3ms (1.9 actions)
+[2K* Time since last improvement: 7s
+[1A[1A[1A[1AOct 01, 2026 5:34:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 53.509%
+[2K* Covered targets: 2098
+[2K* Time per test: 31.7ms (2.2 actions)
+[2K* Time since last improvement: 8s
+[1A[1A[1A[1AOct 01, 2026 5:34:30 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 53.943%
+[2K* Covered targets: 2098
+[2K* Time per test: 26.7ms (2.2 actions)
+[2K* Time since last improvement: 8s
+[1A[1A[1A[1AOct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 54.368%
+[2K* Covered targets: 2098
+[2K* Time per test: 28.0ms (2.2 actions)
+[2K* Time since last improvement: 9s
+[1A[1A[1A[1AOct 01, 2026 5:34:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 54.931%
+[2K* Covered targets: 2098
+[2K* Time per test: 31.5ms (2.3 actions)
+[2K* Time since last improvement: 10s
+[1A[1A[1A[1AOct 01, 2026 5:34:32 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:32 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:32 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:32 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:32 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 55.492%
+[2K* Covered targets: 2098
+[2K* Time per test: 35.8ms (2.3 actions)
+[2K* Time since last improvement: 10s
+[1A[1A[1A[1AOct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 55.913%
+[2K* Covered targets: 2098
+[2K* Time per test: 33.7ms (2.3 actions)
+[2K* Time since last improvement: 11s
+[1A[1A[1A[1AOct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:33 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:34 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 56.393%
+[2K* Covered targets: 2098
+[2K* Time per test: 35.6ms (2.3 actions)
+[2K* Time since last improvement: 11s
+[1A[1A[1A[1A[2K* Consumed search budget: 56.908%
+[2K* Covered targets: 2098
+[2K* Time per test: 34.7ms (2.2 actions)
+[2K* Time since last improvement: 12s
+[1A[1A[1A[1AOct 01, 2026 5:34:34 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:34 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:34 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 57.449%
+[2K* Covered targets: 2098
+[2K* Time per test: 37.2ms (2.2 actions)
+[2K* Time since last improvement: 13s
+[1A[1A[1A[1AOct 01, 2026 5:34:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 58.130%
+[2K* Covered targets: 2098
+[2K* Time per test: 40.4ms (2.2 actions)
+[2K* Time since last improvement: 14s
+[1A[1A[1A[1AOct 01, 2026 5:34:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 58.932%
+[2K* Covered targets: 2098
+[2K* Time per test: 39.3ms (2.1 actions)
+[2K* Time since last improvement: 14s
+[1A[1A[1A[1AOct 01, 2026 5:34:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 59.354%
+[2K* Covered targets: 2098
+[2K* Time per test: 38.7ms (2.1 actions)
+[2K* Time since last improvement: 15s
+[1A[1A[1A[1AOct 01, 2026 5:34:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 59.928%
+[2K* Covered targets: 2098
+[2K* Time per test: 43.6ms (2.3 actions)
+[2K* Time since last improvement: 16s
+[1A[1A[1A[1AOct 01, 2026 5:34:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 60.838%
+[2K* Covered targets: 2098
+[2K* Time per test: 50.9ms (2.2 actions)
+[2K* Time since last improvement: 17s
+[1A[1A[1A[1A[2K* Consumed search budget: 61.298%
+[2K* Covered targets: 2098
+[2K* Time per test: 56.2ms (2.2 actions)
+[2K* Time since last improvement: 17s
+[1A[1A[1A[1A[2K* Consumed search budget: 61.719%
+[2K* Covered targets: 2098
+[2K* Time per test: 51.8ms (2.1 actions)
+[2K* Time since last improvement: 18s
+[1A[1A[1A[1AOct 01, 2026 5:34:40 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 62.148%
+[2K* Covered targets: 2098
+[2K* Time per test: 53.7ms (2.2 actions)
+[2K* Time since last improvement: 18s
+[1A[1A[1A[1AOct 01, 2026 5:34:41 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 62.573%
+[2K* Covered targets: 2098
+[2K* Time per test: 51.1ms (2.2 actions)
+[2K* Time since last improvement: 19s
+[1A[1A[1A[1AOct 01, 2026 5:34:41 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:41 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:41 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:41 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 63.124%
+[2K* Covered targets: 2098
+[2K* Time per test: 56.7ms (2.2 actions)
+[2K* Time since last improvement: 19s
+[1A[1A[1A[1AOct 01, 2026 5:34:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 63.549%
+[2K* Covered targets: 2098
+[2K* Time per test: 52.1ms (2.3 actions)
+[2K* Time since last improvement: 20s
+[1A[1A[1A[1AOct 01, 2026 5:34:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 64.070%
+[2K* Covered targets: 2098
+[2K* Time per test: 47.0ms (1.9 actions)
+[2K* Time since last improvement: 21s
+[1A[1A[1A[1AOct 01, 2026 5:34:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:43 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 64.494%
+[2K* Covered targets: 2098
+[2K* Time per test: 34.9ms (1.9 actions)
+[2K* Time since last improvement: 21s
+[1A[1A[1A[1AOct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 64.931%
+[2K* Covered targets: 2098
+[2K* Time per test: 30.2ms (1.9 actions)
+[2K* Time since last improvement: 22s
+[1A[1A[1A[1AOct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 65.373%
+[2K* Covered targets: 2098
+[2K* Time per test: 33.8ms (1.8 actions)
+[2K* Time since last improvement: 22s
+[1A[1A[1A[1AOct 01, 2026 5:34:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 65.837%
+[2K* Covered targets: 2098
+[2K* Time per test: 27.5ms (2.0 actions)
+[2K* Time since last improvement: 23s
+[1A[1A[1A[1AOct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 66.262%
+[2K* Covered targets: 2098
+[2K* Time per test: 28.0ms (2.1 actions)
+[2K* Time since last improvement: 23s
+[1A[1A[1A[1AOct 01, 2026 5:34:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 66.886%
+[2K* Covered targets: 2098
+[2K* Time per test: 32.4ms (2.2 actions)
+[2K* Time since last improvement: 24s
+[1A[1A[1A[1A[2K* Consumed search budget: 67.318%
+[2K* Covered targets: 2098
+[2K* Time per test: 33.3ms (2.3 actions)
+[2K* Time since last improvement: 25s
+[1A[1A[1A[1AOct 01, 2026 5:34:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 67.770%
+[2K* Covered targets: 2098
+[2K* Time per test: 34.8ms (2.4 actions)
+[2K* Time since last improvement: 25s
+[1A[1A[1A[1A[2K* Consumed search budget: 68.614%
+[2K* Covered targets: 2098
+[2K* Time per test: 43.0ms (2.5 actions)
+[2K* Time since last improvement: 26s
+[1A[1A[1A[1AOct 01, 2026 5:34:48 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 69.058%
+[2K* Covered targets: 2098
+[2K* Time per test: 37.1ms (2.3 actions)
+[2K* Time since last improvement: 27s
+[1A[1A[1A[1AOct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:49 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 69.736%
+[2K* Covered targets: 2098
+[2K* Time per test: 41.8ms (2.3 actions)
+[2K* Time since last improvement: 27s
+[1A[1A[1A[1AOct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 70.318%
+[2K* Covered targets: 2098
+[2K* Time per test: 38.1ms (2.3 actions)
+[2K* Time since last improvement: 28s
+[1A[1A[1A[1AOct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:50 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 70.756%
+[2K* Covered targets: 2098
+[2K* Time per test: 37.5ms (2.2 actions)
+[2K* Time since last improvement: 29s
+[1A[1A[1A[1AOct 01, 2026 5:34:51 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:51 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:51 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:51 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:51 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 71.179%
+[2K* Covered targets: 2098
+[2K* Time per test: 38.3ms (2.1 actions)
+[2K* Time since last improvement: 29s
+[1A[1A[1A[1AOct 01, 2026 5:34:52 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 71.598%
+[2K* Covered targets: 2098
+[2K* Time per test: 39.2ms (2.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1AOct 01, 2026 5:34:52 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:52 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 72.046%
+[2K* Covered targets: 2099
+[2K* Time per test: 36.1ms (2.3 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 72.530%
+[2K* Covered targets: 2099
+[2K* Time per test: 38.4ms (2.3 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1AOct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:53 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 72.960%
+[2K* Covered targets: 2099
+[2K* Time per test: 34.3ms (2.4 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:54 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:54 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 73.416%
+[2K* Covered targets: 2099
+[2K* Time per test: 33.9ms (2.5 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1AOct 01, 2026 5:34:54 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 73.842%
+[2K* Covered targets: 2099
+[2K* Time per test: 36.2ms (2.5 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 74.275%
+[2K* Covered targets: 2099
+[2K* Time per test: 34.9ms (2.4 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1AOct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:55 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:56 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:56 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 74.699%
+[2K* Covered targets: 2099
+[2K* Time per test: 28.7ms (2.4 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1AOct 01, 2026 5:34:56 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 75.131%
+[2K* Covered targets: 2099
+[2K* Time per test: 30.6ms (2.5 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1AOct 01, 2026 5:34:56 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:34:56 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 75.733%
+[2K* Covered targets: 2099
+[2K* Time per test: 28.7ms (2.3 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1AOct 01, 2026 5:34:57 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:57 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 76.154%
+[2K* Covered targets: 2099
+[2K* Time per test: 27.5ms (2.2 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1AOct 01, 2026 5:34:58 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:34:58 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 76.658%
+[2K* Covered targets: 2099
+[2K* Time per test: 27.3ms (2.1 actions)
+[2K* Time since last improvement: 6s
+[1A[1A[1A[1AOct 01, 2026 5:34:58 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 77.572%
+[2K* Covered targets: 2099
+[2K* Time per test: 35.3ms (1.9 actions)
+[2K* Time since last improvement: 7s
+[1A[1A[1A[1AOct 01, 2026 5:34:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 78.317%
+[2K* Covered targets: 2099
+[2K* Time per test: 41.6ms (1.9 actions)
+[2K* Time since last improvement: 8s
+[1A[1A[1A[1AOct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 78.743%
+[2K* Covered targets: 2099
+[2K* Time per test: 39.6ms (1.8 actions)
+[2K* Time since last improvement: 9s
+[1A[1A[1A[1AOct 01, 2026 5:35:01 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:01 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 79.397%
+[2K* Covered targets: 2099
+[2K* Time per test: 42.7ms (1.8 actions)
+[2K* Time since last improvement: 9s
+[1A[1A[1A[1AOct 01, 2026 5:35:01 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 79.853%
+[2K* Covered targets: 2099
+[2K* Time per test: 44.9ms (1.8 actions)
+[2K* Time since last improvement: 10s
+[1A[1A[1A[1AOct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 80.304%
+[2K* Covered targets: 2099
+[2K* Time per test: 45.3ms (1.9 actions)
+[2K* Time since last improvement: 10s
+[1A[1A[1A[1AOct 01, 2026 5:35:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:03 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:03 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:03 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:03 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 80.725%
+[2K* Covered targets: 2099
+[2K* Time per test: 36.4ms (2.0 actions)
+[2K* Time since last improvement: 11s
+[1A[1A[1A[1AOct 01, 2026 5:35:03 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:03 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 81.146%
+[2K* Covered targets: 2099
+[2K* Time per test: 31.4ms (2.2 actions)
+[2K* Time since last improvement: 11s
+[1A[1A[1A[1AOct 01, 2026 5:35:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 81.569%
+[2K* Covered targets: 2099
+[2K* Time per test: 31.7ms (2.2 actions)
+[2K* Time since last improvement: 12s
+[1A[1A[1A[1AOct 01, 2026 5:35:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 82.152%
+[2K* Covered targets: 2099
+[2K* Time per test: 36.9ms (2.2 actions)
+[2K* Time since last improvement: 13s
+[1A[1A[1A[1AOct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 82.573%
+[2K* Covered targets: 2099
+[2K* Time per test: 30.8ms (2.4 actions)
+[2K* Time since last improvement: 13s
+[1A[1A[1A[1AOct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 82.998%
+[2K* Covered targets: 2099
+[2K* Time per test: 31.6ms (2.5 actions)
+[2K* Time since last improvement: 14s
+[1A[1A[1A[1AOct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 83.426%
+[2K* Covered targets: 2099
+[2K* Time per test: 31.7ms (2.5 actions)
+[2K* Time since last improvement: 14s
+[1A[1A[1A[1AOct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:06 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 83.885%
+[2K* Covered targets: 2099
+[2K* Time per test: 35.2ms (2.5 actions)
+[2K* Time since last improvement: 15s
+[1A[1A[1A[1A[2K* Consumed search budget: 84.318%
+[2K* Covered targets: 2099
+[2K* Time per test: 34.5ms (2.5 actions)
+[2K* Time since last improvement: 15s
+[1A[1A[1A[1AOct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:07 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 84.736%
+[2K* Covered targets: 2099
+[2K* Time per test: 27.9ms (2.3 actions)
+[2K* Time since last improvement: 16s
+[1A[1A[1A[1AOct 01, 2026 5:35:08 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:08 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 85.159%
+[2K* Covered targets: 2099
+[2K* Time per test: 27.6ms (2.3 actions)
+[2K* Time since last improvement: 16s
+[1A[1A[1A[1AOct 01, 2026 5:35:08 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 85.838%
+[2K* Covered targets: 2099
+[2K* Time per test: 27.6ms (2.0 actions)
+[2K* Time since last improvement: 17s
+[1A[1A[1A[1AOct 01, 2026 5:35:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:09 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 86.263%
+[2K* Covered targets: 2099
+[2K* Time per test: 26.5ms (2.0 actions)
+[2K* Time since last improvement: 18s
+[1A[1A[1A[1AOct 01, 2026 5:35:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 87.077%
+[2K* Covered targets: 2099
+[2K* Time per test: 34.9ms (2.1 actions)
+[2K* Time since last improvement: 19s
+[1A[1A[1A[1AOct 01, 2026 5:35:10 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:11 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 88.137%
+[2K* Covered targets: 2099
+[2K* Time per test: 41.9ms (2.1 actions)
+[2K* Time since last improvement: 20s
+[1A[1A[1A[1A[2K* Consumed search budget: 88.578%
+[2K* Covered targets: 2099
+[2K* Time per test: 45.1ms (2.3 actions)
+[2K* Time since last improvement: 20s
+[1A[1A[1A[1AOct 01, 2026 5:35:12 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:12 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 89.028%
+[2K* Covered targets: 2099
+[2K* Time per test: 46.4ms (2.4 actions)
+[2K* Time since last improvement: 21s
+[1A[1A[1A[1AOct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 89.448%
+[2K* Covered targets: 2099
+[2K* Time per test: 46.8ms (2.4 actions)
+[2K* Time since last improvement: 21s
+[1A[1A[1A[1AOct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:13 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 89.887%
+[2K* Covered targets: 2099
+[2K* Time per test: 45.1ms (2.6 actions)
+[2K* Time since last improvement: 22s
+[1A[1A[1A[1AOct 01, 2026 5:35:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 90.320%
+[2K* Covered targets: 2099
+[2K* Time per test: 36.7ms (2.5 actions)
+[2K* Time since last improvement: 22s
+[1A[1A[1A[1AOct 01, 2026 5:35:14 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 90.748%
+[2K* Covered targets: 2099
+[2K* Time per test: 28.9ms (2.5 actions)
+[2K* Time since last improvement: 23s
+[1A[1A[1A[1AOct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 91.206%
+[2K* Covered targets: 2099
+[2K* Time per test: 25.7ms (2.4 actions)
+[2K* Time since last improvement: 23s
+[1A[1A[1A[1AOct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:15 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 91.631%
+[2K* Covered targets: 2099
+[2K* Time per test: 28.1ms (2.5 actions)
+[2K* Time since last improvement: 24s
+[1A[1A[1A[1AOct 01, 2026 5:35:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:16 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 92.322%
+[2K* Covered targets: 2099
+[2K* Time per test: 28.4ms (2.3 actions)
+[2K* Time since last improvement: 25s
+[1A[1A[1A[1A[2K* Consumed search budget: 92.743%
+[2K* Covered targets: 2099
+[2K* Time per test: 27.9ms (2.0 actions)
+[2K* Time since last improvement: 25s
+[1A[1A[1A[1AOct 01, 2026 5:35:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:17 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 93.529%
+[2K* Covered targets: 2099
+[2K* Time per test: 32.3ms (2.0 actions)
+[2K* Time since last improvement: 26s
+[1A[1A[1A[1AOct 01, 2026 5:35:18 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:18 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 94.093%
+[2K* Covered targets: 2099
+[2K* Time per test: 35.9ms (1.9 actions)
+[2K* Time since last improvement: 27s
+[1A[1A[1A[1AOct 01, 2026 5:35:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 94.514%
+[2K* Covered targets: 2099
+[2K* Time per test: 38.2ms (2.0 actions)
+[2K* Time since last improvement: 27s
+[1A[1A[1A[1AOct 01, 2026 5:35:19 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 94.986%
+[2K* Covered targets: 2099
+[2K* Time per test: 40.6ms (2.0 actions)
+[2K* Time since last improvement: 28s
+[1A[1A[1A[1AOct 01, 2026 5:35:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:20 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 95.858%
+[2K* Covered targets: 2099
+[2K* Time per test: 47.7ms (1.9 actions)
+[2K* Time since last improvement: 29s
+[1A[1A[1A[1AOct 01, 2026 5:35:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:21 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 96.393%
+[2K* Covered targets: 2099
+[2K* Time per test: 46.4ms (2.2 actions)
+[2K* Time since last improvement: 30s
+[1A[1A[1A[1AOct 01, 2026 5:35:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 96.823%
+[2K* Covered targets: 2099
+[2K* Time per test: 47.0ms (2.5 actions)
+[2K* Time since last improvement: 30s
+[1A[1A[1A[1AOct 01, 2026 5:35:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:22 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 97.242%
+[2K* Covered targets: 2099
+[2K* Time per test: 49.1ms (2.8 actions)
+[2K* Time since last improvement: 31s
+[1A[1A[1A[1A[2K* Consumed search budget: 97.727%
+[2K* Covered targets: 2099
+[2K* Time per test: 54.8ms (2.9 actions)
+[2K* Time since last improvement: 31s
+[1A[1A[1A[1AOct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:23 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:24 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:24 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:24 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 98.152%
+[2K* Covered targets: 2099
+[2K* Time per test: 41.6ms (2.6 actions)
+[2K* Time since last improvement: 32s
+[1A[1A[1A[1AOct 01, 2026 5:35:24 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:24 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 98.584%
+[2K* Covered targets: 2099
+[2K* Time per test: 38.4ms (2.6 actions)
+[2K* Time since last improvement: 32s
+[1A[1A[1A[1A[2K* Consumed search budget: 99.141%
+[2K* Covered targets: 2099
+[2K* Time per test: 36.9ms (2.5 actions)
+[2K* Time since last improvement: 33s
+[1A[1A[1A[1AOct 01, 2026 5:35:25 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:25 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+[2K* Consumed search budget: 99.564%
+[2K* Covered targets: 2099
+[2K* Time per test: 33.6ms (2.1 actions)
+[2K* Time since last improvement: 34s
+[1A[1A[1A[1AOct 01, 2026 5:35:25 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:25 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 99.983%
+[2K* Covered targets: 2099
+[2K* Time per test: 25.6ms (1.8 actions)
+[2K* Time since last improvement: 34s
+[1A[1A[1A[1AOct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[2K* Consumed search budget: 99.983%
+[2K* Covered targets: 2099
+[2K* Time per test: 25.7ms (1.8 actions)
+[2K* Time since last improvement: 34s
+* Evaluated tests: 3101
+* Evaluated actions: 6109
+* Needed budget: 91%
+* Passed time (seconds): 120
+* Execution time per test (ms): Avg=37.08 , min=2.00 , max=1493.00
+* Execution time per action (ms): Avg=20.42 , min=2.00 , max=1157.00
+* Computation overhead between tests (ms): Avg=1.62 , min=0.00 , max=80.00
+* Phase SEARCH lasted: 0h 2m 0s
+* Starting phase MINIMIZATION
+* Recomputing full coverage for 603 tests
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:26 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:27 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:28 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:31 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:35 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:36 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:37 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:38 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:39 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:39 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:39 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:39 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:39 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:39 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:39 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:40 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:41 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:42 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:44 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+* Analyzing 8 tests with size greater than 1
+
+[1A[2K* Minimization progress: 0/8
+* Phase 'MINIMIZATION' has timed out after 12 seconds. If you can run the fuzzing for longer, next time you might want to either increase 'maxTime' (2m) or 'extraPhaseBudgetPercentage' (0.1)
+* Phase MINIMIZATION lasted: 0h 0m 18s
+* Starting phase SECURITY
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:45.697 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 DELETE, but got: 200 DELETE
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:45.731 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 DELETE, but got: 200 DELETE
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:45.776 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 DELETE, but got: 200 DELETE
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:45.797 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 DELETE, but got: 200 DELETE
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:45.822 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 DELETE, but got: 200 DELETE
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:45.852 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 DELETE, but got: 200 DELETE
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:45.931 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PUT, but got: 200 PUT
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:45.951 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PUT, but got: 200 PUT
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:45.975 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PUT, but got: 200 PUT
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:45 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:45.998 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PUT, but got: 200 PUT
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:46.022 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PUT, but got: 200 PUT
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:46.042 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PUT, but got: 200 PUT
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:46.083 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PATCH, but got: 200 PATCH
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:46.106 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PATCH, but got: 200 PATCH
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:46.143 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PATCH, but got: 200 PATCH
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:46.171 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PATCH, but got: 200 PATCH
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+05:35:46.211 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PATCH, but got: 200 PATCH
+Oct 01, 2026 5:35:46 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+05:35:46.235 [main] WARN  o.e.c.p.r.s.RestSecurityBuilder - Issue with constructing evaluated individual. Expected a 403 PATCH, but got: 200 PATCH
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:47 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+* Phase 'SECURITY' has timed out after 12 seconds. If you can run the fuzzing for longer, next time you might want to either increase 'maxTime' (2m) or 'extraPhaseBudgetPercentage' (0.1)
+* Starting to apply HTTP oracle detection
+* Phase SECURITY lasted: 0h 0m 13s
+* Starting phase ADDITIONAL_ORACLES
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:35:59 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:00 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PATCH.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:02 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[Fatal Error] :2:3: The markup in the document preceding the root element must be well-formed.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[Fatal Error] :1:1: Content is not allowed in prolog.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[Fatal Error] :1:1: Content is not allowed in prolog.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[Fatal Error] :1:1: Content is not allowed in prolog.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:04 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[Fatal Error] :1:1: Content is not allowed in prolog.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+[Fatal Error] :1:1: Content is not allowed in prolog.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+Oct 01, 2026 5:36:05 AM org.glassfish.jersey.client.JerseyInvocation validateHttpMethodAndEntity
+WARNING: Entity must not be null for http method PUT.
+* Phase ADDITIONAL_ORACLES lasted: 0h 0m 7s
+* Starting phase WRITE_OUTPUT
+* Going to save 763 tests to /em/generated_tests
+05:36:06.153 [main] WARN  o.e.c.o.service.HttpWsTestCaseWriter - Currently no assertions are generated for response type: text/html;charset=UTF-8
+05:36:06.301 [main] WARN  o.e.c.o.service.HttpWsTestCaseWriter - Currently no assertions are generated for response type: application/zip
+05:36:06.605 [main] WARN  o.e.c.o.service.HttpWsTestCaseWriter - Currently no assertions are generated for response type: image/jpeg
+05:36:06.628 [main] WARN  o.e.c.o.service.HttpWsTestCaseWriter - Currently no assertions are generated for response type: image/png
+* Potential faults: 385
+* Successfully executed (HTTP code 2xx) 168 endpoints out of 204 (82%)
+* Phase WRITE_OUTPUT lasted: 0h 0m 3s
+* Fuzzing session has finished
+* EvoMaster process has completed successfully
+* Use [32m--help[0m and visit [34mhttps://www.evomaster.org[0m to learn more about available options

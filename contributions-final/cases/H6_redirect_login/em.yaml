@@ -1,0 +1,11 @@
+# EvoMaster auth config (final-project held-out case H6): users identified by a
+# fixed Authorization header, as in cases K and H1-H4.
+auth:
+  - name: FOO
+    fixedHeaders:
+      - name: Authorization
+        value: FOO
+  - name: BAR
+    fixedHeaders:
+      - name: Authorization
+        value: BAR

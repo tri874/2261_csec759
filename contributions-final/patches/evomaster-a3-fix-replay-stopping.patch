@@ -1,0 +1,48 @@
+diff --git a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+index 5ddedef3..9db67709 100644
+--- a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
++++ b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct
+ 
+ import org.evomaster.core.logging.LoggingUtil
+ import org.evomaster.core.problem.enterprise.DetectedFaultUtils
++import org.evomaster.core.problem.enterprise.ExperimentalFaultCategory
+ import org.evomaster.core.problem.enterprise.SampleType
+ import org.evomaster.core.problem.enterprise.auth.AuthSettings
+ import org.evomaster.core.problem.externalservice.HostnameResolutionAction
+@@ -882,9 +883,11 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                      */
+                     unconfirmed++
+                     var diagAdded : Boolean? = null
+-                    if(!keptUnconfirmed){
+-                        diagAdded = archive.addIfNeeded(evaluatedIndividual)
+-                        keptUnconfirmed = true
++                    //A3 fix: only count a test as kept if it shows the unconfirmed fault and the archive took it
++                    if(!keptUnconfirmed && ExperimentalFaultCategory.SECURITY_NOT_RECOGNIZED_UNCONFIRMED in faults){
++                        val addedUnconfirmed = archive.addIfNeeded(evaluatedIndividual)
++                        diagAdded = addedUnconfirmed
++                        keptUnconfirmed = addedUnconfirmed
+                     }
+                     LoggingUtil.getInfoLogger().info("A3-DIAG X=${action.getName()} user=$user Y=${last.getName()}" +
+                             " codes=[$diagCodes] decision=unconfirmed archived=${diagAdded ?: "not-tried"} calls: $diagCalls")
+@@ -925,6 +928,12 @@ class RestSecurityBuilder : TimeBoxedPhase {
+             val noAuth = y.copy() as RestCallAction
+             noAuth.resetLocalIdRecursively()
+             noAuth.auth = HttpWsNoAuth()
++            /*
++                A3 fix: a replay only checks the status code. If it kept the "save location" flag of a
++                creating PUT/POST, its expected 401 would mark the result as stopping, and the oracle skips
++                every test with a stopping call
++             */
++            noAuth.saveCreatedResourceLocation = false
+             replays.add(noAuth)
+         }
+ 
+@@ -933,6 +942,7 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                 val asOther = x.copy() as RestCallAction
+                 asOther.resetLocalIdRecursively()
+                 asOther.auth = other
++                asOther.saveCreatedResourceLocation = false //A3 fix, as above
+                 replays.add(asOther)
+             }
+         }

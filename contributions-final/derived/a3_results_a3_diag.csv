@@ -1,0 +1,3 @@
+case,role,variant,budget,runs_ok,expected,confirmed_305,unconfirmed_950,tp,fp,fn,precision,recall,security_s_median,security_s_range,replay_calls_median,constructed_tests_median,evaluated_actions_median,elapsed_s_median,other_faults_distinct,failed_runs
+H1,variant: second credential,proto,2m,3/3,none,none,POST:/api/vault (3/3),0,0,0,n/a,n/a,1,1-1,8,4,33478,122,109:3|202:3,
+H2,tradeoff: role-restricted,proto,2m,3/3,DELETE:/api/admin/cache,none,DELETE:/api/admin/cache (1/3),0,0,3,n/a,0.00,1,1-1,8,4,27280,122,109:3|202:3,

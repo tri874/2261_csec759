@@ -1,0 +1,182 @@
+{
+  "E": 40,
+  "U": 4,
+  "users": [
+    "U0",
+    "U1",
+    "U2",
+    "U3"
+  ],
+  "endpoints": [
+    {
+      "operation": "GET:/api/e0",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e1",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e2",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e3",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e4",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e5",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e6",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e7",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e8",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e9",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e10",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e11",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e12",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e13",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e14",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e15",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e16",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e17",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e18",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e19",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e20",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e21",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e22",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e23",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e24",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e25",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e26",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e27",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e28",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e29",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e30",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e31",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e32",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e33",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e34",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e35",
+      "kind": "true"
+    },
+    {
+      "operation": "GET:/api/e36",
+      "kind": "second"
+    },
+    {
+      "operation": "GET:/api/e37",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e38",
+      "kind": "plain"
+    },
+    {
+      "operation": "GET:/api/e39",
+      "kind": "plain"
+    }
+  ],
+  "expected_not_recognized": [
+    "GET:/api/e0",
+    "GET:/api/e10",
+    "GET:/api/e15",
+    "GET:/api/e20",
+    "GET:/api/e25",
+    "GET:/api/e30",
+    "GET:/api/e35",
+    "GET:/api/e5"
+  ]
+}

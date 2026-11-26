@@ -1,0 +1,51 @@
+
+##### 23:44:19 cloning https://github.com/WebFuzzing/EvoMaster.git v6.2.0 into ../evomaster-a3-v2
+Note: switching to 'efad6f2bd7ff0025852a6203d307303c568e763a'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+applying extra patch patches/evomaster-a3-diagnostics.patch
+applying extra patch patches/evomaster-a3-fix-replay-stopping.patch
+ M core/src/main/kotlin/org/evomaster/core/EMConfig.kt
+ M core/src/main/kotlin/org/evomaster/core/problem/enterprise/ExperimentalFaultCategory.kt
+ M core/src/main/kotlin/org/evomaster/core/problem/rest/oracle/RestSecurityOracle.kt
+ M core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+ M docs/options.md
+?? core-tests/e2e-tests/spring/spring-rest-openapi-v3/src/test/kotlin/org/evomaster/e2etests/spring/openapi/v3/security/notrecognized/SecurityNotRecognizedConfirmationEMTest.kt
+
+##### 23:44:36 building core/target/evomaster.jar with maven:3.9.9-eclipse-temurin-17 (tests skipped)
+-rw-r--r-- 1 root root 115225077 Oct 20 23:49 ../evomaster-a3-v2/core/target/evomaster.jar
+
+##### 23:50:14 building Docker image evomaster-a3-v2:69c1b7d
+sha256:08dc7740cad2ac11bffea598054a94f6e77f1b0e6239aa951a225e75bbaa6c0a
+date_utc: 2026-10-20T23:50:49Z
+upstream: https://github.com/WebFuzzing/EvoMaster.git tag v6.2.0 commit efad6f2bd7ff0025852a6203d307303c568e763a
+patch: patches/evomaster-v6.2.0-a3.patch sha256 b9a4cdd80388c9db556840a1cd167f481c3b554cde96d34bd4e7cccf4d98ee74
+extra_patch: patches/evomaster-a3-diagnostics.patch sha256 fbe4a119831cffbfd7a7b32d06c12632e954a61915db993ced5dab9fe9c47e8b
+extra_patch: patches/evomaster-a3-fix-replay-stopping.patch sha256 3eec7e4a35f1184e180801d5ca7dc840deaab78c7926fdbdf6926a8f9f5c1e87
+maven_image: maven:3.9.9-eclipse-temurin-17 (maven@sha256:f58d59b6273e785ac0a4477f6e9b5ba1d7731c75b906c0f7b34076f1851318cc)
+jar_sha256: 0648f725cd8f5c40bb1f0a64d1eff8d031a326e339649d51edb1e3cb9e9f6f54
+image: evomaster-a3-v2:69c1b7d
+image_id: sha256:08dc7740cad2ac11bffea598054a94f6e77f1b0e6239aa951a225e75bbaa6c0a
+base_image: FROM amazoncorretto:21-alpine-jdk
+docker_version: 29.1.3
+host: Linux 7.0.0-31-generic x86_64
+
+##### 23:50:51 smoke check: the image knows the new options
+--notRecognizedCredentialEvidence        EXPERIMENTAL: Not-Recognized oracle    
+--notRecognizedUserAttribution           EXPERIMENTAL: Not-Recognized oracle    
+
+##### 23:50:57 done: clone build image (image evomaster-a3-v2:69c1b7d)

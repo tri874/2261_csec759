@@ -1,0 +1,5 @@
+--- P: EvoMaster options
++++ V2: EvoMaster options
+@@
+ --endpointPrefix /JWT
++--endpointExclude /JWT/votings/login,/JWT/refresh/checkout

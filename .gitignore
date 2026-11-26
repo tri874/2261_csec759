@@ -1,0 +1,11 @@
+*.pem
+*DS_Store
+
+# tee output from tmux runs on the VM. Logs that belong to the evidence are
+# copied into raw/ (e.g. raw/a2/orchestrator_logs/); each run also keeps its
+# own evomaster_stdout.log.
+logs/
+
+# Assignment 2: generated config (contains a freshly fetched lesson token);
+# the copy each run used is saved as raw/a2*/<case>/auth-config.yaml
+**/environment/config/generated/

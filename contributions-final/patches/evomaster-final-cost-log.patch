@@ -1,0 +1,36 @@
+diff --git a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+index 9db67709..1ca24d63 100644
+--- a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
++++ b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+@@ -756,6 +756,10 @@ class RestSecurityBuilder : TimeBoxedPhase {
+             constructed test, and the oracle decides based on them (see RestSecurityOracle.isNotRecognizedConfirmed)
+          */
+         val rulesEnabled = config.notRecognizedCredentialEvidence || config.notRecognizedUserAttribution
++        //Final project: cost of this step, logged with the rules on or off (so that it can be compared with them off)
++        val startNs = System.nanoTime()
++        var evaluatedTests = 0
++        var evaluatedCalls = 0
+         var candidates = 0
+         var replays = 0
+         var confirmed = 0
+@@ -854,6 +858,8 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                         log.warn("Failed to evaluate constructed individual in handleNotRecognizedAuthenticated")
+                         continue
+                     }
++                    evaluatedTests++
++                    evaluatedCalls += final.seeMainExecutableActions().size
+ 
+                     if(!rulesEnabled) {
+                         val added = archive.addIfNeeded(evaluatedIndividual)
+@@ -902,6 +908,11 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                     " constructedTests=$candidates replayCalls=$replays" +
+                     " confirmedTests=$confirmed unconfirmedTests=$unconfirmed")
+         }
++        LoggingUtil.getInfoLogger().info("Not-Recognized step cost (final):" +
++                " rulesEnabled=$rulesEnabled" +
++                " elapsedMs=${(System.nanoTime() - startNs) / 1_000_000}" +
++                " evaluatedTests=$evaluatedTests evaluatedCalls=$evaluatedCalls" +
++                " timedOut=${hasPhaseTimedOut()}")
+     }
+ 
+     /**

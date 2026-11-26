@@ -1,0 +1,11 @@
+# EvoMaster auth config for case K: two users identified by a fixed
+# Authorization header, as in EvoMaster's NotRecognized end-to-end test.
+auth:
+  - name: FOO
+    fixedHeaders:
+      - name: Authorization
+        value: FOO
+  - name: BAR
+    fixedHeaders:
+      - name: Authorization
+        value: BAR

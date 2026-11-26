@@ -1,0 +1,5 @@
+date_utc: 2026-11-12T21:19:24Z
+s_url: http://localhost:8083
+app_mode: docker
+app_sha256: 50022a580b09d61f15b23eb307bfdcb5124c19d5a6778ce3fbd5521a2361faa7  /home/user/2261_csec759/csec759_assignment1/cases/final_synthetic_app/app.py
+final_synth_image: sha256:ea6d117345627f96b3955f887f9b8820b195bc79efcb2190a040cfdf0f391fe1

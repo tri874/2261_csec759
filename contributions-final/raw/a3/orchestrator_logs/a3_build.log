@@ -1,0 +1,83 @@
+
+##### 15:44:41 cloning https://github.com/WebFuzzing/EvoMaster.git v6.2.0 into /home/user/2261_csec759/csec759_assignment1/../evomaster-a3
+Note: switching to 'efad6f2bd7ff0025852a6203d307303c568e763a'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+ M core/src/main/kotlin/org/evomaster/core/EMConfig.kt
+ M core/src/main/kotlin/org/evomaster/core/problem/enterprise/ExperimentalFaultCategory.kt
+ M core/src/main/kotlin/org/evomaster/core/problem/rest/oracle/RestSecurityOracle.kt
+ M core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+ M docs/options.md
+?? core-tests/e2e-tests/spring/spring-rest-openapi-v3/src/test/kotlin/org/evomaster/e2etests/spring/openapi/v3/security/notrecognized/SecurityNotRecognizedConfirmationEMTest.kt
+
+##### 15:44:58 building core/target/evomaster.jar with maven:3.9.9-eclipse-temurin-17 (tests skipped)
+Unable to find image 'maven:3.9.9-eclipse-temurin-17' locally
+3.9.9-eclipse-temurin-17: Pulling from library/maven
+d9d352c11bbd: Pulling fs layer
+ddcf5fb2d06c: Pulling fs layer
+3fa0bcda0f1d: Pulling fs layer
+7bbafedfaf52: Pulling fs layer
+b61b7669ae30: Pulling fs layer
+2d56ad71dc3b: Pulling fs layer
+c70eff9bffbb: Pulling fs layer
+e778c13590fd: Pulling fs layer
+d9815e77b54f: Pulling fs layer
+955067be877d: Pulling fs layer
+b510c5750cf6: Download complete
+a2e6b84f057b: Download complete
+955067be877d: Download complete
+7bbafedfaf52: Download complete
+3fa0bcda0f1d: Download complete
+2d56ad71dc3b: Download complete
+ddcf5fb2d06c: Download complete
+d9d352c11bbd: Download complete
+c70eff9bffbb: Download complete
+d9815e77b54f: Download complete
+e778c13590fd: Download complete
+b61b7669ae30: Download complete
+d9d352c11bbd: Pull complete
+7bbafedfaf52: Pull complete
+b61b7669ae30: Pull complete
+c70eff9bffbb: Pull complete
+d9815e77b54f: Pull complete
+ddcf5fb2d06c: Pull complete
+e778c13590fd: Pull complete
+3fa0bcda0f1d: Pull complete
+2d56ad71dc3b: Pull complete
+955067be877d: Pull complete
+Digest: sha256:f58d59b6273e785ac0a4477f6e9b5ba1d7731c75b906c0f7b34076f1851318cc
+Status: Downloaded newer image for maven:3.9.9-eclipse-temurin-17
+-rw-r--r-- 1 root root 115224087 Oct 20 15:52 /home/user/2261_csec759/csec759_assignment1/../evomaster-a3/core/target/evomaster.jar
+
+##### 15:53:05 building Docker image evomaster-a3:b9a4cdd80388
+sha256:bc61d3f421184f3cd55e7b6946a456b9af3f5b14592c2b4d82286e38869b3589
+date_utc: 2026-10-20T15:53:53Z
+upstream: https://github.com/WebFuzzing/EvoMaster.git tag v6.2.0 commit efad6f2bd7ff0025852a6203d307303c568e763a
+patch: patches/evomaster-v6.2.0-a3.patch sha256 b9a4cdd80388c9db556840a1cd167f481c3b554cde96d34bd4e7cccf4d98ee74
+maven_image: maven:3.9.9-eclipse-temurin-17 (maven@sha256:f58d59b6273e785ac0a4477f6e9b5ba1d7731c75b906c0f7b34076f1851318cc)
+jar_sha256: 83b0455d157b6ba9b9485d735310ee6a3cd320a1b3ff862ddd6bf8c3317e6bb0
+image: evomaster-a3:b9a4cdd80388
+image_id: sha256:bc61d3f421184f3cd55e7b6946a456b9af3f5b14592c2b4d82286e38869b3589
+base_image: FROM amazoncorretto:21-alpine-jdk
+docker_version: 29.1.3
+host: Linux 7.0.0-31-generic x86_64
+
+##### 15:53:55 smoke check: the image knows the new options
+--notRecognizedCredentialEvidence        EXPERIMENTAL: Not-Recognized oracle    
+--notRecognizedUserAttribution           EXPERIMENTAL: Not-Recognized oracle    
+
+##### 15:54:16 done: clone build image (image evomaster-a3:b9a4cdd80388)

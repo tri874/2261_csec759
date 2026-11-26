@@ -1,0 +1,22 @@
+id,case,request,expected,observed,match
+H5-1,H5,"PUT /api/resources/7 as FOO (FOO is recognized)",201,201,yes
+H5-2,H5,"PUT /api/resources/8 without credentials",401,401,yes
+H5-3,H5,"POST /api/reports as FOO, wrong key",401,401,yes
+H5-4,H5,"POST /api/reports as BAR, same wrong key",401,401,yes
+H5-5,H5,"POST /api/reports as FOO, key r3p0rt",204,204,yes
+H6-1,H6,"PUT /api/resources/7 as FOO (FOO is recognized)",201,201,yes
+H6-2,H6,"PUT /api/resources/8 without credentials (redirect)",302,302,yes
+H6-3,H6,"GET /api/billing without credentials (redirect)",302,302,yes
+H6-4,H6,"GET /api/billing as FOO",401,401,yes
+H6-5,H6,"GET /api/billing as BAR",200,200,yes
+H7-1,H7,"POST /api/items as FOO, category books",201,201,yes
+H7-2,H7,"POST /api/items without credentials",401,401,yes
+H7-3,H7,"POST /api/items as BAR, category restricted",403,403,yes
+H7-4,H7,"GET /api/items/1 as BAR (FOO's item)",403,403,yes
+H7-5,H7,"GET /api/export as FOO",401,401,yes
+H7-6,H7,"GET /api/export as BAR",200,200,yes
+H8-1,H8,"PUT /api/resources/7 as FOO (FOO is recognized)",201,201,yes
+H8-2,H8,"DELETE /api/admin/cache as FOO",401,401,yes
+H8-3,H8,"DELETE /api/admin/cache as BAR",401,401,yes
+H8-4,H8,"DELETE /api/admin/cache as ADM",204,204,yes
+H8-5,H8,"DELETE /api/admin/cache without credentials",401,401,yes

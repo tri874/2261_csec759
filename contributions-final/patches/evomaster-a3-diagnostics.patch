@@ -1,0 +1,40 @@
+diff --git a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+index eca6c888..5ddedef3 100644
+--- a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
++++ b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+@@ -861,9 +861,19 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                     }
+ 
+                     val faults = DetectedFaultUtils.getDetectedFaultCategories(evaluatedIndividual)
++                    //A3 diagnostics (decisions unchanged): what was executed, what was detected, what was kept
++                    val diagCalls = evaluatedIndividual.evaluatedMainActions().joinToString(" ; ") { ea ->
++                        val a = ea.action as RestCallAction
++                        val res = ea.result as RestCallResult
++                        "${a.verb} ${a.resolvedPath()} [${a.auth.name}] -> ${res.getStatusCode()}" +
++                                (if(res.stopping) " STOPPING" else "")
++                    }
++                    val diagCodes = faults.map { it.code }.sorted().joinToString(",")
+                     if(DefinedFaultCategory.SECURITY_NOT_RECOGNIZED_AUTHENTICATED in faults){
+                         confirmed++
+-                        archive.addIfNeeded(evaluatedIndividual)
++                        val diagAdded = archive.addIfNeeded(evaluatedIndividual)
++                        LoggingUtil.getInfoLogger().info("A3-DIAG X=${action.getName()} user=$user Y=${last.getName()}" +
++                                " codes=[$diagCodes] decision=confirmed archived=$diagAdded calls: $diagCalls")
+                         continue@mainloop
+                     }
+                     /*
+@@ -871,10 +881,13 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                         unconfirmed fault is in the output, and try the next evidence candidate
+                      */
+                     unconfirmed++
++                    var diagAdded : Boolean? = null
+                     if(!keptUnconfirmed){
+-                        archive.addIfNeeded(evaluatedIndividual)
++                        diagAdded = archive.addIfNeeded(evaluatedIndividual)
+                         keptUnconfirmed = true
+                     }
++                    LoggingUtil.getInfoLogger().info("A3-DIAG X=${action.getName()} user=$user Y=${last.getName()}" +
++                            " codes=[$diagCodes] decision=unconfirmed archived=${diagAdded ?: "not-tried"} calls: $diagCalls")
+                 }
+             }
+         }

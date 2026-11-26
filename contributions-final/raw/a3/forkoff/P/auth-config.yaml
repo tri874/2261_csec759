@@ -1,0 +1,36 @@
+# webgoat-em.yaml
+#
+# WFC-format auth config for WebGoat.
+#
+# WebGoat uses classic session-cookie login (Spring form login), NOT a
+# JSON token response -- this is why "expectCookies: true" replaces the
+# "token:" block used in capital-em.yaml / crapi-em.yaml.
+#
+# The two accounts below must be registered in WebGoat first, through
+# http://localhost:8080/WebGoat/registration (see environment/setup.md).
+#
+# The login endpoint is relative to --bbTargetUrl, which is the host root
+# (http://localhost:8080), so it must include the /WebGoat base path.
+
+auth:
+  - name: userA
+    loginEndpointAuth:
+      payloadUserPwd:
+        username: useraa
+        password: userAA
+        usernameField: username
+        passwordField: password
+  - name: userB
+    loginEndpointAuth:
+      payloadUserPwd:
+        username: userbb
+        password: userBB
+        usernameField: username
+        passwordField: password
+
+authTemplate:
+  loginEndpointAuth:
+    endpoint: /WebGoat/login
+    verb: POST
+    contentType: application/x-www-form-urlencoded
+    expectCookies: true

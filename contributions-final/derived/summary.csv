@@ -1,0 +1,12 @@
+SUT,run,seed,maxTime,covered2xx,H500,Schema,Not-Recognized,Leakage,Missed-Check
+webgoat,run_1,1,1h,173,28,323,5,0,0
+webgoat,run_2,2,1h,173,28,323,5,0,0
+webgoat,run_3,3,1h,172,28,323,5,0,0
+webgoat,run_4,4,1h,173,28,323,5,0,0
+webgoat,run_5,5,1h,173,28,323,5,0,0
+webgoat,run_6,6,1h,173,28,323,5,0,0
+webgoat,run_7,7,1h,173,28,324,5,0,0
+webgoat,run_8,8,1h,173,28,324,5,0,0
+webgoat,run_9,9,1h,173,28,324,5,0,0
+webgoat,run_10,10,1h,173,28,324,5,0,0
+webgoat,mean (n=10),,1h,,28.0,323.4,5.0,0.0,0.0

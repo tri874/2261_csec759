@@ -1,0 +1,8 @@
+case,role,variant,budget,runs_ok,expected,confirmed_305,unconfirmed_950,tp,fp,fn,precision,recall,security_s_median,security_s_range,replay_calls_median,constructed_tests_median,evaluated_actions_median,elapsed_s_median,other_faults_distinct,failed_runs
+P,primary (A2 failed case),proto,5m,3/3,none,none,GET:/JWT/votings/login (3/3); POST:/JWT/refresh/checkout (3/3); POST:/JWT/refresh/login (3/3); POST:/JWT/refresh/newToken (3/3); POST:/JWT/votings/{title} (3/3),0,0,0,n/a,n/a,4,4-5,32,16,50262,306,100:2|109:5|113:1|200:32|202:5|309:1|310:1,
+C-alt,matched control of P (A2),proto,5m,3/3,none,none,GET:/JWT/votings/login (3/3); POST:/JWT/refresh/login (3/3); POST:/JWT/refresh/newToken (3/3); POST:/JWT/votings/{title} (3/3),0,0,0,n/a,n/a,4,4-4,12,6,49734,305,100:1|109:4|113:1|200:32|202:4|310:1,
+H1,variant: second credential,proto,2m,3/3,none,none,POST:/api/vault (3/3),0,0,0,n/a,n/a,1,1-1,8,4,34493,122,109:3|202:3,
+H1c,matched control of H1,proto,2m,3/3,POST:/api/vault,POST:/api/vault (3/3),none,3,0,0,1.00,1.00,1,1-1,2,1,34531,122,109:3|202:3,
+K,regression (A2 known example),proto,2m,3/3,POST:/api/resources/,POST:/api/resources/ (3/3),none,3,0,0,1.00,1.00,1,1-1,2,1,40882,122,109:3|202:3,
+H2,tradeoff: role-restricted,proto,2m,3/3,DELETE:/api/admin/cache,none,DELETE:/api/admin/cache (3/3),0,0,3,n/a,0.00,1,1-1,8,4,28035,122,109:3|202:3,
+H4,Rule 1 case: misconfigured user,proto,2m,3/3,none,none,GET:/api/resources/{id} (3/3); PUT:/api/resources/{id} (3/3),0,0,0,n/a,n/a,1,1-1,4,2,33948,122,109:2|202:2|203:1|307:1,

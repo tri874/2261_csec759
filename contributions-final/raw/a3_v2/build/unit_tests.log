@@ -1,0 +1,644 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.evomaster:evomaster-e2e-tests-spring-mcp-bb:jar:6.2.0
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.evomaster:evomaster-client-java-controller:jar -> duplicate declaration of version (?) @ line 124, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.evomaster:evomaster-client-java-controller:jar:6.2.0
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.antlr:antlr4-runtime:jar -> version (?) vs 4.9.3 @ line 148, column 21
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apache.cassandra:java-driver-core:jar -> duplicate declaration of version (?) @ line 218, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Detecting the operating system and CPU architecture
+[INFO] ------------------------------------------------------------------------
+[INFO] os.detected.name: linux
+[INFO] os.detected.arch: x86_64
+[INFO] os.detected.version: 7.0
+[INFO] os.detected.version.major: 7
+[INFO] os.detected.version.minor: 0
+[INFO] os.detected.release: ubuntu
+[INFO] os.detected.release.version: 24.04
+[INFO] os.detected.release.like.ubuntu: true
+[INFO] os.detected.release.like.debian: true
+[INFO] os.detected.classifier: linux-x86_64
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] EvoMaster                                                          [pom]
+[INFO] org.evomaster:evomaster-core-parent                                [pom]
+[INFO] org.evomaster:evomaster-client-java                                [pom]
+[INFO] org.evomaster:evomaster-test-utils-java                            [jar]
+[INFO] org.evomaster:evomaster-client-java-postgres-test-utils            [jar]
+[INFO] evomaster-test-utils                                               [pom]
+[INFO] evomaster-test-utils-js                                            [jar]
+[INFO] evomaster-test-utils-py                                            [jar]
+[INFO] org.evomaster:evomaster-client-java-sql-dto                        [jar]
+[INFO] org.evomaster:evomaster-client-java-controller-api                 [jar]
+[INFO] org.evomaster:evomaster-client-java-instrumentation-shared         [jar]
+[INFO] evomaster-core-extra                                               [pom]
+[INFO] extra-shared                                                       [jar]
+[INFO] evomaster-dbconstraint                                             [jar]
+[INFO] asyncapi-parser                                                    [jar]
+[INFO] solver                                                             [jar]
+[INFO] org.evomaster:evomaster-client-java-util                           [jar]
+[INFO] org.evomaster:evomaster-client-java-distance-heuristics            [jar]
+[INFO] org.evomaster:evomaster-client-java-instrumentation                [jar]
+[INFO] org.evomaster:evomaster-ci-utils                                   [jar]
+[INFO] org.evomaster:evomaster-client-java-sql                            [jar]
+[INFO] org.evomaster:evomaster-client-java-controller                     [jar]
+[INFO] arazzo-parser                                                      [jar]
+[INFO] evomaster-core                                                     [jar]
+[INFO] 
+[INFO] ----------------------< org.evomaster:evomaster >-----------------------
+[INFO] Building EvoMaster 6.2.0                                          [1/24]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] ----------------< org.evomaster:evomaster-core-parent >-----------------
+[INFO] Building org.evomaster:evomaster-core-parent 6.2.0                [2/24]
+[INFO]   from core-parent/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-core-parent ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-core-parent ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core-parent/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] ----------------< org.evomaster:evomaster-client-java >-----------------
+[INFO] Building org.evomaster:evomaster-client-java 6.2.0                [3/24]
+[INFO]   from client-java/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --------------< org.evomaster:evomaster-test-utils-java >---------------
+[INFO] Building org.evomaster:evomaster-test-utils-java 6.2.0            [4/24]
+[INFO]   from client-java/test-utils-java/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-test-utils-java ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-test-utils-java ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/test-utils-java/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-test-utils-java ---
+[INFO] skip non existing resourceDirectory /src/client-java/test-utils-java/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-test-utils-java ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-test-utils-java ---
+[INFO] skip non existing resourceDirectory /src/client-java/test-utils-java/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-test-utils-java ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-test-utils-java ---
+[INFO] 
+[INFO] ------< org.evomaster:evomaster-client-java-postgres-test-utils >-------
+[INFO] Building org.evomaster:evomaster-client-java-postgres-test-utils 6.2.0 [5/24]
+[INFO]   from client-java/postgres-test-utils/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-postgres-test-utils ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-postgres-test-utils ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/postgres-test-utils/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-postgres-test-utils ---
+[INFO] skip non existing resourceDirectory /src/client-java/postgres-test-utils/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-postgres-test-utils ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-postgres-test-utils ---
+[INFO] skip non existing resourceDirectory /src/client-java/postgres-test-utils/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-postgres-test-utils ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-postgres-test-utils ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -----------------< org.evomaster:evomaster-test-utils >-----------------
+[INFO] Building evomaster-test-utils 6.2.0                               [6/24]
+[INFO]   from test-utils/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-test-utils ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-test-utils ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/test-utils/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] ---------------< org.evomaster:evomaster-test-utils-js >----------------
+[INFO] Building evomaster-test-utils-js 6.2.0                            [7/24]
+[INFO]   from test-utils/test-utils-js/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-test-utils-js ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-test-utils-js ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/test-utils/test-utils-js/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-test-utils-js ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-test-utils-js ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-test-utils-js ---
+[INFO] skip non existing resourceDirectory /src/test-utils/test-utils-js/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-test-utils-js ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-test-utils-js ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ---------------< org.evomaster:evomaster-test-utils-py >----------------
+[INFO] Building evomaster-test-utils-py 6.2.0                            [8/24]
+[INFO]   from test-utils/test-utils-py/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-test-utils-py ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-test-utils-py ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/test-utils/test-utils-py/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-test-utils-py ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-test-utils-py ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-test-utils-py ---
+[INFO] skip non existing resourceDirectory /src/test-utils/test-utils-py/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-test-utils-py ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-test-utils-py ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ------------< org.evomaster:evomaster-client-java-sql-dto >-------------
+[INFO] Building org.evomaster:evomaster-client-java-sql-dto 6.2.0        [9/24]
+[INFO]   from client-java/sql-dto/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-sql-dto ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-sql-dto ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/sql-dto/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-sql-dto ---
+[INFO] skip non existing resourceDirectory /src/client-java/sql-dto/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-sql-dto ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-sql-dto ---
+[INFO] skip non existing resourceDirectory /src/client-java/sql-dto/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-sql-dto ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-sql-dto ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ---------< org.evomaster:evomaster-client-java-controller-api >---------
+[INFO] Building org.evomaster:evomaster-client-java-controller-api 6.2.0 [10/24]
+[INFO]   from client-java/controller-api/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-controller-api ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-controller-api ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/controller-api/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-controller-api ---
+[INFO] skip non existing resourceDirectory /src/client-java/controller-api/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-controller-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-controller-api ---
+[INFO] skip non existing resourceDirectory /src/client-java/controller-api/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-controller-api ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-controller-api ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -----< org.evomaster:evomaster-client-java-instrumentation-shared >-----
+[INFO] Building org.evomaster:evomaster-client-java-instrumentation-shared 6.2.0 [11/24]
+[INFO]   from client-java/instrumentation-shared/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-instrumentation-shared ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-instrumentation-shared ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/instrumentation-shared/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-instrumentation-shared ---
+[INFO] skip non existing resourceDirectory /src/client-java/instrumentation-shared/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-instrumentation-shared ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-instrumentation-shared ---
+[INFO] skip non existing resourceDirectory /src/client-java/instrumentation-shared/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-instrumentation-shared ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-instrumentation-shared ---
+[INFO] 
+[INFO] -----------------< org.evomaster:evomaster-core-extra >-----------------
+[INFO] Building evomaster-core-extra 6.2.0                              [12/24]
+[INFO]   from core-extra/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-core-extra ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-core-extra ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core-extra/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] ---------------------< org.evomaster:extra-shared >---------------------
+[INFO] Building extra-shared 6.2.0                                      [13/24]
+[INFO]   from core-extra/shared/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ extra-shared ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ extra-shared ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core-extra/shared/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ extra-shared ---
+[INFO] skip non existing resourceDirectory /src/core-extra/shared/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ extra-shared ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ extra-shared ---
+[INFO] skip non existing resourceDirectory /src/core-extra/shared/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ extra-shared ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ extra-shared ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ----------------< org.evomaster:evomaster-dbconstraint >----------------
+[INFO] Building evomaster-dbconstraint 6.2.0                            [14/24]
+[INFO]   from core-extra/dbconstraint/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-dbconstraint ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-dbconstraint ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core-extra/dbconstraint/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-dbconstraint ---
+[INFO] skip non existing resourceDirectory /src/core-extra/dbconstraint/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-dbconstraint ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-dbconstraint ---
+[INFO] skip non existing resourceDirectory /src/core-extra/dbconstraint/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-dbconstraint ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-dbconstraint ---
+[INFO] 
+[INFO] -------------------< org.evomaster:asyncapi-parser >--------------------
+[INFO] Building asyncapi-parser 6.2.0                                   [15/24]
+[INFO]   from core-extra/asyncapi-parser/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ asyncapi-parser ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ asyncapi-parser ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core-extra/asyncapi-parser/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ asyncapi-parser ---
+[INFO] skip non existing resourceDirectory /src/core-extra/asyncapi-parser/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ asyncapi-parser ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ asyncapi-parser ---
+[INFO] Copying 24 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ asyncapi-parser ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ asyncapi-parser ---
+[INFO] 
+[INFO] ------------------------< org.evomaster:solver >------------------------
+[INFO] Building solver 6.2.0                                            [16/24]
+[INFO]   from core-extra/solver/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ solver ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ solver ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core-extra/solver/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ solver ---
+[INFO] skip non existing resourceDirectory /src/core-extra/solver/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ solver ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ solver ---
+[INFO] Copying 6 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ solver ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ solver ---
+[INFO] 
+[INFO] --------------< org.evomaster:evomaster-client-java-util >--------------
+[INFO] Building org.evomaster:evomaster-client-java-util 6.2.0          [17/24]
+[INFO]   from client-java/client-util/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-util ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-util ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/client-util/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-util ---
+[INFO] skip non existing resourceDirectory /src/client-java/client-util/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-util ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-util ---
+[INFO] skip non existing resourceDirectory /src/client-java/client-util/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-util ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-util ---
+[INFO] 
+[INFO] ------< org.evomaster:evomaster-client-java-distance-heuristics >-------
+[INFO] Building org.evomaster:evomaster-client-java-distance-heuristics 6.2.0 [18/24]
+[INFO]   from client-java/distance-heuristics/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-distance-heuristics ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-distance-heuristics ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/distance-heuristics/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-distance-heuristics ---
+[INFO] skip non existing resourceDirectory /src/client-java/distance-heuristics/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-distance-heuristics ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-distance-heuristics ---
+[INFO] skip non existing resourceDirectory /src/client-java/distance-heuristics/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-distance-heuristics ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-distance-heuristics ---
+[INFO] 
+[INFO] --------< org.evomaster:evomaster-client-java-instrumentation >---------
+[INFO] Building org.evomaster:evomaster-client-java-instrumentation 6.2.0 [19/24]
+[INFO]   from client-java/instrumentation/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-instrumentation ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-instrumentation ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/instrumentation/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-instrumentation ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-instrumentation ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-instrumentation ---
+[INFO] skip non existing resourceDirectory /src/client-java/instrumentation/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-instrumentation ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-instrumentation ---
+[INFO] 
+[INFO] ------------------< org.evomaster:evomaster-ci-utils >------------------
+[INFO] Building org.evomaster:evomaster-ci-utils 6.2.0                  [20/24]
+[INFO]   from client-java/ci-utils/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-ci-utils ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-ci-utils ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/ci-utils/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-ci-utils ---
+[INFO] skip non existing resourceDirectory /src/client-java/ci-utils/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-ci-utils ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-ci-utils ---
+[INFO] skip non existing resourceDirectory /src/client-java/ci-utils/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-ci-utils ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-ci-utils ---
+[INFO] 
+[INFO] --------------< org.evomaster:evomaster-client-java-sql >---------------
+[INFO] Building org.evomaster:evomaster-client-java-sql 6.2.0           [21/24]
+[INFO]   from client-java/sql/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-sql ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-sql ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/sql/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-sql ---
+[INFO] skip non existing resourceDirectory /src/client-java/sql/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-sql ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-sql ---
+[INFO] skip non existing resourceDirectory /src/client-java/sql/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-sql ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-sql ---
+[INFO] 
+[INFO] -----------< org.evomaster:evomaster-client-java-controller >-----------
+[INFO] Building org.evomaster:evomaster-client-java-controller 6.2.0    [22/24]
+[INFO]   from client-java/controller/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] 1 problem was encountered while building the effective model for com.ea.agentloader:ea-agent-loader:jar:1.0.3 during dependency collection step for project (use -X to see details)
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-client-java-controller ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-client-java-controller ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/client-java/controller/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- antlr4:4.9.2:antlr4 (default) @ evomaster-client-java-controller ---
+[INFO] No grammars to process
+[INFO] ANTLR 4: Processing source directory /src/client-java/controller/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-client-java-controller ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-client-java-controller ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- protobuf:0.6.1:test-compile (default) @ evomaster-client-java-controller ---
+[INFO] Compiling 4 proto file(s) to /src/client-java/controller/target/generated-test-sources/protobuf/java
+[INFO] 
+[INFO] --- protobuf:0.6.1:test-compile-custom (default) @ evomaster-client-java-controller ---
+[INFO] Compiling 4 proto file(s) to /src/client-java/controller/target/generated-test-sources/protobuf/grpc-java
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-client-java-controller ---
+[INFO] Copying 4 resources from src/test/resources to target/test-classes
+[INFO] Copying 4 resources from src/test/proto to target/test-classes
+[INFO] Copying 4 resources from src/test/proto to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-client-java-controller ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 208 source files with javac [debug release 8] to target/test-classes
+[INFO] /src/client-java/controller/src/test/java/org/evomaster/client/java/controller/internal/db/sql/mysql/DatabaseMySQLTestInit.java: /src/client-java/controller/src/test/java/org/evomaster/client/java/controller/internal/db/sql/mysql/DatabaseMySQLTestInit.java uses or overrides a deprecated API.
+[INFO] /src/client-java/controller/src/test/java/org/evomaster/client/java/controller/internal/db/sql/mysql/DatabaseMySQLTestInit.java: Recompile with -Xlint:deprecation for details.
+[INFO] /src/client-java/controller/src/test/java/org/evomaster/client/java/controller/internal/db/sql/mysql/DatabaseMySQLTestInit.java: Some input files use unchecked or unsafe operations.
+[INFO] /src/client-java/controller/src/test/java/org/evomaster/client/java/controller/internal/db/sql/mysql/DatabaseMySQLTestInit.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-client-java-controller ---
+[INFO] 
+[INFO] --------------------< org.evomaster:arazzo-parser >---------------------
+[INFO] Building arazzo-parser 6.2.0                                     [23/24]
+[INFO]   from core-extra/arazzo-parser/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ arazzo-parser ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ arazzo-parser ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core-extra/arazzo-parser/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ arazzo-parser ---
+[INFO] skip non existing resourceDirectory /src/core-extra/arazzo-parser/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ arazzo-parser ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ arazzo-parser ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ arazzo-parser ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ arazzo-parser ---
+[INFO] 
+[INFO] --------------------< org.evomaster:evomaster-core >--------------------
+[INFO] Building evomaster-core 6.2.0                                    [24/24]
+[INFO]   from core/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ evomaster-core ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default-prepare-agent) @ evomaster-core ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/src/core/target/jacoco.exec,excludes=com/foo/**/*:com/thrift/example/**/*
+[INFO] 
+[INFO] --- antlr4:4.9.2:antlr4 (default) @ evomaster-core ---
+[INFO] No grammars to process
+[INFO] ANTLR 4: Processing source directory /src/core/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ evomaster-core ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- kotlin:2.2.20:compile (compile) @ evomaster-core ---
+[WARNING] Source root doesn't exist: /src/core/src/main/java
+[WARNING] Using experimental Kotlin incremental compilation
+[INFO] starting the daemon as: /opt/java/openjdk/bin/java -cp /root/.m2/repository/org/jetbrains/kotlin/kotlin-build-tools-impl/2.2.20/kotlin-build-tools-impl-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-build-tools-api/2.2.20/kotlin-build-tools-api-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/2.2.20/kotlin-stdlib-2.2.20.jar:/root/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.2.20/kotlin-compiler-embeddable-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-script-runtime/2.2.20/kotlin-script-runtime-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.2.20/kotlin-daemon-embeddable-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.8.0/kotlinx-coroutines-core-jvm-1.8.0.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-compiler-runner/2.2.20/kotlin-compiler-runner-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-daemon-client/2.2.20/kotlin-daemon-client-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.2.20/kotlin-scripting-compiler-embeddable-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-common/2.2.20/kotlin-scripting-common-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-jvm/2.2.20/kotlin-scripting-jvm-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.2.20/kotlin-scripting-compiler-impl-embeddable-2.2.20.jar -Djava.awt.headless=true -Djava.rmi.server.hostname=127.0.0.1 -Xmx1858m -XX:ReservedCodeCacheSize=320m -ea -XX:+UseCodeCacheFlushing -XX:+UseParallelGC -Dkotlin.daemon.initiator.marker.file=/tmp/kotlin-compiler-client-3134534003798130418-is-running --add-exports java.base/sun.nio.ch=ALL-UNNAMED org.jetbrains.kotlin.daemon.KotlinCompileDaemon --daemon-runFilesPath /root/.kotlin/daemon --daemon-autoshutdownIdleSeconds=7200 --daemon-shutdownDelayMilliseconds=1800000 --daemon-compilerClasspath /root/.m2/repository/org/jetbrains/kotlin/kotlin-build-tools-impl/2.2.20/kotlin-build-tools-impl-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-build-tools-api/2.2.20/kotlin-build-tools-api-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/2.2.20/kotlin-stdlib-2.2.20.jar:/root/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.2.20/kotlin-compiler-embeddable-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-script-runtime/2.2.20/kotlin-script-runtime-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.2.20/kotlin-daemon-embeddable-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.8.0/kotlinx-coroutines-core-jvm-1.8.0.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-compiler-runner/2.2.20/kotlin-compiler-runner-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-daemon-client/2.2.20/kotlin-daemon-client-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.2.20/kotlin-scripting-compiler-embeddable-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-common/2.2.20/kotlin-scripting-common-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-jvm/2.2.20/kotlin-scripting-jvm-2.2.20.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.2.20/kotlin-scripting-compiler-impl-embeddable-2.2.20.jar
+[INFO] #1 retrying connecting to the daemon 
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (java-compile) @ evomaster-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ evomaster-core ---
+[INFO] Copying 301 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- kotlin:2.2.20:test-compile (test-compile) @ evomaster-core ---
+[WARNING] Source root doesn't exist: /src/core/src/test/java
+[WARNING] Using experimental Kotlin incremental compilation
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (java-test-compile) @ evomaster-core ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ evomaster-core ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.evomaster.core.docs.ConfigToMarkdownTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.582 s -- in org.evomaster.core.docs.ConfigToMarkdownTest
+[INFO] Running org.evomaster.core.problem.enterprise.ExperimentalFaultCategoryTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in org.evomaster.core.problem.enterprise.ExperimentalFaultCategoryTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for EvoMaster 6.2.0:
+[INFO] 
+[INFO] EvoMaster .......................................... SUCCESS [  0.868 s]
+[INFO] org.evomaster:evomaster-core-parent ................ SUCCESS [  0.010 s]
+[INFO] org.evomaster:evomaster-client-java ................ SUCCESS [  0.009 s]
+[INFO] org.evomaster:evomaster-test-utils-java ............ SUCCESS [  1.543 s]
+[INFO] org.evomaster:evomaster-client-java-postgres-test-utils SUCCESS [  0.062 s]
+[INFO] evomaster-test-utils ............................... SUCCESS [  0.014 s]
+[INFO] evomaster-test-utils-js ............................ SUCCESS [  0.060 s]
+[INFO] evomaster-test-utils-py ............................ SUCCESS [  0.041 s]
+[INFO] org.evomaster:evomaster-client-java-sql-dto ........ SUCCESS [  0.051 s]
+[INFO] org.evomaster:evomaster-client-java-controller-api . SUCCESS [  0.140 s]
+[INFO] org.evomaster:evomaster-client-java-instrumentation-shared SUCCESS [  0.068 s]
+[INFO] evomaster-core-extra ............................... SUCCESS [  0.007 s]
+[INFO] extra-shared ....................................... SUCCESS [  0.039 s]
+[INFO] evomaster-dbconstraint ............................. SUCCESS [  0.093 s]
+[INFO] asyncapi-parser .................................... SUCCESS [  0.117 s]
+[INFO] solver ............................................. SUCCESS [  0.058 s]
+[INFO] org.evomaster:evomaster-client-java-util ........... SUCCESS [  0.048 s]
+[INFO] org.evomaster:evomaster-client-java-distance-heuristics SUCCESS [  0.034 s]
+[INFO] org.evomaster:evomaster-client-java-instrumentation  SUCCESS [  0.964 s]
+[INFO] org.evomaster:evomaster-ci-utils ................... SUCCESS [  0.037 s]
+[INFO] org.evomaster:evomaster-client-java-sql ............ SUCCESS [  0.135 s]
+[INFO] org.evomaster:evomaster-client-java-controller ..... SUCCESS [ 20.415 s]
+[INFO] arazzo-parser ...................................... SUCCESS [  0.228 s]
+[INFO] evomaster-core ..................................... SUCCESS [ 13.726 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  39.991 s
+[INFO] Finished at: 2026-10-21T16:26:29Z
+[INFO] ------------------------------------------------------------------------

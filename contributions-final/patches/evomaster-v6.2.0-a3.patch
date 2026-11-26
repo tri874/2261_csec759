@@ -1,0 +1,417 @@
+diff --git a/core-tests/e2e-tests/spring/spring-rest-openapi-v3/src/test/kotlin/org/evomaster/e2etests/spring/openapi/v3/security/notrecognized/SecurityNotRecognizedConfirmationEMTest.kt b/core-tests/e2e-tests/spring/spring-rest-openapi-v3/src/test/kotlin/org/evomaster/e2etests/spring/openapi/v3/security/notrecognized/SecurityNotRecognizedConfirmationEMTest.kt
+new file mode 100644
+index 00000000..570e6b8c
+--- /dev/null
++++ b/core-tests/e2e-tests/spring/spring-rest-openapi-v3/src/test/kotlin/org/evomaster/e2etests/spring/openapi/v3/security/notrecognized/SecurityNotRecognizedConfirmationEMTest.kt
+@@ -0,0 +1,54 @@
++package org.evomaster.e2etests.spring.openapi.v3.security.notrecognized
++
++import com.foo.rest.examples.spring.openapi.v3.security.notrecognized.NotRecognizedController
++import com.webfuzzing.commons.faults.DefinedFaultCategory
++import org.evomaster.core.problem.enterprise.DetectedFaultUtils
++import org.evomaster.core.problem.rest.data.HttpVerb
++import org.evomaster.e2etests.spring.openapi.v3.SpringTestBase
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.BeforeAll
++import org.junit.jupiter.api.Test
++
++/**
++ * A3: same as [SecurityNotRecognizedEMTest], but with both Not-Recognized confirmation rules enabled.
++ * The fault in NotRecognizedApplication (POST 401 for FOO, while FOO is recognized on PUT/GET)
++ * is a true fault, so it must still be reported as SECURITY_NOT_RECOGNIZED_AUTHENTICATED.
++ */
++class SecurityNotRecognizedConfirmationEMTest : SpringTestBase(){
++
++    companion object {
++        @BeforeAll
++        @JvmStatic
++        fun init() {
++            initClass(NotRecognizedController())
++        }
++    }
++
++
++    @Test
++    fun testRunEM() {
++
++        runTestHandlingFlakyAndCompilation(
++            "SecurityNotRecognizedConfirmationEM",
++            200
++        ) { args: MutableList<String> ->
++
++            setOption(args, "security", "true")
++            setOption(args, "schemaOracles", "false")
++            setOption(args, "httpOracles", "false")
++            setOption(args, "statusOracles", "false")
++            setOption(args, "notRecognizedCredentialEvidence", "true")
++            setOption(args, "notRecognizedUserAttribution", "true")
++
++            val solution = initAndRun(args)
++
++            assertTrue(solution.individuals.size >= 1)
++
++            assertHasAtLeastOne(solution, HttpVerb.POST, 401, "/api/resources/", null)
++
++            val faults = DetectedFaultUtils.getDetectedFaultCategories(solution)
++
++            assertTrue(faults.contains(DefinedFaultCategory.SECURITY_NOT_RECOGNIZED_AUTHENTICATED), "Faults: $faults")
++        }
++    }
++}
+diff --git a/core/src/main/kotlin/org/evomaster/core/EMConfig.kt b/core/src/main/kotlin/org/evomaster/core/EMConfig.kt
+index b6c6524c..7e3491c9 100644
+--- a/core/src/main/kotlin/org/evomaster/core/EMConfig.kt
++++ b/core/src/main/kotlin/org/evomaster/core/EMConfig.kt
+@@ -3154,6 +3154,22 @@ class EMConfig {
+             "When false, all experimental oracles are disabled.")
+     var useExperimentalOracles = false
+ 
++    @Experimental
++    @Cfg("Not-Recognized oracle (code 305): only confirm a 401 for an authenticated user if the same user got a 2xx " +
++            "on a different endpoint, and the identical request without credentials got a 401 or 403. " +
++            "Otherwise, the 401 is reported as an unconfirmed fault (code 950). " +
++            "The request without credentials is added to the generated test.")
++    @DependsOnTrueFor("security")
++    var notRecognizedCredentialEvidence = false
++
++    @Experimental
++    @Cfg("Not-Recognized oracle (code 305): only confirm a 401 for an authenticated user if the identical request " +
++            "sent as a different configured user does not get a 401. " +
++            "Otherwise, the 401 is reported as an unconfirmed fault (code 950). " +
++            "The requests as the other users are added to the generated test.")
++    @DependsOnTrueFor("security")
++    var notRecognizedUserAttribution = false
++
+     enum class VulnerableInputClassificationStrategy {
+         /**
+          * Uses the manual methods to select the vulnerable inputs.
+diff --git a/core/src/main/kotlin/org/evomaster/core/problem/enterprise/ExperimentalFaultCategory.kt b/core/src/main/kotlin/org/evomaster/core/problem/enterprise/ExperimentalFaultCategory.kt
+index ad4b452e..13807ad6 100644
+--- a/core/src/main/kotlin/org/evomaster/core/problem/enterprise/ExperimentalFaultCategory.kt
++++ b/core/src/main/kotlin/org/evomaster/core/problem/enterprise/ExperimentalFaultCategory.kt
+@@ -13,6 +13,17 @@ enum class ExperimentalFaultCategory(
+ 
+ 
+     //Implemented
++    /*
++        A3: a Not-Recognized candidate (configured user got a 401) that failed the confirmation
++        rules enabled with notRecognizedCredentialEvidence / notRecognizedUserAttribution.
++        Reported instead of SECURITY_NOT_RECOGNIZED_AUTHENTICATED, with lower confidence.
++     */
++    SECURITY_NOT_RECOGNIZED_UNCONFIRMED(950, "Unconfirmed 401 For Authenticated User", "returnsUnconfirmed401",
++        "A configured user got a 401, but either there is no evidence that the user's credentials are " +
++                "recognized by the API (the same successful request without credentials was not rejected with 401/403), " +
++                "or the 401 cannot be attributed to the user (the same request as another configured user also got 401). " +
++                "The 401 might be caused by other credentials or inputs in the request."),
++
+     HTTP_TIMEOUT(960, "Request Timeout", "requestTimeout", "TODO"),
+ 
+ 
+diff --git a/core/src/main/kotlin/org/evomaster/core/problem/rest/oracle/RestSecurityOracle.kt b/core/src/main/kotlin/org/evomaster/core/problem/rest/oracle/RestSecurityOracle.kt
+index 0b878e9c..5ea1ca30 100644
+--- a/core/src/main/kotlin/org/evomaster/core/problem/rest/oracle/RestSecurityOracle.kt
++++ b/core/src/main/kotlin/org/evomaster/core/problem/rest/oracle/RestSecurityOracle.kt
+@@ -5,11 +5,13 @@ import com.webfuzzing.commons.faults.FaultCategory
+ import org.apache.http.HttpStatus
+ import org.evomaster.core.EMConfig
+ import org.evomaster.core.problem.enterprise.DetectedFault
++import org.evomaster.core.problem.enterprise.ExperimentalFaultCategory
+ import org.evomaster.core.problem.enterprise.SampleType
+ import org.evomaster.core.problem.httpws.HttpWsCallResult
+ import org.evomaster.core.problem.rest.*
+ import org.evomaster.core.problem.rest.builder.DynamicPathUtils
+ import org.evomaster.core.problem.rest.data.*
++import org.evomaster.core.problem.rest.param.UpdateForBodyParam
+ import org.evomaster.core.problem.rest.service.CallGraphService
+ import org.evomaster.core.problem.rest.service.RestSecurityBuilder
+ import org.evomaster.core.problem.security.service.SSRFAnalyser
+@@ -170,13 +172,135 @@ class RestSecurityOracle {
+         }
+ 
+         notRecognized.forEach {
++            /*
++                A3: when the confirmation rules are enabled, a candidate that fails them is
++                reported in a separate low-confidence category instead of being dropped
++             */
++            val category : FaultCategory =
++                if(isNotRecognizedConfirmed(it, individual, actionResults)) {
++                    DefinedFaultCategory.SECURITY_NOT_RECOGNIZED_AUTHENTICATED
++                } else {
++                    ExperimentalFaultCategory.SECURITY_NOT_RECOGNIZED_UNCONFIRMED
++                }
+             val scenarioId = idMapper.handleLocalTarget(
+-                idMapper.getFaultDescriptiveId(DefinedFaultCategory.SECURITY_NOT_RECOGNIZED_AUTHENTICATED, it.getName())
++                idMapper.getFaultDescriptiveId(category, it.getName())
+             )
+             fv.updateTarget(scenarioId, 1.0, it.positionAmongMainActions())
+             val r = actionResults.find { r -> r.sourceLocalId == it.getLocalId() } as RestCallResult
+-            r.addFault(DetectedFault(DefinedFaultCategory.SECURITY_NOT_RECOGNIZED_AUTHENTICATED, it.getName(), null))
++            r.addFault(DetectedFault(category, it.getName(), null))
++        }
++    }
++
++    /**
++     * A3 change. Decide whether a Not-Recognized candidate [action] (a configured user A got a 401 on X)
++     * is confirmed, based on the rules enabled in the configuration.
++     * With no rule enabled, every candidate is confirmed, ie, the same behavior as EvoMaster 6.2.0.
++     *
++     * Rule 1, credential-differential evidence: A got a 2xx on some request r on an endpoint Y != X,
++     * and the identical request r sent without any credentials got 401 or 403.
++     * Rule 2, user attribution: the identical request of X, sent as another configured user B, did not get a 401.
++     *
++     * The replayed requests are added to the test by [RestSecurityBuilder]. Requests are compared with
++     * [requestSignature], which ignores the configured credentials (cookies/headers from the auth config)
++     * but keeps every request input, including schema-defined headers such as Authorization.
++     */
++    fun isNotRecognizedConfirmed(
++        action: RestCallAction,
++        individual: RestIndividual,
++        actionResults: List<ActionResult>
++    ): Boolean {
++
++        if(config.notRecognizedCredentialEvidence
++            && !hasCredentialDifferentialEvidence(action, individual, actionResults)){
++            return false
+         }
++
++        if(config.notRecognizedUserAttribution
++            && !isNotRecognizedAttributableToUser(action, individual, actionResults)){
++            return false
++        }
++
++        return true
++    }
++
++    /**
++     * Rule 1. Is there evidence, in the same test, that the user of [action] is recognized by the API?
++     * That is, the user got a 2xx on an endpoint Y different from X, and the very same request sent
++     * without credentials was rejected with 401 or 403.
++     * Note: a redirect (eg 302 to a login page) is not considered evidence.
++     */
++    fun hasCredentialDifferentialEvidence(
++        action: RestCallAction,
++        individual: RestIndividual,
++        actionResults: List<ActionResult>
++    ): Boolean {
++
++        val actions = individual.seeMainExecutableActions()
++
++        val okForUser = actions.filter {
++            !it.auth.isNoAuth()
++                    && !it.auth.isDifferentFrom(action.auth)
++                    && it.getName() != action.getName() // the paper requires Y != X
++                    && StatusGroup.G_2xx.isInGroup(statusOf(it, actionResults))
++        }
++        if(okForUser.isEmpty()){
++            return false
++        }
++
++        val rejectedWithoutAuth = actions.filter {
++            it.auth.isNoAuth() && listOf(401, 403).contains(statusOf(it, actionResults))
++        }.map { requestSignature(it) }
++            .toSet()
++
++        return okForUser.any { rejectedWithoutAuth.contains(requestSignature(it)) }
++    }
++
++    /**
++     * Rule 2. Can the 401 on X be attributed to the user of [action]?
++     * That is, the very same request sent as a different configured user did not get a 401.
++     * If every other user gets a 401 as well, the 401 is likely due to the request inputs
++     * (eg, a second credential in a header), and not to the user.
++     */
++    fun isNotRecognizedAttributableToUser(
++        action: RestCallAction,
++        individual: RestIndividual,
++        actionResults: List<ActionResult>
++    ): Boolean {
++
++        val signature = requestSignature(action)
++
++        return individual.seeMainExecutableActions().any {
++            !it.auth.isNoAuth()
++                    && it.auth.isDifferentFrom(action.auth)
++                    && it.getName() == action.getName()
++                    && statusOf(it, actionResults).let { s -> s != null && s != 401 }
++                    && requestSignature(it) == signature
++        }
++    }
++
++    private fun statusOf(action: RestCallAction, actionResults: List<ActionResult>) : Int? {
++        return (actionResults.find { r -> r.sourceLocalId == action.getLocalId() } as RestCallResult?)
++            ?.getStatusCode()
++    }
++
++    /**
++     * String identifying all the inputs of a request, except for the configured auth info.
++     * Two copies of the same action, with different [RestCallAction.auth], have the same signature.
++     */
++    fun requestSignature(action: RestCallAction) : String {
++        val params = action.parameters
++            .filter { it !is UpdateForBodyParam }
++            .joinToString("&") { p ->
++                val value = p.seeGenes().joinToString(",") { g ->
++                    try {
++                        g.getValueAsRawString()
++                    } catch (e: Exception) {
++                        "?"
++                    }
++                }
++                "${p.javaClass.simpleName}:${p.name}=$value"
++            }
++        return "${action.verb}:${action.path}|$params"
+     }
+ 
+     private fun handleExistenceLeakage(
+diff --git a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+index 27aa2519..eca6c888 100644
+--- a/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
++++ b/core/src/main/kotlin/org/evomaster/core/problem/rest/service/RestSecurityBuilder.kt
+@@ -750,9 +750,20 @@ class RestSecurityBuilder : TimeBoxedPhase {
+      */
+     private fun handleNotRecognizedAuthenticated() {
+ 
++        /*
++            A3: if any of the confirmation rules is enabled, replays of the requests are appended to the
++            constructed test, and the oracle decides based on them (see RestSecurityOracle.isNotRecognizedConfirmed)
++         */
++        val rulesEnabled = config.notRecognizedCredentialEvidence || config.notRecognizedUserAttribution
++        var candidates = 0
++        var replays = 0
++        var confirmed = 0
++        var unconfirmed = 0
++
+         mainloop@ for(action in actionDefinitions){
+ 
+-            if(hasPhaseTimedOut()) return
++            //A3: was 'return', changed so that the summary below is logged also on timeout
++            if(hasPhaseTimedOut()) break
+ 
+             val suspicious = RestIndividualSelectorUtils.findIndividuals(
+                 individualsInSolution,
+@@ -797,8 +808,14 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                     actually, could even be same user, eg when trying to access resource of
+                     another user could get a 403
+                 */
++                var keptUnconfirmed = false
++
+                 for(success in ok){
+                     val last = success.seeMainExecutableActions().last()
++                    if(config.notRecognizedCredentialEvidence && last.getName() == action.getName()){
++                        //Rule 1: the evidence must come from an endpoint Y different from X
++                        continue
++                    }
+                     val with401or403 = RestIndividualSelectorUtils.findIndividuals(
+                         individualsInSolution,
+                         verb = last.verb,
+@@ -824,18 +841,94 @@ class RestSecurityBuilder : TimeBoxedPhase {
+                     final.modifySampleType(SampleType.SECURITY)
+                     final.ensureFlattenedStructure()
+ 
++                    if(rulesEnabled){
++                        candidates++
++                        //position of Y (the 2xx for the user) in the merged test: last call of 'success'
++                        val yIndex = auth.seeMainExecutableActions().size + success.seeMainExecutableActions().size - 1
++                        replays += addNotRecognizedReplays(final, yIndex)
++                    }
++
+                     val evaluatedIndividual = fitness.computeWholeAchievedCoverageForPostProcessing(final)
+                     if (evaluatedIndividual == null) {
+                         log.warn("Failed to evaluate constructed individual in handleNotRecognizedAuthenticated")
+                         continue
+                     }
+ 
+-                    val added = archive.addIfNeeded(evaluatedIndividual)
+-                    assert(added)
+-                    continue@mainloop
++                    if(!rulesEnabled) {
++                        val added = archive.addIfNeeded(evaluatedIndividual)
++                        assert(added)
++                        continue@mainloop
++                    }
++
++                    val faults = DetectedFaultUtils.getDetectedFaultCategories(evaluatedIndividual)
++                    if(DefinedFaultCategory.SECURITY_NOT_RECOGNIZED_AUTHENTICATED in faults){
++                        confirmed++
++                        archive.addIfNeeded(evaluatedIndividual)
++                        continue@mainloop
++                    }
++                    /*
++                        not confirmed with this evidence. keep the first such test, so the
++                        unconfirmed fault is in the output, and try the next evidence candidate
++                     */
++                    unconfirmed++
++                    if(!keptUnconfirmed){
++                        archive.addIfNeeded(evaluatedIndividual)
++                        keptUnconfirmed = true
++                    }
+                 }
+             }
+         }
++
++        if(rulesEnabled){
++            LoggingUtil.getInfoLogger().info("Not-Recognized confirmation (A3):" +
++                    " credentialEvidence=${config.notRecognizedCredentialEvidence}" +
++                    " userAttribution=${config.notRecognizedUserAttribution}" +
++                    " constructedTests=$candidates replayCalls=$replays" +
++                    " confirmedTests=$confirmed unconfirmedTests=$unconfirmed")
++        }
++    }
++
++    /**
++     * A3 change. Append to [ind] the replays needed by the Not-Recognized confirmation rules.
++     * The last main action in [ind] is X (401 for user A), and [yIndex] is the position of Y (2xx for user A).
++     * Rule 1: Y again without credentials. Rule 2: X again as each other configured user.
++     * Replays are copies, so all request inputs are identical, apart from the configured auth.
++     *
++     * @return the number of added calls
++     */
++    private fun addNotRecognizedReplays(ind: RestIndividual, yIndex: Int) : Int {
++
++        val actions = ind.seeMainExecutableActions()
++        val x = actions.last()
++        if(yIndex < 0 || yIndex >= actions.size - 1){
++            log.warn("Invalid index for Y in Not-Recognized test: $yIndex out of ${actions.size}")
++            return 0
++        }
++        val y = actions[yIndex]
++
++        val replays = mutableListOf<RestCallAction>()
++
++        if(config.notRecognizedCredentialEvidence){
++            val noAuth = y.copy() as RestCallAction
++            noAuth.resetLocalIdRecursively()
++            noAuth.auth = HttpWsNoAuth()
++            replays.add(noAuth)
++        }
++
++        if(config.notRecognizedUserAttribution){
++            authSettings.getAllOthers(x.auth.name, HttpWsAuthenticationInfo::class.java).forEach { other ->
++                val asOther = x.copy() as RestCallAction
++                asOther.resetLocalIdRecursively()
++                asOther.auth = other
++                replays.add(asOther)
++            }
++        }
++
++        replays.forEach { ind.addMainActionInEmptyEnterpriseGroup(action = it) }
++        ind.doInitializeLocalId()
++        org.evomaster.core.Lazy.assert { ind.verifyValidity(); true }
++
++        return replays.size
+     }
+ 
+ 
+diff --git a/docs/options.md b/docs/options.md
+index 23b9589d..9f9a2abd 100644
+--- a/docs/options.md
++++ b/docs/options.md
+@@ -338,6 +338,8 @@ There are 3 types of options:
+ |`maxSizeOfMutatingInitAction`| __Int__. Specify a maximum number of handling (remove/add) init actions at once, e.g., add 3 init actions at most. *Constraints*: `min=0.0`. *Default value*: `0`.|
+ |`maxTestSizeStrategy`| __Enum__. Specify a strategy to handle a max size of a test. *Valid values*: `SPECIFIED, DPC_INCREASING, DPC_DECREASING`. *Default value*: `SPECIFIED`.|
+ |`mutationTargetsSelectionStrategy`| __Enum__. Specify a strategy to select targets for evaluating mutation. *Valid values*: `FIRST_NOT_COVERED_TARGET, EXPANDED_UPDATED_NOT_COVERED_TARGET, UPDATED_NOT_COVERED_TARGET`. *Default value*: `FIRST_NOT_COVERED_TARGET`.|
++|`notRecognizedCredentialEvidence`| __Boolean__. Not-Recognized oracle (code 305): only confirm a 401 for an authenticated user if the same user got a 2xx on a different endpoint, and the identical request without credentials got a 401 or 403. Otherwise, the 401 is reported as an unconfirmed fault (code 950). The request without credentials is added to the generated test. *Depends on*: `security=true`. *Default value*: `false`.|
++|`notRecognizedUserAttribution`| __Boolean__. Not-Recognized oracle (code 305): only confirm a 401 for an authenticated user if the identical request sent as a different configured user does not get a 401. Otherwise, the 401 is reported as an unconfirmed fault (code 950). The requests as the other users are added to the generated test. *Depends on*: `security=true`. *Default value*: `false`.|
+ |`onePlusLambdaLambdaOffspringSize`| __Int__. 1+(λ,λ) GA: number of offspring (λ) per generation. *Constraints*: `min=1.0`. *Default value*: `4`.|
+ |`prematureStopStrategy`| __Enum__. Specify how 'improvement' is defined: either any kind of improvement even if partial (ANY), or at least one new target is fully covered (NEW). *Valid values*: `ANY, NEW`. *Default value*: `NEW`.|
+ |`probOfArazzoSampling`| __Double__. Probability of controlling the creation of Arazzo individuals. *Constraints*: `probability 0.0-1.0`. *Default value*: `0.5`.|
