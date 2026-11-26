@@ -1,0 +1,6 @@
+org/evomaster/e2etests/utils/RestTestBase.class
+org/evomaster/e2etests/utils/EnterpriseTestBase.class
+org/evomaster/e2etests/utils/WebTestBase.class
+org/evomaster/e2etests/utils/GraphQLTestBase.class
+org/evomaster/e2etests/utils/RPCTestBase.class
+org/evomaster/e2etests/utils/JUnitTestRunner.class

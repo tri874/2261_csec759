@@ -1,0 +1,204 @@
+package org.evomaster.core.utils
+
+import java.util.regex.Pattern
+
+/**
+ * Represents a parsed flag expression like "(?iu-s:".
+ * Encapsulates the flags being turned on and off, to be applied to an existing [RegexFlags] via [RegexFlags.merge].
+ */
+data class ParsedFlagExpression(
+    private val toEnable: RegexFlags,
+    private val toDisable: RegexFlags
+) {
+    internal fun applyTo(current: RegexFlags): RegexFlags = RegexFlags(
+        caseInsensitive       = merge(current.caseInsensitive,       toEnable.caseInsensitive,       toDisable.caseInsensitive),
+        unicodeCase           = merge(current.unicodeCase,           toEnable.unicodeCase,           toDisable.unicodeCase),
+        dotAll                = merge(current.dotAll,                toEnable.dotAll,                toDisable.dotAll),
+        multiline             = merge(current.multiline,             toEnable.multiline,             toDisable.multiline),
+        unixLines             = merge(current.unixLines,             toEnable.unixLines,             toDisable.unixLines),
+        unicodeCharacterClass = merge(current.unicodeCharacterClass, toEnable.unicodeCharacterClass, toDisable.unicodeCharacterClass),
+        comments              = merge(current.comments,              toEnable.comments,              toDisable.comments),
+    )
+
+    private fun merge(current: Boolean, enable: Boolean, disable: Boolean) = when {
+        disable -> false
+        enable  -> true
+        else    -> current
+    }
+
+    companion object {
+        /**
+         * Parses a FLAG_GROUP_OPEN or FLAG_SCOPE_OPEN token text like "(?i:", "(?iu:", "(?-i:", "(?i-u:", "(?iu)", etc.
+         * into a [ParsedFlagExpression] that can be applied to the current flags.
+         */
+        fun fromFlagToken(tokenText: String): ParsedFlagExpression {
+            // strip "(?" from start and ":" (or ")") from end
+            val inner = tokenText.drop(2).dropLast(1)
+
+            val (enableStr, disableStr) = if ('-' in inner)
+                inner.split('-', limit = 2).let { it[0] to it[1] }
+            else Pair(inner, "")
+
+            return ParsedFlagExpression(
+                RegexFlags.fromString(enableStr),
+                RegexFlags.fromString(disableStr)
+            )
+        }
+    }
+}
+
+data class RegexFlags(
+    val caseInsensitive: Boolean = false,        // i
+    val unicodeCase: Boolean = false,            // u, this flags modifies behaviour of "i" flag
+    val dotAll: Boolean = false,                 // s
+    val unixLines: Boolean = false,              // d
+    val unicodeCharacterClass: Boolean = false,  // U
+    val multiline: Boolean = false,              // m
+    val comments: Boolean = false,               // x
+) {
+
+    companion object {
+        val validFlagCharacters = setOf('i', 'u', 's', 'm', 'd', 'U', 'x')
+
+        /**
+         * Parses a string of flag characters (e.g. "iu", "sm") into a [RegexFlags] instance.
+         * Valid characters are: i, u, s, m, d, U, x.
+         */
+        fun fromString(s: String): RegexFlags {
+            require(s.all { c -> c in validFlagCharacters }) { "Invalid flag characters in: '$s'" }
+            return RegexFlags(
+                caseInsensitive       = 'i' in s,
+                unicodeCase           = 'u' in s,
+                dotAll                = 's' in s,
+                multiline             = 'm' in s,
+                unixLines             = 'd' in s,
+                unicodeCharacterClass = 'U' in s,
+                comments              = 'x' in s,
+            )
+        }
+
+        /**
+         * Constructs a [RegexFlags] from a Java regex flags bitmask, as accepted by
+         * [java.util.regex.Pattern.compile]. This allows external flags passed to
+         * [java.util.regex.Pattern.compile] to be preserved and applied when building
+         * the gene tree, mirroring the behaviour of the Java regex engine.
+         */
+        fun fromExternalJavaRegexFlagBitmask(externalRegexFlagsBitmask: Int): RegexFlags = RegexFlags(
+            caseInsensitive       = externalRegexFlagsBitmask and Pattern.CASE_INSENSITIVE != 0,
+            unicodeCase           = externalRegexFlagsBitmask and Pattern.UNICODE_CASE != 0,
+            dotAll                = externalRegexFlagsBitmask and Pattern.DOTALL != 0,
+            multiline             = externalRegexFlagsBitmask and Pattern.MULTILINE != 0,
+            unixLines             = externalRegexFlagsBitmask and Pattern.UNIX_LINES != 0,
+            unicodeCharacterClass = externalRegexFlagsBitmask and Pattern.UNICODE_CHARACTER_CLASS != 0,
+            comments              = externalRegexFlagsBitmask and Pattern.COMMENTS != 0
+        )
+
+        /**
+         * These are the characters that are considered line terminators by default (i.e.: no flags used).
+         */
+        val defaultLineTerminators = listOf('\n', '\r', '\u0085', '\u2028', '\u2029').map{ CharacterRange(it) }
+        /**
+         * When the `UNIX_LINES` flag is on, only `\n` is considered a line terminator.
+         */
+        val unixLinesModeLineTerminators = listOf('\n').map{ CharacterRange(it) }
+
+        val defaultLineTerminatorRanges = MultiCharacterRange(false, defaultLineTerminators)
+        val unixLineTerminatorRanges = MultiCharacterRange(false, unixLinesModeLineTerminators)
+    }
+
+    /**
+     * Returns a flag scope string, which enables the same flags as what the current object has enabled. If none are
+     * active then returns empty string, else returns "(?iusmdUx)" only including the currently active flags.
+     */
+    fun getScopeString(): String {
+        if (!(caseInsensitive ||
+                    unicodeCase ||
+                    dotAll ||
+                    multiline ||
+                    unixLines ||
+                    unicodeCharacterClass ||
+                    comments)) {
+            return ""
+        } else {
+            val sb = StringBuilder()
+            sb.append("(?")
+
+            if (caseInsensitive) {
+                sb.append('i')
+            }
+            if (unicodeCase) {
+                sb.append('u')
+            }
+            if (dotAll) {
+                sb.append('s')
+            }
+            if (multiline) {
+                sb.append('m')
+            }
+            if (unixLines) {
+                sb.append('d')
+            }
+            if (unicodeCharacterClass) {
+                sb.append('U')
+            }
+            if (comments) {
+                sb.append('x')
+            }
+
+            sb.append(")")
+            return sb.toString()
+        }
+    }
+
+    fun toJavaFlagBitmask(): Int {
+        var flags = 0
+        if (caseInsensitive) flags = flags or Pattern.CASE_INSENSITIVE
+        if (unicodeCase) flags = flags or Pattern.UNICODE_CASE
+        if (dotAll) flags = flags or Pattern.DOTALL
+        if (multiline) flags = flags or Pattern.MULTILINE
+        if (unixLines) flags = flags or Pattern.UNIX_LINES
+        if (unicodeCharacterClass) flags = flags or Pattern.UNICODE_CHARACTER_CLASS
+        if (comments) flags = flags or Pattern.COMMENTS
+        return flags
+    }
+
+    /**
+     * Merges this [RegexFlags] with a [ParsedFlagExpression], returning a new [RegexFlags] with the
+     * enabled flags turned on and the disabled flags turned off.
+     * Flags not mentioned in either are inherited from the receiver unchanged.
+     */
+    fun merge(expression: ParsedFlagExpression): RegexFlags = expression.applyTo(this)
+
+    /**
+     * Checks if the provided character is a line terminator according to the flag behavior.
+     */
+    fun isLineTerminator(c: Char) = if (unixLines) {
+            c == '\n'
+        } else {
+            c == '\n' || c == '\r' || c == '\u0085' || c == '\u2028' || c == '\u2029'
+        }
+
+    /**
+     * Checks if the provided character has a case variant according to the flag behavior, checking both caseInsensitive
+     * and unicodeCase flag values.
+     */
+    fun isCaseable(codePoint: Int): Boolean {
+        // unicodeCharacterClass implies also unicodeCase
+        return if (caseInsensitive && (unicodeCase || unicodeCharacterClass)) {
+            Character.toUpperCase(codePoint) != Character.toLowerCase(codePoint)
+        }
+        else if (caseInsensitive) {
+            codePoint in 0..127 && Character.toUpperCase(codePoint) != Character.toLowerCase(codePoint)
+        }
+        else {
+            false
+        }
+    }
+    /** @see org.evomaster.core.utils.RegexFlags.isCaseable */
+    fun isCaseable(char: Char): Boolean = isCaseable(char.code)
+
+    /**
+     * The [MultiCharacterRange] that corresponds to the current flag state of [unixLines].
+     */
+    val lineTerminatorRanges = if(unixLines) unixLineTerminatorRanges else defaultLineTerminatorRanges
+}

@@ -1,0 +1,5 @@
+/src/core-extra/solver/src/test/java/org/evomaster/solver/Z3DockerExecutorTest.java
+/src/core-extra/solver/src/test/java/org/evomaster/solver/Z3InvocationCostTest.java
+/src/core-extra/solver/src/test/java/org/evomaster/solver/smtlib/SMTLibTest.java
+/src/core-extra/solver/src/test/java/org/evomaster/solver/smtlib/SMTResultParserTest.java
+/src/core-extra/solver/src/test/java/org/evomaster/solver/smtlib/assertion/AssertionTest.java

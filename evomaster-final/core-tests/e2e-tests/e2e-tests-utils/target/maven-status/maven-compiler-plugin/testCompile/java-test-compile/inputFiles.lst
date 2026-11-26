@@ -1,0 +1,6 @@
+/src/core-tests/e2e-tests/e2e-tests-utils/src/test/java/org/evomaster/e2etests/utils/EnterpriseTestBase.java
+/src/core-tests/e2e-tests/e2e-tests-utils/src/test/java/org/evomaster/e2etests/utils/GraphQLTestBase.java
+/src/core-tests/e2e-tests/e2e-tests-utils/src/test/java/org/evomaster/e2etests/utils/JUnitTestRunner.java
+/src/core-tests/e2e-tests/e2e-tests-utils/src/test/java/org/evomaster/e2etests/utils/RPCTestBase.java
+/src/core-tests/e2e-tests/e2e-tests-utils/src/test/java/org/evomaster/e2etests/utils/RestTestBase.java
+/src/core-tests/e2e-tests/e2e-tests-utils/src/test/java/org/evomaster/e2etests/utils/WebTestBase.java

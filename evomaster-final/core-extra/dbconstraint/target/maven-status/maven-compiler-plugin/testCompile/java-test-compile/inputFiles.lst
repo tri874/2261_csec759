@@ -1,0 +1,3 @@
+/src/core-extra/dbconstraint/src/test/java/org/evomaster/dbconstraint/SqlConditionParserTest.java
+/src/core-extra/dbconstraint/src/test/java/org/evomaster/dbconstraint/TableConstraintBuilderTest.java
+/src/core-extra/dbconstraint/src/test/java/org/evomaster/dbconstraint/parser/JSqlConditionParserTest.java

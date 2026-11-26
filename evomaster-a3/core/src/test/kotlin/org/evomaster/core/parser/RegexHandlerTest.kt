@@ -1,0 +1,238 @@
+package org.evomaster.core.parser
+
+import org.antlr.v4.runtime.misc.ParseCancellationException
+import org.evomaster.client.java.instrumentation.heuristic.ValidatorHeuristics
+import org.evomaster.client.java.instrumentation.shared.RegexSharedUtils
+import org.evomaster.core.search.service.AdaptiveParameterControl
+import org.evomaster.core.search.service.Randomness
+import org.evomaster.core.search.service.mutator.MutationWeightControl
+import org.evomaster.core.utils.RegexFlags
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import java.util.regex.Pattern
+
+internal class RegexHandlerTest{
+
+    @Test
+    fun testLanguageTool(){
+        val s = "^((?iu)@.+)$"
+        RegexHandler.createGeneForJVM(s)
+    }
+
+
+    @Test
+    fun testFixedValue(){
+
+        val regex = "[a-z]"
+        val gene = RegexHandler.createGeneForJVM(regex)
+
+        val foo = "foo"
+
+        val modified = gene.setFromStringValue(foo)
+        assertTrue(modified)
+        assertEquals(foo, gene.getValueAsRawString())
+
+        val invalidChange = gene.setFromStringValue("42")
+        assertFalse(invalidChange)
+        assertEquals(foo, gene.getValueAsRawString())
+    }
+
+
+    @Test
+    fun testCwaIssue(){
+        //should not throw exception
+        val s = "^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{10}$"
+        RegexHandler.createGeneForJVM(s)
+        RegexHandler.createGeneForJVM(RegexSharedUtils.handlePartialMatch(s))
+
+        val x = "^[XxA-Fa-f0-9]([A-Fa-f0-9]{63})$"
+        RegexHandler.createGeneForJVM(x)
+        RegexHandler.createGeneForJVM(RegexSharedUtils.forceFullMatch(x))
+
+        RegexHandler.createGeneForJVM(RegexSharedUtils.handlePartialMatch(s)+"|"+RegexSharedUtils.forceFullMatch(x))
+    }
+
+    @Test
+    fun testInd1Issue(){
+        val s = "^1[3-9]\\d{9}"
+        val regex = RegexHandler.createGeneForJVM(s)
+        assertEquals(s, regex.sourceRegex)
+        RegexHandler.createGeneForJVM(RegexSharedUtils.handlePartialMatch(s))
+        RegexHandler.createGeneForJVM(RegexSharedUtils.forceFullMatch(s))
+
+        val rand = Randomness()
+        regex.randomize(rand, false)
+        assertTrue(regex.isLocallyValid())
+        val copy = regex.copy()
+        assertTrue(copy.isLocallyValid())
+        assertEquals(regex.getValueAsRawString(), copy.getValueAsRawString())
+
+        val apc = AdaptiveParameterControl()
+        val mwc = MutationWeightControl()
+
+        regex.doInitialize(rand)
+
+        repeat(1000){
+            regex.standardMutation(rand, apc, mwc)
+            regex.copy().standardMutation(rand, apc, mwc)
+        }
+    }
+
+    @Test
+    fun testPostgresSimilarToEmailRegex() {
+        val regex = "[A-Za-z0-9-.+]+@[A-Za-z0-9-.]+.[A-Za-z]{2,}"
+        val pattern = Pattern.compile(regex)
+        val regexGene = RegexHandler.createGeneForPostgresSimilarTo(regex)
+        val rand = Randomness()
+
+        repeat(1000){
+            regexGene.randomize(rand,true)
+            assertTrue(pattern.matcher(regexGene.getValueAsRawString()).find())
+        }
+
+    }
+
+    @Test
+    fun testRegexEmail() {
+        val regex = ValidatorHeuristics.EMAIL_REGEX_PATTERN
+        val pattern = Pattern.compile(regex)
+        val gene = RegexHandler.createGeneForJVM(regex)
+        val rand = Randomness()
+        repeat (10000) {
+            gene.randomize(rand,true)
+            assertTrue(pattern.matcher(gene.getValueAsRawString()).find())
+        }
+
+    }
+
+
+    @Test
+    fun testRegexPlusSymbol() {
+        val regex = "(\\+)+"
+        val pattern = Pattern.compile(regex)
+        val gene = RegexHandler.createGeneForJVM(regex)
+        val rand = Randomness()
+        repeat (1000) {
+            gene.randomize(rand,true)
+            assertTrue(pattern.matcher(gene.getValueAsRawString()).find())
+        }
+    }
+
+    @Test
+    fun testRegexDotSymbol() {
+        val regex = "(\\.)+"
+        val pattern = Pattern.compile(regex)
+        val gene = RegexHandler.createGeneForJVM(regex)
+        val rand = Randomness()
+        repeat (1000) {
+            gene.randomize(rand,true)
+            assertTrue(pattern.matcher(gene.getValueAsRawString()).find())
+        }
+    }
+
+
+    @Test
+    fun testRegexCharacter() {
+        val regex = "(a)+"
+        val pattern = Pattern.compile(regex)
+        val gene = RegexHandler.createGeneForJVM(regex)
+        val rand = Randomness()
+        repeat (1000) {
+            gene.randomize(rand,true)
+            assertTrue(pattern.matcher(gene.getValueAsRawString()).find())
+        }
+
+    }
+
+    @Test
+    fun testCreateGeneForJVMInvalidRegex() {
+
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\xR") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\ugggg") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\x{}") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\x{") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\x}") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\x[h}") }
+        assertThrows(IllegalArgumentException::class.java) { RegexHandler.createGeneForJVM("\\x{110000}") }
+        assertThrows(IllegalArgumentException::class.java) { RegexHandler.createGeneForJVM("\\x{ffffff}") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\0") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\09") }
+        assertThrows(IllegalArgumentException::class.java) { RegexHandler.createGeneForJVM("[9-1]") }
+    }
+
+    @Test
+    fun testCreateGeneForEcma262InvalidRegex() {
+
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForEcma262("\\xR") }
+        assertThrows(ParseCancellationException::class.java) { RegexHandler.createGeneForJVM("\\ugggg") }
+        assertThrows(IllegalArgumentException::class.java) { RegexHandler.createGeneForJVM("[9-1]") }
+    }
+
+    @Test
+    fun testJVMExternalCaseInsensitiveFlagWithUnicodeCase() {
+        // \u03A1 is greek capital Rho, \u03C1 is lowercase rho
+        val regex = "\u03A1+"
+        val flags = RegexFlags.fromExternalJavaRegexFlagBitmask(Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+        val gene = RegexHandler.createGeneForJVM(regex, flags)
+        val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+        val rand = Randomness()
+
+        repeat(200) {
+            gene.randomize(rand, false)
+            val value = gene.getValueAsRawString()
+            assertTrue(pattern.matcher(value).find())
+        }
+    }
+
+    @Test
+    fun testJVMCacheDistinguishesByExternalFlags() {
+
+        val regex = "^abc$"
+        val noFlags = RegexHandler.createGeneForJVM(regex)
+        val withCI = RegexHandler.createGeneForJVM(regex, RegexFlags.fromExternalJavaRegexFlagBitmask(Pattern.CASE_INSENSITIVE))
+
+        val rand = Randomness()
+        val noFlagsSamples = (1..200).map {
+            noFlags.randomize(rand, false)
+            noFlags.getValueAsRawString()
+        }.toSet()
+
+        val withCISamples = (1..200).map {
+            withCI.randomize(rand, false)
+            withCI.getValueAsRawString()
+        }.toSet()
+
+        assertTrue(noFlagsSamples.all { it == "abc" })
+        assertTrue(withCISamples.size > 1)
+    }
+
+    @Test
+    fun testJVMInlineFlagNotDoubledByExternalFlag() {
+
+        val regex = "(?i:abc)"
+        val withExternalCI = RegexHandler.createGeneForJVM(regex, RegexFlags.fromExternalJavaRegexFlagBitmask(Pattern.CASE_INSENSITIVE))
+        val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
+        val rand = Randomness()
+
+        repeat(200) {
+            withExternalCI.randomize(rand, false)
+            val value = withExternalCI.getValueAsRawString()
+            assertTrue(pattern.matcher(value).find())
+        }
+    }
+
+    @Test
+    fun testJVMInlineCanDisableExternalFlag() {
+
+        val regex = "^(?-i:abc)$"
+        val withExternalCI = RegexHandler.createGeneForJVM(regex, RegexFlags.fromExternalJavaRegexFlagBitmask(Pattern.CASE_INSENSITIVE))
+        val rand = Randomness()
+
+        repeat(200) {
+            withExternalCI.randomize(rand, false)
+            val value = withExternalCI.getValueAsRawString()
+            assertEquals("abc", value)
+        }
+    }
+}

@@ -1,0 +1,31 @@
+package org.evomaster.client.java.controller.mongo.selectors;
+
+import org.evomaster.client.java.controller.mongo.operations.*;
+
+import static org.evomaster.client.java.controller.mongo.utils.BsonHelper.getTypeFromAlias;
+import static org.evomaster.client.java.controller.mongo.utils.BsonHelper.getTypeFromNumber;
+
+/**
+ * { field: { $type: BSON type } }
+ */
+public class TypeSelector extends SingleConditionQuerySelector {
+
+    public static final String TYPE_OPERATOR = "$type";
+
+    @Override
+    protected QueryOperation parseValue(String fieldName, Object value) {
+        Object type = null;
+        if (value instanceof Integer) {
+            type = getTypeFromNumber((Integer) value);
+        }
+        if (value instanceof String) {
+            type = getTypeFromAlias((String) value);
+        }
+        return type == null ? null : new TypeOperation(fieldName, type);
+    }
+
+    @Override
+    protected String operator() {
+        return TYPE_OPERATOR;
+    }
+}

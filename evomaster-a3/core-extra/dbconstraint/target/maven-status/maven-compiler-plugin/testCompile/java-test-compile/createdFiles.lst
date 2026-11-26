@@ -1,0 +1,3 @@
+org/evomaster/dbconstraint/TableConstraintBuilderTest.class
+org/evomaster/dbconstraint/SqlConditionParserTest.class
+org/evomaster/dbconstraint/parser/JSqlConditionParserTest.class

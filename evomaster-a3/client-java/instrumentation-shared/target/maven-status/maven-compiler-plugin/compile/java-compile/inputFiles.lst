@@ -1,0 +1,13 @@
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/ClassName.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/ClassToSchemaUtils.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/ExternalServiceSharedUtils.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/IPAddressValidator.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/ObjectiveNaming.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/PreDefinedSSLInfo.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/RegexSharedUtils.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/ReplacementCategory.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/ReplacementType.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/StringSpecialization.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/StringSpecializationInfo.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/TaintInputName.java
+/src/client-java/instrumentation-shared/src/main/java/org/evomaster/client/java/instrumentation/shared/TaintType.java

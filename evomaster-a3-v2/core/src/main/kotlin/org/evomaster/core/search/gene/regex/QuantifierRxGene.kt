@@ -1,0 +1,300 @@
+package org.evomaster.core.search.gene.regex
+
+import org.evomaster.core.output.OutputFormat
+import org.evomaster.core.search.gene.root.CompositeGene
+import org.evomaster.core.search.gene.Gene
+import org.evomaster.core.search.gene.utils.AssertionRepairWalk
+import org.evomaster.core.search.gene.utils.GeneUtils
+import org.evomaster.core.search.service.AdaptiveParameterControl
+import org.evomaster.core.search.service.Randomness
+import org.evomaster.core.search.service.mutator.MutationWeightControl
+import org.evomaster.core.search.service.mutator.genemutation.AdditionalGeneMutationInfo
+import org.evomaster.core.search.service.mutator.genemutation.SubsetGeneMutationSelectionStrategy
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+class QuantifierRxGene(
+        name: String,
+        val template: Gene,
+        val min: Int = 1,
+        val max: Int = 1
+) : RxTerm, CompositeGene(name, mutableListOf()) {
+
+    init{
+        if(template !is RxAtom){
+            throw IllegalArgumentException("Template must be a RxAtom")
+        }
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(QuantifierRxGene::class.java)
+        private const val MODIFY_LENGTH = 0.1
+    }
+
+
+    val atoms : List<Gene>
+        get() {return getViewOfChildren() }
+
+    /**
+     *  A * quantifier could lead to billions of atom elements.
+     *  Here, to avoid an unnecessary huge search space, we put
+     *  a limit on the number of variable elements.
+     *  But still constrained by min and max
+     */
+    private val LIMIT = 2
+
+    private val limitedMax: Int
+
+    init {
+        if (min < 0) {
+            throw IllegalArgumentException("Invalid min value '$min': should be positive")
+        }
+        if (max < 0) {
+            throw IllegalArgumentException("Invalid max value '$max': should be positive")
+        }
+        if (min > max) {
+            throw IllegalArgumentException("Invalid min-max values '$min-$max': min is greater than max")
+        }
+
+        limitedMax = if ((max - min) > LIMIT) {
+            min + LIMIT
+        } else {
+            max
+        }
+
+        if(min == limitedMax && !template.isMutable()){
+            /*
+                this means this whole gene is immutable. still need to initialize it
+             */
+            for(i in 0 until min){
+                val a = template.copy() as Gene
+                a.resetLocalIdRecursively()
+                addChild(a)
+            }
+        }
+    }
+
+    override fun checkForLocallyValidIgnoringChildren() : Boolean{
+        val n = getViewOfChildren().size
+        return n in min..limitedMax
+    }
+
+    override fun copyContent(): Gene {
+
+        val copy = QuantifierRxGene(
+                name,
+                template.copy(),
+                min,
+                max
+        )
+        copy.killAllChildren()
+
+        this.atoms.forEach {
+            val a = it.copy()
+            copy.addChild(a)
+        }
+
+        return copy
+    }
+
+
+
+    override fun randomize(randomness: Randomness, tryToForceNewValue: Boolean) {
+
+        val length = randomness.nextInt(min, limitedMax)
+
+        killAllChildren()
+
+        if (length == 0) {
+            //nothing to do
+            return
+        }
+
+        for (i in 0 until length) {
+           addNewAtom(randomness, tryToForceNewValue)
+        }
+    }
+
+    override fun isMutable(): Boolean {
+        return min != limitedMax || template.isMutable()
+    }
+
+    override fun customShouldApplyShallowMutation(randomness: Randomness,
+                                                  selectionStrategy: SubsetGeneMutationSelectionStrategy,
+                                                  enableAdaptiveGeneMutation: Boolean,
+                                                  additionalGeneMutationInfo: AdditionalGeneMutationInfo?
+    ) : Boolean {
+        val length = atoms.size
+
+        if(length > min  && randomness.nextBoolean(MODIFY_LENGTH)){
+            return true
+        }
+        if(length < limitedMax && randomness.nextBoolean(MODIFY_LENGTH)){
+            return true
+        }
+        return false
+    }
+
+    override fun adaptiveSelectSubsetToMutate(randomness: Randomness, internalGenes: List<Gene>, mwc: MutationWeightControl, additionalGeneMutationInfo: AdditionalGeneMutationInfo): List<Pair<Gene, AdditionalGeneMutationInfo?>> {
+        /*
+            atoms is dynamically modified, then we do not collect impacts for it now.
+            thus for the internal genes, adaptive gene selection for mutation is not applicable
+        */
+        val s = randomness.choose(internalGenes)
+        return listOf(s to additionalGeneMutationInfo.copyFoInnerGene(null, s))
+    }
+
+    override fun shallowMutate(randomness: Randomness, apc: AdaptiveParameterControl, mwc: MutationWeightControl, selectionStrategy: SubsetGeneMutationSelectionStrategy, enableAdaptiveGeneMutation: Boolean, additionalGeneMutationInfo: AdditionalGeneMutationInfo?): Boolean {
+        val length = atoms.size
+
+        if (length < min || length > limitedMax){
+            val regexGene = getFirstParent { p -> p is RegexGene } as? RegexGene
+            throw IllegalArgumentException("invalid length when mutating Gene ($name, based on regular expression[${regexGene?.name ?: "none of its parent is RegexGene"}, ${regexGene?.sourceRegex?:"expression is null"}]). Its length should range from $min to $limitedMax, but it is $length")
+        }
+
+
+        var remove = length == limitedMax
+        var add = length == min
+
+        if (remove == add){
+            if (add)
+                throw IllegalArgumentException("min == limitedMax")
+
+            remove = randomness.nextBoolean()
+            add = !remove
+        }
+
+        if(remove){
+            log.trace("Removing atom")
+            killChildByIndex(randomness.nextInt(length))
+        }
+        if(add){
+            addNewAtom(randomness, false)
+        }
+
+        return true
+    }
+
+    fun addNewAtom(randomness: Randomness, forceNewValue: Boolean){
+        val base = template.copy()
+        base.resetLocalIdRecursively()
+        base.doInitialize(randomness)
+        addChild(base)
+    }
+
+    override fun getValueAsPrintableString(previousGenes: List<Gene>, mode: GeneUtils.EscapeMode?, targetFormat: OutputFormat?, extraCheck: Boolean): String {
+
+        return atoms.map { it.getValueAsPrintableString(previousGenes, mode, targetFormat) }
+                .joinToString("")
+    }
+
+
+
+    override fun containsSameValueAs(other: Gene): Boolean {
+        if (other !is QuantifierRxGene) {
+            throw IllegalArgumentException("Invalid gene type ${other.javaClass}")
+        }
+
+        if (this.atoms.size != other.atoms.size) {
+            return false
+        }
+
+        for (i in 0 until other.atoms.size) {
+            val x = this.atoms[i]
+            val y = other.atoms[i]
+            if (!x.possiblySame(y) || !x.containsSameValueAs(y)) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+
+
+    override fun mutationWeight(): Double {
+        return atoms.filter { isMutable() }.map { it.mutationWeight() }.sum() + 1.0
+    }
+
+
+    override fun unsafeCopyValueFrom(other: Gene): Boolean {
+        if (other !is QuantifierRxGene) {
+            return false
+        }
+
+        return if (this.atoms.size == other.atoms.size) {
+            //same size, so just copy over the values
+            var ok = true
+            for (i in 0 until other.atoms.size) {
+                ok = ok && this.atoms[i].unsafeCopyValueFrom(other.atoms[i])
+            }
+            ok
+        } else {
+            //different size, so clear and create new copies
+            this.killAllChildren()
+            other.atoms.forEach{
+                val a = it.copy()
+                a.resetLocalIdRecursively()
+                this.addChild(a)
+            }
+            true
+        }
+    }
+
+    /**
+     * Delegates to a forward walk over [atoms], this gene has no absorption logic beyond
+     * what its repeated atoms can each individually take.
+     * @see [RxAbsorbable.absorbableCount]
+     * @see [AssertionRepairWalk.absorbableCount]
+     */
+    override fun absorbableCount(value: String): Int =
+        AssertionRepairWalk.absorbableCount(atoms, value).consumed
+
+    /**
+     * Delegates to a backward walk over [atoms], mirroring [absorbableCount] in the
+     * opposite direction.
+     * @see [RxAbsorbable.absorbableSuffixCount]
+     */
+    override fun absorbableSuffixCount(value: String): Int =
+        AssertionRepairWalk.absorbableSuffixCount(atoms, value).consumed
+
+    /**
+     * True if zero repetitions are allowed ([min] == 0), or if [template] can itself render "".
+     * @see [RxAbsorbable.canBeZeroWidth]
+     */
+    override val canBeZeroWidth: Boolean =
+        min == 0 || (template as? RxAbsorbable)?.canBeZeroWidth == true
+
+    /**
+     * Delegates to a forward walk over [atoms], mirroring [absorbableCount].
+     * @see [RxAbsorbable.tryForce]
+     * @see [AssertionRepairWalk.tryForce]
+     */
+    override fun tryForce(value: String): Int {
+        require(value.isNotEmpty())
+        return AssertionRepairWalk.tryForce(atoms, value).consumed
+    }
+
+    /**
+     * Delegates to a backward walk over [atoms], mirroring [tryForce].
+     * @see [RxAbsorbable.tryForceSuffix]
+     */
+    override fun tryForceSuffix(value: String): Int {
+        require(value.isNotEmpty())
+        return AssertionRepairWalk.tryForceSuffix(atoms, value).consumed
+    }
+
+    /**
+     * Collapses to zero repetitions if [min] == 0 (removing every atom), otherwise forces
+     * each existing atom to zero width individually.
+     * @see [RxAbsorbable.forceZeroWidth]
+     */
+    override fun forceZeroWidth() {
+        require(canBeZeroWidth)
+        if (min == 0) {
+            killAllChildren()
+        } else {
+            atoms.forEach { (it as RxAbsorbable).forceZeroWidth() }
+        }
+    }
+}

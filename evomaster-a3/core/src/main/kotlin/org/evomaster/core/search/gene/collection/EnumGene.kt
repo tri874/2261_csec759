@@ -1,0 +1,326 @@
+package org.evomaster.core.search.gene.collection
+
+import org.evomaster.core.output.OutputFormat
+import org.evomaster.core.search.gene.BooleanGene
+import org.evomaster.core.search.gene.Gene
+import org.evomaster.core.search.gene.interfaces.UserExamplesGene
+import org.evomaster.core.search.gene.numeric.DoubleGene
+import org.evomaster.core.search.gene.numeric.FloatGene
+import org.evomaster.core.search.gene.numeric.IntegerGene
+import org.evomaster.core.search.gene.numeric.LongGene
+import org.evomaster.core.search.gene.root.SimpleGene
+import org.evomaster.core.search.gene.utils.GeneUtils
+import org.evomaster.core.search.gene.wrapper.ChoiceGene
+import org.evomaster.core.search.impact.impactinfocollection.value.collection.EnumGeneImpact
+import org.evomaster.core.search.service.AdaptiveParameterControl
+import org.evomaster.core.search.service.Randomness
+import org.evomaster.core.search.service.mutator.MutationWeightControl
+import org.evomaster.core.search.service.mutator.genemutation.AdditionalGeneMutationInfo
+import org.evomaster.core.search.service.mutator.genemutation.SubsetGeneMutationSelectionStrategy
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+/**
+ * Gene in which 1 out of N constant values is chosen.
+ *
+ * Not only the type in an enumeration must be sortable, but also
+ * must be immutable.
+ * This  is fine for String and numeric values.
+ */
+class EnumGene<T : Comparable<T>>(
+    name: String,
+    data: Collection<T>,
+    var index: Int = 0,
+    /**
+     * At times, to simplify things, we might use strings to represent other types (eg numbers),
+     * to avoid specifying exact types. Still, should not be printed out as string.
+     * Recall that an enum is just a group of constants that cannot be mutated
+     */
+    val treatAsNotString : Boolean = false,
+    /**
+     * An optional list of 'names' for each/some of the values in this enumeration.
+     * This is usually just extra information, eg, to recognize named "examples" in OpenAPI schemas
+     */
+    val valueNames: List<String?>? = null
+) : SimpleGene(name), UserExamplesGene {
+
+    companion object {
+
+        /**
+         * WARNING: mutable static state. But as it is just a cache, it is not a problem.
+         * Furthermore, although the set is mutable, the lists inside are not (more specifically,
+         * they are read-only copies).
+         */
+        private val cache: MutableSet<List<*>> = mutableSetOf()
+
+        private val log: Logger = LoggerFactory.getLogger(EnumGene::class.java)
+
+        /**
+         * This was potential issue in IT where we parse thousands of specs...
+         */
+        fun cleanCache(){
+            synchronized(cache){
+                cache.clear()
+            }
+        }
+    }
+
+    val values: List<T>
+
+    init {
+
+        if (data.isEmpty()) {
+            /*
+                in industrial case study, the Enum could have empty values,
+                then provide warn info instead of throwing exception
+             */
+            //throw IllegalArgumentException("Empty list of values")
+            log.warn("Enum Gene (name: $name) has empty list of values")
+            values = listOf()
+        }else{
+
+            val elements = if(valueNames == null){
+                // we want no duplicate
+                data.toSet()
+            } else {
+                //if we have named value, then we must not use a set, as there might be duplicates, and
+                //we would need to know which names map to which duplicated value
+                data
+            }
+
+            val list = elements
+                .toList() // need ordering to specify index of selection, so Set would not do
+                .map { if (it is String) it.intern() as T else it } //if strings, make sure to intern them
+                .run {
+                    if(valueNames == null){
+                        sorted() // sort, to make meaningful list comparisons, but only if examples are not named.
+                                 // otherwise we lose vector alignment
+                    } else {
+                        this
+                    }
+                }
+
+            /*
+               we need to make sure that, if we are adding a list that has content equal to
+               an already present list in the cache, we only use this latter
+             */
+            synchronized(cache) {
+                values = if (cache.contains(list)) {
+                    cache.find { it == list }!! as List<T> // equality based on content, not reference
+                    /*
+                        What a tricky bug!!!
+                        the following was a major performance issue...
+                        it might sounds weird, as code above makes 2 calls: contains() and find{}
+                        The point is that contains() is O(1), whereas find{} is O(n).
+                        When we have hundreds/thousands of tests, and cache is not reset, most of the access
+                        here would be a miss, and not a hit... so we would do always a linear scan on a
+                        ever increasing cache... this bug alone did add nearly 1 hour to the build!!!
+                        ideally, we should do a cleanCache() on each test... but we do not have a common
+                        testBase in core as we do for E2E...
+                     */
+//                val x = cache.find { it == list }
+//                values = if (x != null) {
+//                    x as List<T>
+                } else {
+                    cache.add(list)
+                    list
+                }
+            }
+
+            if (index < 0 || index >= values.size) {
+                throw IllegalArgumentException("Invalid index: $index")
+            }
+
+            if(valueNames != null && valueNames.size != values.size) {
+                throw IllegalArgumentException("Invalid valueNames size: ${valueNames.size}!=${values.size}")
+            }
+        }
+
+        if(treatAsNotString && values.isNotEmpty() && values[0] !is String){
+            throw IllegalArgumentException("Enum values should had been of type String")
+        }
+    }
+
+    override fun checkForLocallyValidIgnoringChildren() : Boolean{
+        return (index >= 0 && index < values.size) || values.isEmpty()
+    }
+
+    override fun isMutable(): Boolean {
+        return values.size > 1
+    }
+
+    override fun copyContent(): Gene {
+        //recall: "values" is immutable
+        return EnumGene<T>(name, values, index, treatAsNotString, valueNames)
+    }
+
+    override fun setValueWithRawString(value: String) {
+        try {
+            this.index = value.toInt()
+        }catch (e: NumberFormatException){
+            val foundIndex = values.indexOfFirst { it.equals(value) }
+            if (foundIndex != -1)
+                this.index = foundIndex
+            else
+                throw IllegalStateException("cannot find an index in this Enum with $value")
+        }
+    }
+
+    override fun randomize(randomness: Randomness, tryToForceNewValue: Boolean) {
+        if(values.isEmpty()) return
+
+        val k = if (tryToForceNewValue && values.size > 1) {
+            randomness.nextInt(0, values.size - 1, index)
+        } else {
+            randomness.nextInt(0, values.size - 1)
+        }
+
+        index = k
+    }
+
+    override fun shallowMutate(
+        randomness: Randomness,
+        apc: AdaptiveParameterControl,
+        mwc: MutationWeightControl,
+        selectionStrategy: SubsetGeneMutationSelectionStrategy,
+        enableAdaptiveGeneMutation: Boolean,
+        additionalGeneMutationInfo: AdditionalGeneMutationInfo?
+    ): Boolean {
+
+        /*
+            FIXME
+            we need to make a decision here...
+            should we check enableAdaptiveGeneMutation here???
+            point is, this is a value mutation, with no child involved.
+            however, this is exactly the same behavior as in ChoiceGene, although there there are children.
+            we shouldn't re-invent the wheel...
+            so here we are re-using impact collection instead of ArchiveMutation just for simplicity, as we can
+            get more info from each selected enum value that impacted the fitness.
+         */
+
+        if (additionalGeneMutationInfo?.impact != null && additionalGeneMutationInfo.impact is EnumGeneImpact) {
+            val candidates = (0 until values.size).filter { index != it }
+            val impacts = candidates.map {
+                additionalGeneMutationInfo.impact.values[it]
+            }.toList()
+            val weights = additionalGeneMutationInfo.archiveGeneSelector.impactBasedOnWeights(
+                impacts,
+                additionalGeneMutationInfo.targets
+            )
+            if (weights.isNotEmpty()) {
+                val selects =
+                    mwc.selectSubsetWithWeight(candidates.mapIndexed { index, i -> candidates[index] to weights[index] }
+                        .toMap(), true, 1.0)
+                index = randomness.choose(selects)
+                return true
+            }
+        }
+
+        val next = (index + 1) % values.size
+        index = next
+        return true
+    }
+
+
+    override fun getValueAsPrintableString(previousGenes: List<Gene>, mode: GeneUtils.EscapeMode?, targetFormat: OutputFormat?, extraCheck: Boolean): String {
+
+        val res = values[index]
+        // In XML mode, enum string values are emitted as tag text content (e.g. <path>VALUE</path>).
+        // Unlike JSON, XML does not use quotes to delimit string values — the tags are the delimiters.
+        // Adding quotes here would include them as literal characters in the XML output.
+        if (res is String && !treatAsNotString && mode != GeneUtils.EscapeMode.XML) {
+            return "\"$res\""
+        } else {
+            return res.toString()
+        }
+    }
+
+    override fun getValueAsRawString(): String {
+        return values[index].toString()
+    }
+
+    override fun getValueName(): String?{
+        return valueNames?.get(index)
+    }
+
+    override fun getAvailableExampleNames() : Set<String> {
+        return valueNames?.mapNotNull { it }?.toSet() ?: setOf()
+    }
+
+    override fun selectExampleByName(name: String) {
+        if(!isUsedForExamples()){
+            throw IllegalStateException("Selected enum does not contain example values")
+        }
+        if(valueNames == null || ! valueNames.contains(name)){
+            throw IllegalArgumentException("Selected example value enum does not contain $name")
+        }
+
+        index = valueNames.indexOf(name)
+    }
+
+    /**
+     * [EnumGene] can be used in DTOs when the API spec contains either example values or an enum.
+     * Since the [EnumGene] uses generics to hold values, this function returns the type to be used
+     * by the DTO writing mechanism.
+     *
+     * @param isKotlinOutput to format output as Int instead of Integer when values are int numbers
+     *
+     * @return the String class name of the type being represented in the [EnumGene]. Default is String.
+     */
+    fun getValueType(isKotlinOutput: Boolean): String {
+        return when {
+            values.isEmpty() -> "String"
+            parent is ChoiceGene<*> -> getTypeForExampleEnum(isKotlinOutput)
+            values.first() is Int && isKotlinOutput -> "Int"
+            else -> values.first().javaClass.simpleName
+        }
+    }
+
+    // In this case whe need to check the other leaf in the ChoiceGene to extract the example type
+    private fun getTypeForExampleEnum(isKotlinOutput: Boolean): String {
+        val children = (parent as ChoiceGene<*>).getViewOfChildren()
+        val otherChoice = children.find { it != this }
+        return when (otherChoice) {
+            is IntegerGene -> if (isKotlinOutput) "Int" else "Integer"
+            is LongGene -> "Long"
+            is DoubleGene -> "Double"
+            is FloatGene -> "Float"
+            is BooleanGene -> "Boolean"
+            else -> "String"
+        }
+    }
+
+    override fun containsSameValueAs(other: Gene): Boolean {
+        if (other !is EnumGene<*>) {
+            return false // FIXME
+            //throw IllegalArgumentException("Invalid gene type ${other.javaClass}")
+        }
+        //FIXME what if compared to another enum with different values???
+        return this.index == other.index
+    }
+
+    override fun unsafeCopyValueFrom(other: Gene): Boolean {
+
+        val phenotype = other.getPhenotype()
+        when(phenotype) {
+            is EnumGene<*> -> index = phenotype.index
+            else -> {
+                // since the binding is derived, it is not always true.
+                log.info("cannot bind EnumGene with ${phenotype::class.java.simpleName}")
+                return false
+            }
+        }
+        return true
+    }
+
+    override fun unsafeSetFromStringValue(value: String): Boolean {
+
+        val target = values.indexOfFirst { it == value }
+        if(target < 0){
+            return false
+        }
+
+        index = target
+        return true
+    }
+}

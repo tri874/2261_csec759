@@ -1,0 +1,205 @@
+20:27:34.818 [main] WARN  o.e.j.server.handler.ContextHandler - o.e.j.s.ServletContextHandler@5e1fd72a{/,null,UNAVAILABLE} contextPath ends with /*
+Started controller server on: http://localhost:46303/controller/api
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.4)
+
+20:27:36.999 [qtp267143404-202] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+WARN - No identified ClassLoader for SUT
+Remote controller running on port 46303
+SUT listening on http://localhost:37209
+* Initializing...
+* [31mWARNING: [33mYou are modifying the value of some experimental settings. This is not recommended, as those settings might be just for work in progress features, not fully completed. Involved features: [executiveSummary, expectationsActive].[0m[33m For more information, see the documentation at:[0m[34m https://github.com/WebFuzzing/EvoMaster/blob/master/docs/options.md[0m[0m
+* There are 3 usable RESTful API endpoints defined in the schema configuration
+* [33m[WARNING] [0m[33mSome experimental settings have been activated. Those might not work as expected, or simply straight out crash. Furthermore, they might simply be incomplete features still under development. Activated experimental settings: [enableStaticFlakyInference, expectationsActive, skipAIModelUpdateWhenResponseIsNot2xxOr400][0m
+* Starting phase SEARCH
+* Starting to generate test cases
+[2K* Consumed search budget: 0.000%
+[2K* Covered targets: 0
+[2K* Time per test: 97.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 17.000%
+[2K* Covered targets: 134
+[2K* Time per test: 29.4ms (1.8 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 31.500%
+[2K* Covered targets: 138
+[2K* Time per test: 34.9ms (2.2 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 49.500%
+[2K* Covered targets: 139
+[2K* Time per test: 38.0ms (2.6 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 65.000%
+[2K* Covered targets: 139
+[2K* Time per test: 35.4ms (2.4 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 74.000%
+[2K* Covered targets: 139
+[2K* Time per test: 32.7ms (2.1 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 89.000%
+[2K* Covered targets: 139
+[2K* Time per test: 31.9ms (2.0 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 89.000%
+[2K* Covered targets: 139
+[2K* Time per test: 32.5ms (2.1 actions)
+[2K* Time since last improvement: 2s
+* Evaluated tests: 96
+* Evaluated actions: 202
+* Needed budget: 80%
+* Passed time (seconds): 3
+* Execution time per test (ms): Avg=32.46 , min=15.00 , max=97.00
+* Execution time per action (ms): Avg=18.21 , min=5.00 , max=97.00
+* Computation overhead between tests (ms): Avg=4.53 , min=1.00 , max=10.00
+* Computation overhead of resetting the SUT (ms): Avg=4.82 , min=3.00 , max=9.00
+* Computation overhead of fetching test results, per test, subset of targets (ms): Avg=5.08 , min=3.00 , max=22.00
+* Phase SEARCH lasted: 0h 0m 3s
+* Starting phase MINIMIZATION
+* Recomputing full coverage for 17 tests
+* Analyzing 4 tests with size greater than 1
+
+[1A[2K* Minimization progress: 0/4
+[1A[2K* Minimization progress: 1/4
+[1A[2K* Minimization progress: 2/4
+[1A[2K* Minimization progress: 3/4
+[1A[2K* Minimization progress: 4/4
+* Phase MINIMIZATION lasted: 0h 0m 0s
+* Starting phase SECURITY
+* Not-Recognized step cost (final): rulesEnabled=false elapsedMs=58 evaluatedTests=1 evaluatedCalls=4 timedOut=false
+* Phase SECURITY lasted: 0h 0m 1s
+* Starting phase WRITE_OUTPUT
+* Going to save 23 tests to target/em-tests/SecurityNotRecognizedEM
+* Potential faults: 1
+* Covered targets (lines, branches, faults, etc.): 207
+* [31m[ERROR] [0m[33mDetected 0 lines to cover, for a total of 0 units/classes. Are you sure you did setup getPackagePrefixesToCover() correctly?[0m
+* Successfully executed (HTTP code 2xx) 3 endpoints out of 3 (100%)
+* Phase WRITE_OUTPUT lasted: 0h 0m 0s
+* Fuzzing session has finished
+Folder compiled in 4 seconds: SecurityNotRecognizedEM
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.4)
+
+20:27:53.117 [junit-timeout-thread-7] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+20:27:56.424 [junit-timeout-thread-7] ERROR o.a.c.c.C.[Tomcat-1].[localhost].[/] - Failed to destroy the filter named [Tomcat WebSocket (JSR356) Filter] of type [org.apache.tomcat.websocket.server.WsFilter]
+java.lang.AbstractMethodError: Receiver class org.apache.tomcat.websocket.server.WsFilter does not define or inherit an implementation of the resolved method 'abstract void destroy()' of interface javax.servlet.Filter.
+	at org.apache.catalina.core.ApplicationFilterConfig.release(ApplicationFilterConfig.java:301)
+	at org.apache.catalina.core.StandardContext.filterStop(StandardContext.java:4647)
+	at org.apache.catalina.core.StandardContext.stopInternal(StandardContext.java:5469)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:257)
+	at org.apache.catalina.core.ContainerBase$StopChild.call(ContainerBase.java:1412)
+	at org.apache.catalina.core.ContainerBase$StopChild.call(ContainerBase.java:1401)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.stopInternal(ContainerBase.java:986)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:257)
+	at org.apache.catalina.core.ContainerBase$StopChild.call(ContainerBase.java:1412)
+	at org.apache.catalina.core.ContainerBase$StopChild.call(ContainerBase.java:1401)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.stopInternal(ContainerBase.java:986)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:257)
+	at org.apache.catalina.core.StandardService.stopInternal(StandardService.java:497)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:257)
+	at org.apache.catalina.core.StandardServer.stopInternal(StandardServer.java:979)
+	at org.apache.catalina.util.LifecycleBase.stop(LifecycleBase.java:257)
+	at org.apache.catalina.startup.Tomcat.stop(Tomcat.java:496)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.stopTomcat(TomcatWebServer.java:273)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.stop(TomcatWebServer.java:331)
+	at org.springframework.boot.web.servlet.context.WebServerStartStopLifecycle.stop(WebServerStartStopLifecycle.java:51)
+	at org.springframework.context.SmartLifecycle.stop(SmartLifecycle.java:117)
+	at org.springframework.context.support.DefaultLifecycleProcessor.doStop(DefaultLifecycleProcessor.java:234)
+	at org.springframework.context.support.DefaultLifecycleProcessor.access$300(DefaultLifecycleProcessor.java:54)
+	at org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.stop(DefaultLifecycleProcessor.java:373)
+	at org.springframework.context.support.DefaultLifecycleProcessor.stopBeans(DefaultLifecycleProcessor.java:206)
+	at org.springframework.context.support.DefaultLifecycleProcessor.stop(DefaultLifecycleProcessor.java:117)
+	at org.springframework.context.support.AbstractApplicationContext.stop(AbstractApplicationContext.java:1427)
+	at com.foo.rest.examples.spring.openapi.v3.SpringController.stopSut(SpringController.kt:36)
+	at org.bar.SecurityNotRecognizedEM$Companion.tearDown(SecurityNotRecognizedEM.kt:87)
+	at org.bar.SecurityNotRecognizedEM.tearDown(SecurityNotRecognizedEM.kt)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:786)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:514)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptLifecycleMethod(TimeoutExtension.java:133)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptAfterAllMethod(TimeoutExtension.java:123)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$16(ClassBasedTestDescriptor.java:474)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$17(ClassBasedTestDescriptor.java:472)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.Collections$UnmodifiableCollection.forEach(Collections.java:1092)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeAfterAllMethods(ClassBasedTestDescriptor.java:472)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:263)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:87)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:167)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:167)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:145)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:101)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:161)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:147)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:145)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:101)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:230)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:204)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:172)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:101)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:64)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:150)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:63)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:109)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:91)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:66)
+	at org.evomaster.e2etests.utils.JUnitTestRunner.runTestsInClass(JUnitTestRunner.java:27)
+	at org.evomaster.e2etests.utils.EnterpriseTestBase.compileRunAndVerifyTests(EnterpriseTestBase.java:378)
+	at org.evomaster.e2etests.utils.EnterpriseTestBase.lambda$runTests$6(EnterpriseTestBase.java:339)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$assertTimeoutPreemptively$0(AssertTimeoutPreemptively.java:48)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)

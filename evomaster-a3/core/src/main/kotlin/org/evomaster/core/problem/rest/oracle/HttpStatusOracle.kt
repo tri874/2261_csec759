@@ -1,0 +1,125 @@
+package org.evomaster.core.problem.rest.oracle
+
+import com.webfuzzing.commons.faults.DefinedFaultCategory
+import com.webfuzzing.commons.faults.FaultCategory
+import org.evomaster.core.problem.enterprise.ExperimentalFaultCategory
+import org.evomaster.core.problem.rest.data.HttpVerb
+import org.evomaster.core.problem.rest.data.RestCallAction
+import org.evomaster.core.problem.rest.data.RestCallResult
+import org.evomaster.core.problem.rest.param.BodyParam
+import org.evomaster.core.problem.rest.schema.RestSchema
+import org.evomaster.core.problem.rest.schema.SchemaUtils
+
+/**
+ * Series of oracles that can be evaluated directly on the HTTP responses based on the actual retrieved status code.
+ * Some checks might depend on the API schema and/or the input request.
+ * These checks are based on work done in:
+ *
+ * https://github.com/alixdecr/scoas
+ * https://github.com/alixdecr/scoas/blob/main/evaluation/status-code-rules.md
+ *
+ *
+ * Not all oracles can be translated to a dynamic version. Here, we just support the following:
+ * no-non-standard-codes
+ * no-201-if-delete
+ * no-201-if-get
+ * no-201-if-patch
+ * no-204-if-content
+ * no-205-if-content
+ * no-304-if-no-get-or-head
+ * no-401-if-no-www-authenticate
+ * no-405-if-no-allow
+ * no-413-if-no-payload
+ * no-415-if-no-payload
+ * no-401-if-no-auth (schema)
+ * no-403-if-no-401 (schema)
+ * has-406-if-accept (schema)
+ * no-426-if-no-upgrade
+ * no-501-if-implemented
+ *
+ *
+ * IMPORTANT: in contrast to what done in [HttpSemanticsOracle], here there is no need to construct any test case
+ * on purpose with specific properties.
+ * These checks are supposed to be lightweight, and so could be checked on each fitness evaluation.
+ */
+object HttpStatusOracle {
+
+
+    fun checkOracles(call: RestCallAction, result: RestCallResult, schema: RestSchema) : List<FaultCategory>{
+
+        val faults = mutableListOf<FaultCategory>()
+
+        val status = result.getStatusCode()
+            ?: return faults // all oracles depend on checking the status code
+
+        if(status !in 100..599){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_NON_STANDARD_CODES)
+        }
+
+        val verb = call.verb
+
+        if(status == 201){
+            when(verb){
+                HttpVerb.GET -> faults.add(DefinedFaultCategory.HTTP_STATUS_NO_201_IF_GET)
+                HttpVerb.DELETE -> faults.add(DefinedFaultCategory.HTTP_STATUS_NO_201_IF_DELETE)
+                HttpVerb.PATCH -> faults.add(DefinedFaultCategory.HTTP_STATUS_NO_201_IF_PATCH)
+                else -> {}
+            }
+        }
+
+        if(status == 204  && result.hasBody()){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_204_IF_CONTENT)
+        }
+
+        if(status == 205  && result.hasBody()){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_205_IF_CONTENT)
+        }
+
+        val bodyParam = call.parameters.filterIsInstance<BodyParam>()
+            .firstOrNull()
+
+        val hasBody = bodyParam != null && bodyParam.primaryGene().getValueAsRawString().isNotEmpty()
+
+        if(status == 304 && (verb != HttpVerb.GET && verb != HttpVerb.HEAD)){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_304_IF_NO_GET_OR_HEAD)
+        }
+
+        if(status == 401 && !SchemaUtils.hasAuthDefinition(schema)){
+            faults.add(DefinedFaultCategory.SCHEMA_STATUS_NO_401_IF_NO_AUTH)
+        }
+
+        if(status == 401 && result.getHeader("www-authenticate").isNullOrEmpty()){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_401_IF_NO_WWW_AUTHENTICATE)
+        }
+
+        if(status == 403 && !SchemaUtils.getDeclaredStatusInResponse(call.endpoint, schema).contains(401)){
+            faults.add(DefinedFaultCategory.SCHEMA_STATUS_NO_403_IF_NO_401)
+        }
+
+        if(status == 405 && result.getHeader("allow").isNullOrEmpty()){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_405_IF_NO_ALLOW)
+        }
+
+        if(status == 406 && !call.isForRobustnessTesting()){
+            faults.add(DefinedFaultCategory.SCHEMA_STATUS_HAS_406_IF_ACCEPT)
+        }
+
+        if(status == 413 && !hasBody){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_413_IF_NO_PAYLOAD)
+        }
+
+        if(status == 415 && !hasBody){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_415_IF_NO_PAYLOAD)
+        }
+
+        if(status == 426 && result.getHeader("upgrade").isNullOrEmpty()){
+            faults.add(DefinedFaultCategory.HTTP_STATUS_NO_426_IF_NO_UPGRADE)
+        }
+
+        if(status == 501){
+            faults.add(DefinedFaultCategory.SCHEMA_STATUS_NO_501_IF_IMPLEMENTED)
+        }
+
+        return faults
+    }
+}

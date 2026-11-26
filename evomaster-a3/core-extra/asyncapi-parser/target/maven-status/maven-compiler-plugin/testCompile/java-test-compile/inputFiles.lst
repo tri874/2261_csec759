@@ -1,0 +1,6 @@
+/src/core-extra/asyncapi-parser/src/test/java/com/webfuzzing/asyncapi/AsyncApiAccessTest.java
+/src/core-extra/asyncapi-parser/src/test/java/com/webfuzzing/asyncapi/AsyncApiChannelTest.java
+/src/core-extra/asyncapi-parser/src/test/java/com/webfuzzing/asyncapi/AsyncApiCorpusSweepMain.java
+/src/core-extra/asyncapi-parser/src/test/java/com/webfuzzing/asyncapi/AsyncApiParserTest.java
+/src/core-extra/asyncapi-parser/src/test/java/com/webfuzzing/asyncapi/AsyncApiRefResolverTest.java
+/src/core-extra/asyncapi-parser/src/test/java/com/webfuzzing/asyncapi/DocumentLocationTest.java

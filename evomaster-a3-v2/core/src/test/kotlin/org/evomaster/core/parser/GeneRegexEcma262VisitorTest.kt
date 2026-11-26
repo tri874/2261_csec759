@@ -1,0 +1,394 @@
+package org.evomaster.core.parser
+
+import org.evomaster.core.search.gene.regex.CharacterClassEscapeRxGene
+import org.evomaster.core.search.gene.regex.PatternCharacterBlockGene
+import org.evomaster.core.search.gene.regex.RegexGene
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+
+open class GeneRegexEcma262VisitorTest : RegexTestTemplate(){
+
+    override fun createGene(regex: String): RegexGene {
+        return RegexHandler.createGeneForEcma262(regex)
+    }
+
+    @Test
+    fun testEmpty(){
+        checkSameAsJava("")
+    }
+
+    @Test
+    fun testBaseStringSingleChar(){
+
+        val regex = "a"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is PatternCharacterBlockGene })
+    }
+
+    @Test
+    fun testBaseStringMultiChar(){
+
+        val regex = "abc"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is PatternCharacterBlockGene })
+    }
+
+    @Test
+    fun testSingleDigit(){
+
+        val regex = "1"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is PatternCharacterBlockGene })
+    }
+
+    @Test
+    fun testMultiDigits(){
+
+        val regex = "123"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is PatternCharacterBlockGene })
+    }
+
+    @Test
+    fun testLetterDigits(){
+
+        val regex = "abc123"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is PatternCharacterBlockGene })
+    }
+
+
+    @Test
+    fun testIssueWithB(){
+
+        val regex = "B123"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is PatternCharacterBlockGene })
+    }
+
+    @Test
+    fun testUpperCaseString(){
+
+        val regex = "ABCD"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is PatternCharacterBlockGene })
+    }
+
+
+    @Test
+    fun testDigitEscape(){
+
+        val regex = "\\d"
+        val gene = checkSameAsJava(regex)
+
+        assertTrue(gene.flatView().any { it is CharacterClassEscapeRxGene })
+    }
+
+    @Test
+    fun testYearPattern(){
+
+        val regex = "\\d\\d\\d\\d-\\d\\d-\\d\\d"
+        checkSameAsJava(regex)
+    }
+
+
+    @Test
+    fun testQuantifierSingle(){
+        checkSameAsJava("a{2}")
+    }
+
+
+    @Test
+    fun testQuantifierRange(){
+        checkSameAsJava("a{3,5}")
+    }
+
+    @Test
+    fun testQuantifierOnlyMin(){
+
+        val regex = "^a{2,}$"
+        val gene = checkSameAsJava(regex)
+
+        val s = gene.getValueAsRawString()
+        //even if unbound, not going to create billion-long strings
+        assertTrue(s.length < 5)
+    }
+
+    @Test
+    fun testQuantifierStar(){
+        checkSameAsJava("a*")
+    }
+
+    @Test
+    fun testQuantifierPlus(){
+        checkSameAsJava("a+")
+    }
+
+    @Test
+    fun testQuantifierOptional(){
+        checkSameAsJava("a?")
+    }
+
+    @Test
+    fun testQuantifierCombined(){
+        checkSameAsJava("a*b+c{1}d{2,}e{2,100}")
+    }
+
+    @Test
+    fun testYearWithQuantifier(){
+
+        val regex = "\\d{4}-\\d{1,2}-\\d{1,2}"
+        checkSameAsJava(regex)
+    }
+
+
+    @Test
+    fun testAnyChar(){
+        checkSameAsJava(".")
+    }
+
+    @Test
+    fun testAnyCharMulti(){
+        checkSameAsJava("...")
+    }
+
+    @Test
+    fun testAnyCharMixed(){
+        checkSameAsJava(".a.b.c.")
+    }
+
+    @Test
+    fun testParentheses(){
+        checkSameAsJava("()")
+    }
+
+    @Test
+    fun testParenthesesWithText(){
+        checkSameAsJava("(hello)")
+    }
+
+    @Test
+    fun testParenthesesSequence(){
+        checkSameAsJava("(a)(b)(c)")
+    }
+
+    @Test
+    fun testParenthesesNested(){
+        checkSameAsJava("(a(bc)(d))")
+    }
+
+    @Test
+    fun testParenthesesWithQuantifiers(){
+        checkSameAsJava("(a1)*(bc)+(d2)?")
+    }
+
+    @Test
+    fun testDisjunction(){
+        checkSameAsJava("a|b")
+    }
+
+    @Test
+    fun testDisjunctionSequence(){
+        checkSameAsJava("a|b|c|def|gh")
+    }
+
+    @Test
+    fun testDisjunctionNested(){
+        checkSameAsJava("(a(b|c))d")
+    }
+
+    @Test
+    fun testClassRangeSingleChar(){
+        checkSameAsJava("[a]")
+    }
+
+    @Test
+    fun testClassRangeMultiChars(){
+        checkSameAsJava("[abc]")
+    }
+
+    @Test
+    fun testClassRangeMultiCharsWithSpecialSymbols(){
+        checkSameAsJava("[abc123(){}/?+*]")
+    }
+
+    @Test
+    fun testClassRangeChars(){
+        checkSameAsJava("[a-z]")
+    }
+
+    @Test
+    fun testClassRangeDigits(){
+        checkSameAsJava("[0-9]")
+    }
+
+    @Test
+    fun testClassRangeMulti(){
+        checkSameAsJava("[a-zA-Z0-9]")
+    }
+
+    @Test
+    fun testClassRangeQuantifier(){
+        checkSameAsJava("[0-9]{2}")
+    }
+
+    @Test
+    fun testClassRangeIndExample(){
+        checkSameAsJava("/[0-9]{4}-[0-9]{2}-[0-9]{2}(/[0-9]*)?")
+    }
+
+    @Test
+    fun testAssertionStart(){
+        checkSameAsJava("^a")
+    }
+
+    @Test
+    fun testAssertionEnd(){
+        checkSameAsJava("a$")
+    }
+
+    @Test
+    fun testAssertionStartAndEnd(){
+        checkSameAsJava("^a$")
+    }
+
+    @Test
+    fun testAssertionSequence(){
+        checkSameAsJava("^a|b$|^c$|ef(gh)|^i(l)|(m)n$")
+    }
+
+
+    @Test
+    fun testAssertionsInParentheses(){
+        checkSameAsJava("^((.*))$")
+    }
+
+    @Test
+    fun testAssertionsInDisjunctions(){
+        checkSameAsJava("^(bar)\$|^(foo)\$|^hello|world\$")
+    }
+
+    @Test
+    fun testIssueWithE(){
+        checkSameAsJava("(a|A)(b|B)(c|C)123(d|D)(e|E)(f|F)")
+    }
+
+    @Test
+    fun testCanSampleInSimpleDisjunction(){
+        checkCanSample("a|b", listOf("a", "b"), 500)
+    }
+
+    @Test
+    fun testCanSampleIn2Disjunction(){
+        checkCanSample("a|b|c", listOf("a", "b", "c"), 500)
+    }
+
+    @Test
+    fun testCanSamplePair(){
+        checkCanSample("(a|b)(c|d)", listOf("ac", "ad", "bc", "bd"), 500)
+    }
+
+    @Test
+    fun testCanSamplePairIgnoreCase(){
+        checkCanSample("(a|A)(b|B)", listOf("ab", "aB", "Ab", "AB"), 500)
+    }
+
+    @Test
+    fun testCanSampleEQPairIgnoreCase(){
+        checkCanSample("(e|E)(q|Q)", listOf("eq", "eQ", "Eq", "EQ"), 500)
+    }
+
+    @Test
+    fun testCanSampleWhenPrefix(){
+        checkCanSample("x(a|b|c)", listOf("xa", "xb", "xc"), 500)
+    }
+
+    @Test
+    fun testCanSampleSequence(){
+        checkCanSample("x(a|b)123(c|d)y", listOf("xa123cy","xb123cy","xa123dy","xb123dy"), 500)
+    }
+
+    @Test
+    fun testCanSampleSequenceInFullMatch(){
+        checkCanSample("^(x(a|b)123(c|d)y)$", listOf("xa123cy","xb123cy","xa123dy","xb123dy"), 500)
+    }
+
+
+    @Test
+    fun testIssueWithNestedParentheses(){
+        // p = 1 / 2^6 = 1 / 64
+        checkCanSample("^((a|A)(b|B)(c|C)123(e|E)(f|F)(d|D))$", "aBc123EFd", 10_000)
+    }
+
+    @Test
+    fun testHexEscape(){
+        checkSameAsJava("""x00\x00\x0a\xba\xFF""")
+    }
+
+    @Test
+    fun testUnicodeEscape(){
+        checkSameAsJava("""u0000\u0000\u0a0b\uffff""")
+    }
+
+    @Test
+    open fun testControlEscape(){
+        checkSameAsJava("""ftnrv\f\t\n\r\v""")
+    }
+
+    @Test
+    open fun testControlLetterEscape(){
+        checkSameAsJava("""cac!\cA\cG\cZ""")
+        // The following escape sequences behave differently in Java and JavaScript.
+        checkCanSample("""\ca\cg\cz""","\u0001\u0007\u001A",10_000)
+    }
+
+    @Test
+    fun testNegatedCharClasses(){
+        checkSameAsJava("""[^a-zA-Z0-9_,]""")
+    }
+
+    @Test
+    fun testComplementCompleteness(){
+        checkCanSample("""\D""", listOf("\u0000", "\uffff"), 1_000_000)
+    }
+
+    @Test
+    fun testSyntaxEscapes(){
+        checkSameAsJava("""}],-:=<>!""")
+        checkSameAsJava("""\^\$\\\.\*\+\?\(\)\[\]\{\}\|\/\-\,\:\<\>\=\!""")
+        checkSameAsJava("""[\^\$\\\.\*\+\?\(\)\[\]\{\}\|\/\-\,\:\<\>\=\!]""")
+    }
+
+    @Test
+    open fun testPredefinedCharClassInsideCharClass(){
+        checkSameAsJava("""[abc\d0]""")
+        checkSameAsJava("""[\u00BB\u2019\u201D\u203A"'\u0002¹²³]""")
+        checkSameAsJava("""[\D\d]""")
+        checkSameAsJava("""[\x41\cA\n\u0000]""")
+        checkCanSample("""[\ca\cg\cz]""",listOf("\u0001", "\u0007", "\u001A"),10_000)
+        checkCanSample("""[\p{Pe}]""",listOf("P", "p", "e", "{", "}"),10_000)
+    }
+
+    @Test
+    open fun testJSExclusiveEscapes(){
+        checkCanSample("""\a""", "a", 100)
+        checkCanSample("""[\c0]""", "\u0010", 100)
+        checkCanSample("""[\cP][\c0]""", "\u0010\u0010", 100)
+        checkCanSample("""[\c_]""", "\u001f", 100)
+        checkCanSample("""[\c*]""", listOf("\\", "c", "*"), 100)
+        checkCanSample("""\c""", "\\c", 100)
+        checkCanSample("""\c*""", "\\c*", 100)
+        checkCanSample("""\c0""", "\\c0", 100)
+        checkCanSample("""\0\000""", "\u0000\u0000", 100)
+        checkCanSample("""\001\007""", "\u0001\u0007", 100)
+        checkCanSample("""\123\377""", "\u0053\u00ff", 100)
+        checkCanSample("""a[\bc]d""", "a\bd", 100)
+    }
+}

@@ -1,0 +1,6 @@
+com/webfuzzing/asyncapi/AsyncApiChannelTest.class
+com/webfuzzing/asyncapi/AsyncApiCorpusSweepMain.class
+com/webfuzzing/asyncapi/AsyncApiAccessTest.class
+com/webfuzzing/asyncapi/AsyncApiRefResolverTest.class
+com/webfuzzing/asyncapi/AsyncApiParserTest.class
+com/webfuzzing/asyncapi/DocumentLocationTest.class

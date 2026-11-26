@@ -1,0 +1,98 @@
+package org.evomaster.client.java.sql.heuristic;
+
+import org.evomaster.client.java.sql.DataRow;
+import org.evomaster.client.java.sql.QueryResult;
+import org.evomaster.client.java.sql.VariableDescriptor;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class QueryResultUtils {
+
+    public static QueryResult createUnionRowSet(List<QueryResult> queryResults) {
+        final List<VariableDescriptor> variableDescriptorList = queryResults.get(0).seeVariableDescriptors();
+        final List<VariableDescriptor> unionVariableDescriptorList = new ArrayList<>();
+        final List<String> columnNames = new ArrayList<>();
+        for (VariableDescriptor variableDescriptor : variableDescriptorList) {
+            final String columnName = variableDescriptor.getColumnName();
+            VariableDescriptor vd = new VariableDescriptor(columnName, null, null);
+            unionVariableDescriptorList.add(vd);
+            columnNames.add(columnName);
+        }
+        QueryResult unionRowSet = new QueryResult(unionVariableDescriptorList);
+        for (QueryResult queryResult : queryResults) {
+            for (DataRow row : queryResult.seeRows()) {
+                unionRowSet.addRow(columnNames, null, row.seeValues());
+            }
+        }
+        return unionRowSet;
+    }
+
+    public static QueryResult createCartesianProduct(QueryResult left, QueryResult right) {
+
+        final QueryResult joinedQueryResult = createEmptyCartesianProduct(left, right);
+        for (DataRow leftRow : left.seeRows()) {
+            for (DataRow rightRow : right.seeRows()) {
+                final DataRow joinedDataRow = createJoinedRow(leftRow, rightRow, joinedQueryResult.seeVariableDescriptors());
+                joinedQueryResult.addRow(joinedDataRow);
+            }
+        }
+        return joinedQueryResult;
+    }
+
+    public static DataRow createJoinedRow(DataRow leftRow, DataRow rightRow, List<VariableDescriptor> variableDescriptors) {
+        List<Object> leftColumnValues = leftRow.seeValues();
+        List<Object> rightColumnValues = rightRow.seeValues();
+        List<Object> joinedColumnValues = new ArrayList<>();
+        joinedColumnValues.addAll(leftColumnValues);
+        joinedColumnValues.addAll(rightColumnValues);
+        DataRow joinedDataRow = new DataRow(variableDescriptors, joinedColumnValues);
+        return joinedDataRow;
+    }
+
+    public static QueryResult createEmptyCartesianProduct(QueryResult left, QueryResult right) {
+        List<VariableDescriptor> joinedListOfDescriptors = new ArrayList<>();
+        joinedListOfDescriptors.addAll(left.seeVariableDescriptors());
+        joinedListOfDescriptors.addAll(right.seeVariableDescriptors());
+        QueryResult joinedQueryResult = new QueryResult(joinedListOfDescriptors);
+        return joinedQueryResult;
+    }
+
+    public static DataRow createDataRowOfNullValues(QueryResult queryResult) {
+        int numberOfColumns = queryResult.seeVariableDescriptors().size();
+        final List<Object> listOfNullValues = Collections.nCopies(numberOfColumns, null);
+        DataRow nullDataRow = new DataRow(queryResult.seeVariableDescriptors(), listOfNullValues);
+        return nullDataRow;
+    }
+
+    public static QueryResult addAliasToQueryResult(QueryResult queryResult, String aliasTableName) {
+        Objects.requireNonNull(aliasTableName);
+        List<VariableDescriptor> variableDescriptorsWithTableAlias = queryResult.seeVariableDescriptors().stream()
+                .map(vd -> new VariableDescriptor(vd.getColumnName(), vd.getAliasColumnName(), vd.getTableName(), aliasTableName))
+                .collect(Collectors.toList());
+        QueryResult newQueryResult = new QueryResult(variableDescriptorsWithTableAlias);
+        queryResult.seeRows().stream()
+                .forEach(r -> newQueryResult.addRow(new DataRow(variableDescriptorsWithTableAlias, r.seeValues())));
+
+        return newQueryResult;
+    }
+
+    /**
+     * Creates a new QueryResult containing only distinct rows from the given QueryResult.
+     *
+     * @param source
+     * @return
+     */
+    public static QueryResult createDistinctQueryResult(QueryResult source) {
+        QueryResult result = new QueryResult(source.seeVariableDescriptors());
+        for (DataRow row : source.seeRows()) {
+            List<Object> values = row.seeValues();
+            boolean alreadyExists = result.seeRows().stream()
+                    .anyMatch(r -> r.seeValues().equals(values));
+            if (!alreadyExists) {
+                result.addRow(row);
+            }
+        }
+        return result;
+    }
+}

@@ -1,0 +1,117 @@
+package org.evomaster.core.output
+
+import org.apache.commons.lang3.StringEscapeUtils
+import org.evomaster.core.search.action.EvaluatedMongoDbAction
+import org.evomaster.core.search.gene.ObjectGene
+import org.evomaster.core.search.gene.utils.GeneUtils
+
+/**
+ * Class used to generate the code in the test dealing with insertion of
+ * data into MONGO databases.
+ */
+object MongoWriter {
+
+    /**
+     * generate mongo insert actions into test case based on [mongoDbInitialization]
+     * @param format is the format of tests to be generated
+     * @param mongoDbInitialization contains the db actions to be generated
+     * @param lines is used to save generated textual lines with respects to [mongoDbInitialization]
+     * @param groupIndex specifies an index of a group of this [mongoDbInitialization]
+     * @param mongoInsertionVars is a list of previous variable names of the db actions (Pair.first) and corresponding results (Pair.second)
+     * @param skipFailure specifies whether to skip failure tests
+     */
+    fun handleMongoDbInitialization(
+        format: OutputFormat,
+        mongoDbInitialization: List<EvaluatedMongoDbAction>,
+        lines: Lines,
+        groupIndex: String = "",
+        mongoInsertionVars: MutableList<Pair<String, String>>,
+        skipFailure: Boolean
+    ) {
+
+        if (mongoDbInitialization.isEmpty() || mongoDbInitialization.none {!skipFailure || it.mongoResult.getInsertExecutionResult()}) {
+            return
+        }
+
+        val insertionVar = "mongoInsertions${groupIndex}"
+        val insertionVarResult = "${insertionVar}result"
+        val previousVar = mongoInsertionVars.joinToString(", ") { it.first }
+        mongoDbInitialization
+            .filter { !skipFailure || it.mongoResult.getInsertExecutionResult() }
+            .forEachIndexed { index, evaluatedMongoDbAction ->
+
+                lines.add(
+                    when {
+                        index == 0 && format.isJava() -> "List<MongoInsertionDto> $insertionVar = mongo($previousVar)"
+                        index == 0 && format.isKotlin() -> "val $insertionVar = mongo($previousVar)"
+                        else -> ".and()"
+                    } + ".insertInto(\"${evaluatedMongoDbAction.mongoAction.database}\"" + ", " + "\"${evaluatedMongoDbAction.mongoAction.collection}\")"
+                )
+
+                if (index == 0) {
+                    lines.indent()
+                }
+
+                lines.indented {
+                    evaluatedMongoDbAction.action.seeTopGenes()
+                        .filter { it.isPrintable() }
+                        .forEach { g ->
+                            when (g) {
+                                is ObjectGene -> {
+                                    val ejson = g.getValueAsPrintableString(mode = GeneUtils.EscapeMode.EJSON)
+                                    val printableValue = if (format.isJava()) escapeEjsonForJavaLiteral(ejson)
+                                    else StringEscapeUtils.escapeJava(ejson)
+                                    val adaptedPrintableValue = if (format.isKotlin())
+                                        printableValue.replace(
+                                            "$",
+                                            "\\$"
+                                        )
+                                    else printableValue
+                                    lines.add(".d(\"$adaptedPrintableValue\")")
+                                }
+
+                                else -> {
+                                }
+                            }
+                        }
+
+                }
+            }
+
+        lines.add(".dtos()")
+        lines.appendSemicolon()
+
+        lines.deindent()
+
+        lines.add(
+            when {
+                format.isJava() -> "MongoInsertionResultsDto "
+                format.isKotlin() -> "val "
+                else -> throw IllegalStateException("Not support mongo insertions generation for $format")
+            } + "$insertionVarResult = controller.execInsertionsIntoMongoDatabase($insertionVar)"
+        )
+        lines.appendSemicolon()
+
+        mongoInsertionVars.add(insertionVar to insertionVarResult)
+
+    }
+
+    /**
+     * Escapes literal backslash-u sequences in EJSON for a Java string literal.
+     * Java translates eligible Unicode escapes before parsing string literals,
+     * so those sequences can make otherwise valid generated tests fail to compile.
+     * Octal escapes preserve the runtime backslashes without changing genuine
+     * Unicode escapes emitted by [StringEscapeUtils.escapeJava].
+     */
+    internal fun escapeEjsonForJavaLiteral(value: String): String {
+        return StringEscapeUtils.escapeJava(value).replace(ESCAPED_BACKSLASH_U) { match ->
+            val slashCount = match.value.length - 1
+            "\\134".repeat(slashCount / 2) + "u"
+        }
+    }
+
+    // Literal backslashes produce complete even-length runs before 'u'. A genuine
+    // Unicode escape, including one after literal backslashes, has an odd-length run.
+    private val ESCAPED_BACKSLASH_U = Regex("""(?<!\\)(\\\\)+u""")
+
+}

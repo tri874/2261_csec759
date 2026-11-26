@@ -1,0 +1,885 @@
+package org.evomaster.core.search.service
+
+import com.google.inject.Inject
+import org.evomaster.client.java.controller.api.dto.SutInfoDto
+import org.evomaster.client.java.instrumentation.shared.ObjectiveNaming
+import org.evomaster.core.EMConfig
+import org.evomaster.core.problem.httpws.HttpWsCallResult
+import org.evomaster.core.problem.rest.data.RestCallAction
+import org.evomaster.core.problem.rest.service.AIResponseClassifier
+import org.evomaster.core.problem.rest.service.CallGraphService
+import org.evomaster.core.remote.service.RemoteController
+import org.evomaster.core.search.Solution
+import org.evomaster.core.search.service.time.ExecutionPhaseController
+import org.evomaster.core.search.service.time.SearchListener
+import org.evomaster.core.search.service.time.SearchTimeController
+import org.evomaster.core.utils.IncrementalAverage
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.nio.file.Files
+import java.nio.file.Paths
+import javax.annotation.PostConstruct
+
+
+
+class Statistics : SearchListener {
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(Statistics::class.java)
+
+        private const val DESCRIPTION_TARGET = "description"
+        private const val TEST_INDEX = "indexOfTests"
+
+        const val TEST_TIMEOUTS = "testTimeouts"
+        const val DISTINCT_ACTIONS = "distinctActions"
+        const val COVERED_2XX = "covered2xx"
+        const val GQL_NO_ERRORS = "gqlNoErrors"
+        const val LAST_ACTION_IMPROVEMENT = "lastActionImprovement"
+        const val EVALUATED_ACTIONS = "evaluatedActions"
+        const val TOTAL_LINES = "numberOfLines"
+        const val TOTAL_BRANCHES = "numberOfBranches"
+        const val COVERED_LINES = "coveredLines"
+        const val COVERED_BRANCHES = "coveredBranches"
+        const val ELAPSED_SECONDS = "elapsedSeconds"
+    }
+
+    @Inject
+    private lateinit var config: EMConfig
+
+    @Inject
+    private lateinit var time: SearchTimeController
+
+    @Inject
+    private lateinit var archive: Archive<*>
+
+    @Inject
+    private lateinit var idMapper: IdMapper
+
+    @Inject(optional = true)
+    private var sampler: Sampler<*>? = null
+
+    @Inject(optional = true)
+    private var remoteController: RemoteController? = null
+
+    @Inject(optional = true)
+    private lateinit var aiResponseClassifier: AIResponseClassifier
+
+    @Inject
+    private lateinit var epc : ExecutionPhaseController
+
+    @Inject(optional = true)
+    private lateinit var callGraphService: CallGraphService
+
+    /**
+     * How often test executions did timeout
+     */
+    private var timeouts = 0
+
+    /**
+     * How often it was not possible to compute coverage for a test
+     */
+    private var coverageFailures = 0
+
+    // sql heuristic evaluation statistics
+    private var sqlParsingFailureCount = 0;
+    private var sqlHeuristicEvaluationSuccessCount = 0;
+    private var sqlHeuristicEvaluationFailureCount = 0;
+    private val sqlRowsAverageCalculator = IncrementalAverage()
+
+    // Z3-based SQL data generation statistics
+    // Invariant: sqlZ3QueriesSeenCount == sqlZ3CacheHitCount + sqlZ3CacheMissCount
+    // (every solve() call is either served from the memoization cache or handled as a miss).
+    private var sqlZ3QueriesSeenCount = 0
+    private var sqlZ3CacheHitCount = 0
+    private var sqlZ3CacheMissCount = 0
+    private var sqlZ3SatCount = 0
+    private var sqlZ3UnsatCount = 0
+    private var sqlZ3UnknownCount = 0
+    private var sqlZ3ErrorCount = 0
+    private var sqlZ3ParseFailureCount = 0
+    // Breakdown of sqlZ3ParseFailureCount, which on its own cannot direct a fix: the two failures
+    // live in different components and are corrected in different places.
+    // Invariant: sqlZ3ParseFailureCount == sqlZ3SqlParseFailureCount + sqlZ3SmtlibGenFailureCount
+    private var sqlZ3SqlParseFailureCount = 0
+    private var sqlZ3SmtlibGenFailureCount = 0
+    private var sqlZ3PartialTranslationCount = 0
+    private var sqlZ3TimeMs = 0L
+    private var sqlZ3SmtlibGenTimeMs = 0L
+    /**
+     * Wall-clock time inside solve(), covering every call including the ones served from cache.
+     *
+     * Deliberately overlaps sqlZ3TimeMs and sqlZ3SmtlibGenTimeMs rather than replacing them: those
+     * two bracket only the Z3 invocation and the formula construction, which between them leave out
+     * writing the .smt2 file, rebuilding the gene tree from a solution — done on every cache hit as
+     * well — and the call overhead itself. The difference between this and the sum of the other two
+     * is precisely the cost that was previously unaccounted for.
+     */
+    private var sqlZ3SolveTimeMs = 0L
+    private val sqlZ3SmtlibSizeBytes = IncrementalAverage()
+    private val sqlZ3SeenQueryHashes = mutableSetOf<Int>()
+    private var sqlZ3UniqueQueriesCount = 0
+
+    /**
+     * Time spent executing the SQL insertions that were generated for the test setup, and how many
+     * batches were executed.
+     *
+     * Not a solver metric: these rows are inserted into the SUT's own database on every evaluation
+     * of an individual that carries them, so the cost is paid over and over, far from solve(). It is
+     * measured here because no existing counter covers it, which left a large part of the observed
+     * slowdown unattributable.
+     */
+    private var sqlInsertionExecutionTimeMs = 0L
+    private var sqlInsertionExecutionCount = 0
+
+    // mongo heuristic evaluation statistic
+    private var mongoHeuristicEvaluationSuccessCount = 0
+    private var mongoHeuristicEvaluationFailureCount = 0
+    private val mongoDocumentsAverageCalculator = IncrementalAverage()
+
+    // redis heuristic evaluation statistic
+    private var redisHeuristicEvaluationSuccessCount = 0
+    private var redisHeuristicEvaluationFailureCount = 0
+    private val redisDocumentsAverageCalculator = IncrementalAverage()
+
+    // DynamoDB heuristic evaluation statistics
+    private var dynamoDbHeuristicEvaluationSuccessCount = 0
+    private var dynamoDbHeuristicEvaluationFailureCount = 0
+    private val dynamoDbItemsAverageCalculator = IncrementalAverage()
+
+    // neo4j heuristic evaluation statistic
+    private var neo4jHeuristicEvaluationSuccessCount = 0
+    private var neo4jHeuristicEvaluationFailureCount = 0
+    private val neo4jNodesAverageCalculator = IncrementalAverage()
+
+   class Pair(val header: String, val element: String)
+
+
+    /**
+     * List, in chronological order, of statistics snapshots.
+     * A snapshot could be taken for example every 5% of search
+     * budget evaluations
+     */
+    private val snapshots: MutableMap<Double, List<Pair>> = mutableMapOf()
+
+    private var snapshotThreshold = -1.0
+
+    @PostConstruct
+    private fun postConstruct() {
+        snapshotThreshold = config.snapshotInterval
+        time.addListener(this)
+    }
+
+
+    fun getHeadersAndElementsCSVLines(solution: Solution<*>): kotlin.Pair<String,String>{
+        val data = getData(solution)
+        val headers = data.joinToString(",") { it.header }
+        val elements = data.joinToString(",") { it.element }
+        return kotlin.Pair(headers, elements)
+    }
+
+    fun writeStatistics(solution: Solution<*>) {
+
+        val (headers,elements) = getHeadersAndElementsCSVLines(solution)
+
+        val path = Paths.get(config.statisticsFile).toAbsolutePath()
+
+        Files.createDirectories(path.parent)
+
+        if (!Files.exists(path) or !config.appendToStatisticsFile) {
+            Files.deleteIfExists(path)
+            Files.createFile(path)
+
+            path.toFile().appendText("$headers\n")
+        }
+
+        path.toFile().appendText("$elements\n")
+    }
+
+    fun writeSnapshot() {
+        if (snapshotThreshold <= 100) {
+            if (snapshotThreshold + config.snapshotInterval < 100) {
+                log.warn("Calling collection of snapshots too early: $snapshotThreshold")
+            } else {
+                //this happens if interval is not a divider of 100
+                takeSnapshot()
+            }
+        }
+
+        // All headers, including AI-related ones
+        val headers = "interval," + snapshots.values.first().joinToString(",") { it.header }
+
+        val path = Paths.get(config.snapshotStatisticsFile).toAbsolutePath()
+        Files.createDirectories(path.parent)
+
+        if (!Files.exists(path) || !config.appendToStatisticsFile) {
+            Files.deleteIfExists(path)
+            Files.createFile(path)
+            path.toFile().appendText("$headers\n")
+        }
+
+        snapshots.entries.stream()
+            .sorted { o1, o2 -> o1.key.compareTo(o2.key) }
+            .forEach { (key, pairs) ->
+                val elements = pairs.joinToString(",") { it.element }
+                path.toFile().appendText("$key,$elements\n")
+            }
+    }
+
+
+    fun reportTimeout() {
+        timeouts++
+    }
+
+    fun reportCoverageFailure() {
+        coverageFailures++
+    }
+
+    fun reportNumberOfEvaluatedRowsForSqlHeuristic(numberOfEvaluatedRows: Int) {
+        sqlRowsAverageCalculator.addValue(numberOfEvaluatedRows)
+    }
+
+    fun reportNumberOfEvaluatedDocumentsForMongoHeuristic(numberOfEvaluatedDocuments: Int) {
+        mongoDocumentsAverageCalculator.addValue(numberOfEvaluatedDocuments)
+        mongoDocumentsAverageCalculator.addValue(numberOfEvaluatedDocuments)
+    }
+
+    fun reportNumberOfEvaluatedDocumentsForRedisHeuristic(numberOfEvaluatedDocuments: Int) {
+        redisDocumentsAverageCalculator.addValue(numberOfEvaluatedDocuments)
+    }
+
+    /** Records the number of items inspected by one DynamoDB heuristic evaluation. */
+    fun reportNumberOfEvaluatedItemsForDynamoDbHeuristic(numberOfEvaluatedItems: Int) {
+        dynamoDbItemsAverageCalculator.addValue(numberOfEvaluatedItems)
+    }
+
+    /** Records the number of nodes inspected by one Neo4j heuristic evaluation. */
+    fun reportNumberOfEvaluatedNodesForNeo4jHeuristic(numberOfEvaluatedNodes: Int) {
+        neo4jNodesAverageCalculator.addValue(numberOfEvaluatedNodes)
+    }
+
+    fun reportSqlParsingFailures(numberOfParsingFailures: Int) {
+        if (numberOfParsingFailures<0) {
+            throw IllegalArgumentException("Invalid number of parsing failures: $numberOfParsingFailures")
+        }
+        sqlParsingFailureCount++;
+    }
+
+    fun reportSqlHeuristicEvaluationSuccess() {
+        sqlHeuristicEvaluationSuccessCount++
+    }
+
+    fun reportSqlHeuristicEvaluationFailure() {
+        sqlHeuristicEvaluationFailureCount++
+    }
+
+    fun reportMongoHeuristicEvaluationSuccess() {
+        mongoHeuristicEvaluationSuccessCount++
+    }
+
+    fun reportMongoHeuristicEvaluationFailure() {
+        mongoHeuristicEvaluationFailureCount++
+    }
+
+    fun reportRedisHeuristicEvaluationSuccess() {
+        redisHeuristicEvaluationSuccessCount++
+    }
+
+    fun reportRedisHeuristicEvaluationFailure() {
+        redisHeuristicEvaluationFailureCount++
+    }
+
+    /** Records one successful DynamoDB heuristic evaluation. */
+    fun reportDynamoDbHeuristicEvaluationSuccess() {
+        dynamoDbHeuristicEvaluationSuccessCount++
+    }
+
+    /** Records one failed DynamoDB heuristic evaluation. */
+    fun reportDynamoDbHeuristicEvaluationFailure() {
+        dynamoDbHeuristicEvaluationFailureCount++
+    }
+
+    fun reportSqlZ3Sat(z3TimeMs: Long) {
+        sqlZ3CacheMissCount++
+        sqlZ3SatCount++
+        sqlZ3TimeMs += z3TimeMs
+    }
+
+    fun reportSqlZ3Unsat(z3TimeMs: Long) {
+        sqlZ3CacheMissCount++
+        sqlZ3UnsatCount++
+        sqlZ3TimeMs += z3TimeMs
+    }
+
+    fun reportSqlZ3Unknown(z3TimeMs: Long) {
+        sqlZ3CacheMissCount++
+        sqlZ3UnknownCount++
+        sqlZ3TimeMs += z3TimeMs
+    }
+
+    fun reportSqlZ3Error(z3TimeMs: Long) {
+        sqlZ3CacheMissCount++
+        sqlZ3ErrorCount++
+        sqlZ3TimeMs += z3TimeMs
+    }
+
+    /**
+     * A query that never reached Z3 because it could not be turned into an SMT-LIB problem.
+     *
+     * [kind] records which step gave up. The distinction matters because the two are fixed in
+     * different components — one in the SQL parser, the other in the SMT-LIB generator's handling of
+     * schemas and query shapes — and an aggregate figure cannot say which to work on.
+     */
+    fun reportSqlZ3ParseFailure(kind: SqlZ3TranslationFailure) {
+        sqlZ3CacheMissCount++
+        sqlZ3ParseFailureCount++
+        when (kind) {
+            SqlZ3TranslationFailure.SQL_PARSE -> sqlZ3SqlParseFailureCount++
+            SqlZ3TranslationFailure.SMTLIB_GENERATION -> sqlZ3SmtlibGenFailureCount++
+        }
+    }
+
+    /** Which step failed to translate a query into an SMT-LIB problem. */
+    enum class SqlZ3TranslationFailure {
+        /** JSQLParser could not read the SQL at all. */
+        SQL_PARSE,
+
+        /** The SQL parsed, but a formula could not be built for it or for its schema. */
+        SMTLIB_GENERATION
+    }
+
+    /**
+     * A query whose WHERE/JOIN condition could not be fully translated to SMT-LIB (the untranslatable
+     * part was dropped). Counted independently of the SAT/UNSAT outcome, since the weakened formula is
+     * usually still SAT: the generated data may not satisfy the original query.
+     */
+    fun reportSqlZ3PartialTranslation() {
+        sqlZ3PartialTranslationCount++
+    }
+
+    /** Total wall-clock time of one solve() call, cache hits included. See [sqlZ3SolveTimeMs]. */
+    fun reportSqlZ3SolveTime(ms: Long) {
+        sqlZ3SolveTimeMs += ms
+    }
+
+    /** One execution of a batch of generated SQL insertions against the SUT's database. */
+    fun reportSqlInsertionExecution(ms: Long) {
+        sqlInsertionExecutionTimeMs += ms
+        sqlInsertionExecutionCount++
+    }
+
+    fun reportSqlZ3SmtlibGenTime(ms: Long, sizeBytes: Int) {
+        sqlZ3SmtlibGenTimeMs += ms
+        sqlZ3SmtlibSizeBytes.addValue(sizeBytes)
+    }
+
+    fun reportSqlZ3QuerySeen(queryHash: Int) {
+        sqlZ3QueriesSeenCount++
+        if (sqlZ3SeenQueryHashes.add(queryHash)) {
+            sqlZ3UniqueQueriesCount++
+        }
+    }
+
+    fun reportSqlZ3CacheHit() {
+        sqlZ3CacheHitCount++
+    }
+
+    // Exposed for tests: verify the memoization accounting invariant
+    // (seen == cacheHits + cacheMisses).
+    internal fun getSqlZ3QueriesSeenCount() = sqlZ3QueriesSeenCount
+    internal fun getSqlZ3CacheHitCount() = sqlZ3CacheHitCount
+    internal fun getSqlZ3CacheMissCount() = sqlZ3CacheMissCount
+
+    /** Records one successful Neo4j heuristic evaluation. */
+    fun reportNeo4jHeuristicEvaluationSuccess() {
+        neo4jHeuristicEvaluationSuccessCount++
+    }
+
+    /** Records one failed Neo4j heuristic evaluation. */
+    fun reportNeo4jHeuristicEvaluationFailure() {
+        neo4jHeuristicEvaluationFailureCount++
+    }
+
+    // Exposed for tests: verify the failure breakdown adds up to the aggregate, and that the two
+    // duration accumulators only ever move forward.
+    internal fun getSqlZ3ParseFailureCount() = sqlZ3ParseFailureCount
+    internal fun getSqlZ3SqlParseFailureCount() = sqlZ3SqlParseFailureCount
+    internal fun getSqlZ3SmtlibGenFailureCount() = sqlZ3SmtlibGenFailureCount
+    internal fun getSqlZ3SolveTimeMs() = sqlZ3SolveTimeMs
+    internal fun getSqlInsertionExecutionTimeMs() = sqlInsertionExecutionTimeMs
+    internal fun getSqlInsertionExecutionCount() = sqlInsertionExecutionCount
+
+    fun getMongoHeuristicsEvaluationCount(): Int = mongoHeuristicEvaluationSuccessCount + mongoHeuristicEvaluationFailureCount
+
+    fun getSqlHeuristicsEvaluationCount(): Int = sqlHeuristicEvaluationSuccessCount + sqlHeuristicEvaluationFailureCount
+
+    fun averageNumberOfEvaluatedRowsForSqlHeuristics(): Double = sqlRowsAverageCalculator.mean
+
+    fun averageNumberOfEvaluatedDocumentsForMongoHeuristics(): Double = mongoDocumentsAverageCalculator.mean
+
+    fun getRedisHeuristicsEvaluationCount(): Int = redisHeuristicEvaluationSuccessCount + redisHeuristicEvaluationFailureCount
+
+    fun averageNumberOfEvaluatedDocumentsForRedisHeuristics(): Double = redisDocumentsAverageCalculator.mean
+
+    /** Returns the total number of DynamoDB heuristic evaluations. */
+    fun getDynamoDbHeuristicsEvaluationCount(): Int =
+        dynamoDbHeuristicEvaluationSuccessCount + dynamoDbHeuristicEvaluationFailureCount
+
+    /** Returns the average number of items inspected by DynamoDB heuristics. */
+    fun averageNumberOfEvaluatedItemsForDynamoDbHeuristics(): Double = dynamoDbItemsAverageCalculator.mean
+
+    /** Returns the total number of Neo4j heuristic evaluations. */
+    fun getNeo4jHeuristicsEvaluationCount(): Int =
+        neo4jHeuristicEvaluationSuccessCount + neo4jHeuristicEvaluationFailureCount
+
+    /** Returns the average number of nodes inspected by Neo4j heuristics. */
+    fun averageNumberOfEvaluatedNodesForNeo4jHeuristics(): Double = neo4jNodesAverageCalculator.mean
+
+    override fun newActionsEvaluated(n: Int) {
+
+        if(!epc.isInSearch()){
+            //we are only taking snapshots during the search
+            return
+        }
+
+        if (snapshotThreshold <= 0) {
+            //not collecting snapshot data
+            return
+        }
+
+        val elapsed = 100 * time.percentageUsedBudget()
+
+        if (elapsed >= snapshotThreshold) {
+            takeSnapshot()
+        }
+    }
+
+    private fun takeSnapshot() {
+
+        val solution = archive.extractSolution()
+
+        val snap = getData(solution)
+
+        val key = if (snapshotThreshold <= 100) snapshotThreshold else 100.0
+
+        snapshots[key] = snap
+
+        //next step
+        snapshotThreshold += config.snapshotInterval
+    }
+
+    fun getData(solution: Solution<*>): List<Pair> {
+
+        val sutInfo : SutInfoDto? = if(!config.blackBox || config.bbExperiments) {
+            remoteController?.getSutInfo()
+        } else {
+            null
+        }
+
+        val unitsInfo = sutInfo?.unitsInfoDto
+        val bootTimeInfo = sutInfo?.bootTimeInfoDto
+
+        val targetsInfo = solution.overall.unionWithBootTimeCoveredTargets(null, idMapper, bootTimeInfo)
+        val linesInfo = solution.overall.unionWithBootTimeCoveredTargets(ObjectiveNaming.LINE, idMapper, bootTimeInfo)
+        val branchesInfo = solution.overall.unionWithBootTimeCoveredTargets(ObjectiveNaming.BRANCH, idMapper, bootTimeInfo)
+
+        val rpcInfo = sutInfo?.rpcProblem
+
+        val list: MutableList<Pair> = mutableListOf()
+
+        list.apply {
+            add(Pair("evaluatedTests", "" + time.evaluatedIndividuals))
+            add(Pair("individualsWithSqlFailedWhere", "" + time.individualsWithSqlFailedWhere))
+            add(Pair(EVALUATED_ACTIONS, "" + time.evaluatedActions))
+            add(Pair(ELAPSED_SECONDS, "" + time.getElapsedSeconds()))
+            add(Pair("generatedTests", "" + solution.individuals.size))
+            add(Pair("generatedTestTotalSize", "" + solution.individuals.map{ it.individual.size()}.sum()))
+            add(Pair("coveredTargets", "" + targetsInfo.total))
+            add(Pair(LAST_ACTION_IMPROVEMENT, "" + time.lastActionImprovement))
+            add(Pair(DISTINCT_ACTIONS, "" + distinctActions()))
+            add(Pair("endpoints", "" + distinctActions()))
+            add(Pair(COVERED_2XX, "" + covered2xxEndpoints(solution)))
+            add(Pair(GQL_NO_ERRORS, "" + solution.overall.gqlNoErrors(idMapper).size))
+            add(Pair("gqlErrors", "" + solution.overall.gqlErrors(idMapper).size))
+            // Statistics on faults found
+            // errors5xx - counting only the number of endpoints with 5xx, and NOT last executed line
+            add(Pair("errors5xx", "" + errors5xx(solution)))
+            //distinct500Faults - counts the number of 500 (and NOT the other in 5xx), per endpoint, and distinct based on the last
+            //executed line
+            add(Pair("distinct500Faults", "" + solution.overall.potential500Faults(idMapper).size ))
+            /**
+             * this is the total of all potential faults, e.g. distinct500Faults + failedOracleExpectations + any other
+             * for RPC, this comprises internal errors, exceptions (declared and unexpected) and customized service errors
+             */
+            add(Pair("potentialFaults", "" + solution.overall.potentialFoundFaults(idMapper).size))
+            add(Pair("potentialFaultCategories", "" + solution.distinctDetectedFaultTypes().toList().sorted().joinToString("|")))
+            add(Pair("potentialFaultsSummary", solution.detectedFaultsSummary()))
+
+            // RPC statistics of sut and seeded tests
+            add(Pair("numberOfRPCInterfaces", "${rpcInfo?.schemas?.size?:0}"))
+            add(Pair("numberOfRPCFunctions", "${rpcInfo?.schemas?.sumOf { it.skippedEndpoints?.size ?: 0 }}"))
+            add(Pair("numberOfRPCSeededTests", "${rpcInfo?.seededTestDtos?.size?:0}" ))
+            add(Pair("numberOfRPCSeededTestsHaveMock", "${rpcInfo?.seededTestDtos?.filter { s-> s.value?.rpcFuctions?.isNotEmpty() == true &&  s.value?.rpcFuctions?.any { a -> a.mockObjectNeeded() } == true}?.size?:0}" ))
+
+            // RPC
+            add(Pair("rpcUnexpectedException", "" + solution.overall.rpcUnexpectedException(idMapper).size))
+            add(Pair("rpcDeclaredException", "" + solution.overall.rpcDeclaredException(idMapper).size))
+            add(Pair("rpcException", "" + solution.overall.rpcException(idMapper).size))
+            add(Pair("rpcInternalError", "" + solution.overall.rpcInternalError(idMapper).size))
+            add(Pair("rpcHandled", "" + solution.overall.rpcHandled(idMapper).size))
+            add(Pair("rpcHandledAndSuccess", "" + solution.overall.rpcHandledAndSuccess(idMapper).size))
+            add(Pair("rpcHandledButError", "" + solution.overall.rpcHandledButError(idMapper).size))
+            add(Pair("rpcSpecifiedServiceError", "" + solution.overall.rpcServiceError(idMapper).size))
+
+            add(Pair(TOTAL_BRANCHES, "" + (unitsInfo?.numberOfBranches ?: 0)))
+            add(Pair(TOTAL_LINES, "" + (unitsInfo?.numberOfLines ?: 0)))
+            add(Pair("numberOfReplacedMethodsInSut", "" + (unitsInfo?.numberOfReplacedMethodsInSut ?: 0)))
+            add(Pair("numberOfReplacedMethodsInThirdParty", "" + (unitsInfo?.numberOfReplacedMethodsInThirdParty ?: 0)))
+            add(Pair("numberOfTrackedMethods", "" + (unitsInfo?.numberOfTrackedMethods ?: 0)))
+            add(Pair("numberOfInstrumentedNumberComparisons", "" + (unitsInfo?.numberOfInstrumentedNumberComparisons ?: 0)))
+            add(Pair("numberOfUnits", "" + (unitsInfo?.unitNames?.size ?: 0)))
+
+            add(Pair(COVERED_LINES, "${linesInfo.total}"))
+            add(Pair(COVERED_BRANCHES, "${branchesInfo.total}"))
+
+            // statistic info during sut boot time
+            add(Pair("bootTimeCoveredTargets", "${targetsInfo.bootTime}"))
+            add(Pair("bootTimeCoveredLines", "${linesInfo.bootTime}"))
+            add(Pair("bootTimeCoveredBranches", "${branchesInfo.bootTime}"))
+
+            // statistic info during search
+            add(Pair("searchTimeCoveredTargets", "${targetsInfo.searchTime}"))
+            add(Pair("searchTimeCoveredLines", "${linesInfo.searchTime}"))
+            add(Pair("searchTimeCoveredBranches", "${branchesInfo.searchTime}"))
+
+            // statistic info with seeded tests
+            add(Pair("notExecutedSeededTests", "${sampler?.numberOfNotExecutedSeededIndividuals()?:0}"))
+            add(Pair("seedingTimeCoveredTargets", "${targetsInfo.seedingTime}"))
+            add(Pair("seedingTimeCoveredLines", "${linesInfo.seedingTime}"))
+            add(Pair("seedingTimeCoveredBranches", "${branchesInfo.seedingTime}"))
+
+
+            // statistic info for extractedSpecifiedDtos
+            add(Pair("numOfExtractedSpecifiedDtos", "${unitsInfo?.extractedSpecifiedDtos?.size?:0}"))
+
+            val codes = codes(solution)
+            add(Pair("avgReturnCodes", "" + codes.average()))
+            add(Pair("maxReturnCodes", "" + codes.maxOrNull()))
+
+            add(Pair(TEST_TIMEOUTS, "$timeouts"))
+            add(Pair("coverageFailures", "$coverageFailures"))
+            add(Pair("clusteringTime", "${solution.clusteringTime}"))
+            add(Pair("id", config.statisticsColumnId))
+
+            // statistics info for Mongo Heuristics
+            add(Pair("averageNumberOfEvaluatedDocumentsForMongoHeuristics","${averageNumberOfEvaluatedDocumentsForMongoHeuristics()}"))
+            add(Pair("mongoHeuristicsEvaluationCount","${getMongoHeuristicsEvaluationCount()}"))
+
+            // statistics info for DynamoDB Heuristics
+            add(Pair("averageNumberOfEvaluatedItemsForDynamoDbHeuristics",
+                "${averageNumberOfEvaluatedItemsForDynamoDbHeuristics()}"))
+            add(Pair("dynamoDbHeuristicsEvaluationCount", "${getDynamoDbHeuristicsEvaluationCount()}"))
+
+            // statistics info for SQL Heuristics
+            add(Pair("sqlParsingFailureCount","$sqlParsingFailureCount"))
+            add(Pair("averageNumberOfEvaluatedRowsForSqlHeuristics","${averageNumberOfEvaluatedRowsForSqlHeuristics()}"))
+            add(Pair("sqlHeuristicsEvaluationFailures","$sqlHeuristicEvaluationFailureCount" ))
+            add(Pair("sqlHeuristicsEvaluationCount","${getSqlHeuristicsEvaluationCount()}"))
+
+            // statistics info for Z3-based SQL data generation (only emitted when collectSqlZ3Stats=true)
+            if (config.collectSqlZ3Stats) {
+                add(Pair("sqlZ3QueriesSeen", "$sqlZ3QueriesSeenCount"))
+                add(Pair("sqlZ3UniqueQueries", "$sqlZ3UniqueQueriesCount"))
+                add(Pair("sqlZ3DuplicateQueries", "${sqlZ3QueriesSeenCount - sqlZ3UniqueQueriesCount}"))
+                add(Pair("sqlZ3CacheHits", "$sqlZ3CacheHitCount"))
+                add(Pair("sqlZ3CacheMisses", "$sqlZ3CacheMissCount"))
+                add(Pair("sqlZ3Sat", "$sqlZ3SatCount"))
+                add(Pair("sqlZ3Unsat", "$sqlZ3UnsatCount"))
+                add(Pair("sqlZ3Unknown", "$sqlZ3UnknownCount"))
+                add(Pair("sqlZ3Errors", "$sqlZ3ErrorCount"))
+                add(Pair("sqlZ3ParseFailures", "$sqlZ3ParseFailureCount"))
+                add(Pair("sqlZ3SqlParseFailures", "$sqlZ3SqlParseFailureCount"))
+                add(Pair("sqlZ3SmtlibGenFailures", "$sqlZ3SmtlibGenFailureCount"))
+                add(Pair("sqlZ3PartialTranslations", "$sqlZ3PartialTranslationCount"))
+                add(Pair("sqlZ3TotalMs", "$sqlZ3TimeMs"))
+                add(Pair("sqlZ3SmtlibGenTotalMs", "$sqlZ3SmtlibGenTimeMs"))
+                add(Pair("sqlZ3AvgSmtlibSizeBytes", "%.1f".format(sqlZ3SmtlibSizeBytes.mean)))
+                add(Pair("sqlZ3SolveTotalMs", "$sqlZ3SolveTimeMs"))
+                add(Pair("sqlInsertionExecutionTotalMs", "$sqlInsertionExecutionTimeMs"))
+                add(Pair("sqlInsertionExecutions", "$sqlInsertionExecutionCount"))
+            }
+
+            // statistics info for Neo4j Heuristics
+            add(Pair("averageNumberOfEvaluatedNodesForNeo4jHeuristics","${averageNumberOfEvaluatedNodesForNeo4jHeuristics()}"))
+            add(Pair("neo4jHeuristicsEvaluationCount","${getNeo4jHeuristicsEvaluationCount()}"))
+
+            for(phase in ExecutionPhaseController.Phase.entries){
+                add(Pair("phase_${phase.name}", "${epc.getPhaseDurationInSeconds(phase)}"))
+            }
+        }
+        addConfig(list)
+
+        // Adding AI data
+        list.addAll(getAIData())
+
+        return list
+    }
+
+    // For building AI metric pairs
+    fun aiMetricsAsPairs(
+        enabled: Boolean,
+        type: String,
+        accuracy: Double,
+        precision: Double,
+        sensitivity: Double,
+        specificity: Double,
+        npv: Double,
+        f1: Double,
+        mcc: Double,
+        updateTimeNs: Long,
+        updateCount: Long,
+        classifyTimeNs: Long,
+        classifyCount: Long,
+        repairTimeNs: Long,
+        repairCount: Long,
+        observed2xxByAIModel: Long,
+        observed4xxByAIModel: Long,
+        observed3xxByAIModel: Long,
+        observed5xxByAIModel: Long,
+        observed400ByAIModel: Long,
+        maxAccuracy : Double,
+        maxPrecision : Double,
+        maxSensitivity : Double,
+        maxSpecificity : Double,
+        maxNpv : Double,
+        maxF1Score : Double,
+        maxMcc : Double,
+    ): List<Pair> = listOf(
+        Pair("ai_model_enabled", enabled.toString()),
+        Pair("ai_model_type", type),
+        Pair("ai_accuracy", "%.4f".format(accuracy)),
+        Pair("ai_precision", "%.4f".format(precision)),
+        Pair("ai_sensitivity", "%.4f".format(sensitivity)),
+        Pair("ai_specificity", "%.4f".format(specificity)),
+        Pair("ai_npv", "%.4f".format(npv)),
+        Pair("ai_f1Score400", "%.4f".format(f1)),
+        Pair("ai_mcc400", "%.4f".format(mcc)),
+        // Max metrics among all endpoints
+        Pair("ai_max_Accuracy", "%.4f".format(maxAccuracy)),
+        Pair("ai_max_Precision", "%.4f".format(maxPrecision)),
+        Pair("ai_max_Sensitivity", "%.4f".format(maxSensitivity)),
+        Pair("ai_max_Specificity", "%.4f".format(maxSpecificity)),
+        Pair("ai_max_Npv", "%.4f".format(maxNpv)),
+        Pair("ai_max_F1Score", "%.4f".format(maxF1Score)),
+        Pair("ai_max_Mcc", "%.4f".format(maxMcc)),
+        // timing in milliseconds
+        Pair("ai_update_time_ms", "%.4f".format(updateTimeNs / 1_000_000.0)),
+        Pair("ai_update_count", updateCount.toString()),
+        Pair("ai_classify_time_ms", "%.4f".format(classifyTimeNs / 1_000_000.0)),
+        Pair("ai_classify_count", classifyCount.toString()),
+        Pair("ai_repair_time_ms", "%.4f".format(repairTimeNs / 1_000_000.0)),
+        Pair("ai_repair_count", repairCount.toString()),
+        Pair("observed_2xx_by_ai_model", observed2xxByAIModel.toString()),
+        Pair("observed_3xx_by_ai_model", observed3xxByAIModel.toString()),
+        Pair("observed_4xx_by_ai_model", observed4xxByAIModel.toString()),
+        Pair("observed_5xx_by_ai_model", observed5xxByAIModel.toString()),
+        Pair("observed_400_by_ai_model", observed400ByAIModel.toString()),
+        )
+
+    fun getAIData(): List<Pair> {
+        // AI model is unable
+        if (!config.isEnabledAIModelForResponseClassification()) {
+            return aiMetricsAsPairs(
+                enabled = false,
+                type = "NONE",
+                accuracy = 0.0,
+                precision = 0.0,
+                sensitivity = 0.0,
+                specificity = 0.0,
+                npv = 0.0,
+                f1 = 0.0,
+                mcc = 0.0,
+                updateTimeNs = 0,
+                updateCount = 0,
+                classifyTimeNs = 0,
+                classifyCount = 0,
+                repairTimeNs = 0,
+                repairCount = 0,
+                observed2xxByAIModel = 0,
+                observed3xxByAIModel = 0,
+                observed4xxByAIModel = 0,
+                observed5xxByAIModel = 0,
+                observed400ByAIModel = 0,
+                maxAccuracy = 0.0,
+                maxPrecision = 0.0,
+                maxSensitivity = 0.0,
+                maxSpecificity = 0.0,
+                maxNpv = 0.0,
+                maxF1Score = 0.0,
+                maxMcc = 0.0,
+            )
+        }
+
+        // Compute metrics
+        val metrics = aiResponseClassifier.estimateOverallMetrics()
+        val aiStats = aiResponseClassifier.getStats()
+
+        return aiMetricsAsPairs(
+            enabled = true,
+            type = config.aiModelForResponseClassification.joinToString(","),
+            accuracy = metrics.accuracy,
+            precision = metrics.precision400,
+            sensitivity = metrics.sensitivity400,
+            specificity = metrics.specificity,
+            npv = metrics.npv,
+            f1 = metrics.f1Score400,
+            mcc = metrics.mcc,
+            updateTimeNs = aiStats.updateTimeNs,
+            updateCount = aiStats.updateCount,
+            classifyTimeNs = aiStats.classifyTimeNs,
+            classifyCount = aiStats.classifyCount,
+            repairTimeNs = aiStats.repairTimeNs,
+            repairCount = aiStats.repairCount,
+            observed2xxByAIModel = aiStats.observed2xxCount,
+            observed3xxByAIModel = aiStats.observed3xxCount,
+            observed4xxByAIModel = aiStats.observed4xxCount,
+            observed5xxByAIModel = aiStats.observed5xxCount,
+            observed400ByAIModel = aiStats.observed400Count,
+            maxAccuracy = aiStats.maxAccuracy,
+            maxPrecision = aiStats.maxPrecision,
+            maxSensitivity = aiStats.maxSensitivity,
+            maxSpecificity = aiStats.maxSpecificity,
+            maxNpv = aiStats.maxNpv,
+            maxF1Score = aiStats.maxF1Score,
+            maxMcc = aiStats.maxMcc,
+        )
+    }
+
+
+    private fun distinctActions() : Int {
+        if(sampler == null){
+            return 0
+        }
+        return sampler!!.numberOfDistinctActions()
+    }
+
+
+    private fun addConfig(list: MutableList<Pair>) {
+
+        val properties = EMConfig.getConfigurationProperties()
+        properties.forEach { p ->
+            var entry = p.getter.call(config).toString()
+            // should check for "," regardless of type
+            //p.getter.returnType.isSubtypeOf(typeOf<String>())
+            if(entry.contains(",")){
+                entry = "\"$entry\""
+            }
+            list.add(Pair(p.name, entry))
+        }
+    }
+
+    private fun errors5xx(solution: Solution<*>): Int {
+
+        //count the distinct number of API paths for which we have a 5xx
+        return solution.individuals
+                .flatMap { it.evaluatedMainActions() }
+                .filter {
+                    it.result is HttpWsCallResult && (it.result as HttpWsCallResult).hasErrorCode()
+                }
+                .map { it.action.getName() }
+                .distinct()
+                .count()
+    }
+
+
+    private fun covered2xxEndpoints(solution: Solution<*>) : Int {
+
+        //count the distinct number of API paths for which we have a 2xx
+        return solution.individuals
+                .flatMap { it.evaluatedMainActions() }
+                .filter {
+                    it.result is HttpWsCallResult &&
+                            (it.result).getStatusCode()?.let { c -> c in 200..299 } ?: false
+                }
+                // in phases like Security we might create calls that do not exist in schema
+                .filter{ it.action is RestCallAction && callGraphService.isInUse(it.action.verb,it.action.path)}
+                .map { it.action.getName() }
+                .distinct()
+                .count()
+    }
+
+    private fun codes(solution: Solution<*>): List<Int> {
+
+        return solution.individuals
+                .flatMap { it.evaluatedMainActions() }
+                .filter { it.result is HttpWsCallResult }
+                .map { it.action.getName() }
+                .distinct() //distinct names of actions, ie VERB:PATH
+                .map { name ->
+                    solution.individuals
+                            .flatMap { it.evaluatedMainActions() }
+                            .filter { it.action.getName() == name }
+                            .map { (it.result as HttpWsCallResult).getStatusCode() }
+                            .distinct()
+                            .count()
+                }
+    }
+
+    fun writeCoveredTargets(solution: Solution<*>, format : EMConfig.SortCoveredTargetBy){
+        val path = Paths.get(config.coveredTargetFile)
+        if (path.parent != null) Files.createDirectories(path.parent)
+        if (Files.exists(path))
+            log.info("The existing file on ${config.coveredTargetFile} is going to be replaced")
+        val separator = "," // for csv format
+        val content = mutableListOf<String>()
+
+        when(format){
+            EMConfig.SortCoveredTargetBy.NAME ->{
+                content.add(DESCRIPTION_TARGET)
+            }
+            EMConfig.SortCoveredTargetBy.TEST ->{
+                content.add(listOf(TEST_INDEX, DESCRIPTION_TARGET).joinToString(separator))
+            }
+        }
+
+        if (archive.anyTargetsCoveredSeededTests()){
+            content.addAll(getPrintContentForCoveredTargets(archive.exportCoveredTargetsAsPair(solution, true), separator, format))
+            content.add(System.lineSeparator())
+            content.add(System.lineSeparator())
+            content.addAll(getPrintContentForCoveredTargets(archive.exportCoveredTargetsAsPair(solution, false), separator, format))
+        }else{
+            content.addAll(getPrintContentForCoveredTargets(archive.exportCoveredTargetsAsPair(solution), separator, format))
+        }
+
+
+        // append boot-time targets
+        if(!config.blackBox || config.bbExperiments) {
+            remoteController?.getSutInfo()?.bootTimeInfoDto?.targets?.map { it.descriptiveId }?.sorted()?.apply {
+                if (isNotEmpty()){
+                    content.add(System.lineSeparator())
+                    content.addAll(this)
+                }
+            }
+        }
+        Files.write(path, content)
+    }
+
+    private fun getPrintContentForCoveredTargets(info: List<kotlin.Pair<String, List<Int>>>, separator: String, format : EMConfig.SortCoveredTargetBy) : MutableList<String>{
+        val content = mutableListOf<String>()
+        when(format){
+            EMConfig.SortCoveredTargetBy.NAME ->{
+                content.addAll(info.map { it.first }.sorted())
+            }
+            EMConfig.SortCoveredTargetBy.TEST ->{
+                info.flatMap { it.second }.sorted().forEach {test->
+                    /*
+                        currently, only index of tests are outputted.
+                        if there exists names of tests, we might refer to them.
+                     */
+                    content.addAll(info.filter { it.second.contains(test) }.map { c-> c.first }.sorted().map { listOf(test, it).joinToString(separator) })
+                }
+            }
+        }
+        return content
+    }
+
+}

@@ -1,0 +1,14 @@
+org/evomaster/client/java/instrumentation/shared/PreDefinedSSLInfo$TrustAllX509TrustManager.class
+org/evomaster/client/java/instrumentation/shared/ReplacementType.class
+org/evomaster/client/java/instrumentation/shared/PreDefinedSSLInfo.class
+org/evomaster/client/java/instrumentation/shared/TaintInputName.class
+org/evomaster/client/java/instrumentation/shared/ExternalServiceSharedUtils.class
+org/evomaster/client/java/instrumentation/shared/StringSpecializationInfo.class
+org/evomaster/client/java/instrumentation/shared/ObjectiveNaming.class
+org/evomaster/client/java/instrumentation/shared/RegexSharedUtils.class
+org/evomaster/client/java/instrumentation/shared/TaintType.class
+org/evomaster/client/java/instrumentation/shared/ReplacementCategory.class
+org/evomaster/client/java/instrumentation/shared/IPAddressValidator.class
+org/evomaster/client/java/instrumentation/shared/ClassName.class
+org/evomaster/client/java/instrumentation/shared/ClassToSchemaUtils.class
+org/evomaster/client/java/instrumentation/shared/StringSpecialization.class

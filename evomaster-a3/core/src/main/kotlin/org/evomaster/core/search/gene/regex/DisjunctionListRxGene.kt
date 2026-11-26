@@ -1,0 +1,337 @@
+package org.evomaster.core.search.gene.regex
+
+import org.evomaster.core.logging.LoggingUtil
+import org.evomaster.core.output.OutputFormat
+import org.evomaster.core.search.gene.root.CompositeFixedGene
+import org.evomaster.core.search.gene.Gene
+import org.evomaster.core.search.gene.interfaces.PhenotypeDormantGene
+import org.evomaster.core.search.gene.utils.AssertionRepairResult
+import org.evomaster.core.search.gene.utils.GeneUtils
+import org.evomaster.core.search.impact.impactinfocollection.regex.DisjunctionListRxGeneImpact
+import org.evomaster.core.search.service.AdaptiveParameterControl
+import org.evomaster.core.search.service.Randomness
+import org.evomaster.core.search.service.mutator.MutationWeightControl
+import org.evomaster.core.search.service.mutator.genemutation.AdditionalGeneMutationInfo
+import org.evomaster.core.search.service.mutator.genemutation.SubsetGeneMutationSelectionStrategy
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+private data class BranchRanking(val absorbableCount: Int, val branchIndex: Int)
+
+class DisjunctionListRxGene(
+        val disjunctions: List<DisjunctionRxGene>
+) : RxAtom, CompositeFixedGene("disjunction_list", disjunctions), PhenotypeDormantGene {
+
+    //FIXME refactor with ChoiceGene
+
+    var activeDisjunction: Int = 0
+
+    companion object {
+        private const val PROB_NEXT = 0.1
+        private val log: Logger = LoggerFactory.getLogger(DisjunctionListRxGene::class.java)
+    }
+
+    override fun checkForLocallyValidIgnoringChildren(): Boolean {
+        return activeDisjunction >= 0 && activeDisjunction < disjunctions.size
+    }
+
+    override fun copyContent(): Gene {
+        val copy = DisjunctionListRxGene(disjunctions.map { it.copy() as DisjunctionRxGene })
+        copy.activeDisjunction = this.activeDisjunction
+        copy.name = this.name //in case name is changed from its default
+        return copy
+    }
+
+    override fun isMutable(): Boolean {
+        return disjunctions.size > 1 || disjunctions.any { it.isMutable() }
+    }
+
+    override fun randomize(randomness: Randomness, tryToForceNewValue: Boolean) {
+
+        /*
+            randomize content of all disjunctions
+            (since standardMutation can be invoked on another term)
+         */
+        disjunctions.forEach { it.randomize(randomness, tryToForceNewValue) }
+
+        /**
+         * randomly choose a new disjunction term
+         */
+        if (disjunctions.size > 1) {
+            log.trace("random disjunctions of DisjunctionListRxGene")
+            activeDisjunction = randomness.nextInt(0, disjunctions.size - 1)
+        }
+    }
+
+    override fun customShouldApplyShallowMutation(
+        randomness: Randomness,
+        selectionStrategy: SubsetGeneMutationSelectionStrategy,
+        enableAdaptiveGeneMutation: Boolean,
+        additionalGeneMutationInfo: AdditionalGeneMutationInfo?
+    ): Boolean {
+
+        if (disjunctions.size > 1
+            && (!disjunctions[activeDisjunction].isMutable() || randomness.nextBoolean(PROB_NEXT))
+        ) {
+            //activate the next disjunction
+            return true
+        }
+        return false
+    }
+
+    override fun mutablePhenotypeChildren(): List<Gene> {
+        return listOf(disjunctions[activeDisjunction]).filter { it.isMutable() }
+    }
+
+    override fun adaptiveSelectSubsetToMutate(
+        randomness: Randomness,
+        internalGenes: List<Gene>,
+        mwc: MutationWeightControl,
+        additionalGeneMutationInfo: AdditionalGeneMutationInfo
+    ): List<Pair<Gene, AdditionalGeneMutationInfo?>> {
+        if (additionalGeneMutationInfo.impact == null || additionalGeneMutationInfo.impact !is DisjunctionListRxGeneImpact)
+            throw IllegalArgumentException("mismatched gene impact")
+
+        if (!disjunctions.containsAll(internalGenes))
+            throw IllegalArgumentException("mismatched internal genes")
+
+        val impacts = internalGenes.map {
+            additionalGeneMutationInfo.impact.disjunctions[disjunctions.indexOf(it)]
+        }
+
+        val selected = mwc.selectSubGene(
+            candidateGenesToMutate = internalGenes,
+            impacts = impacts,
+            targets = additionalGeneMutationInfo.targets,
+            forceNotEmpty = true,
+            adaptiveWeight = true
+        )
+        return selected.map {
+            it to additionalGeneMutationInfo.copyFoInnerGene(
+                additionalGeneMutationInfo.impact.disjunctions[disjunctions.indexOf(
+                    it
+                )], it
+            )
+        }.toList()
+    }
+
+    override fun shallowMutate(
+        randomness: Randomness,
+        apc: AdaptiveParameterControl,
+        mwc: MutationWeightControl,
+        selectionStrategy: SubsetGeneMutationSelectionStrategy,
+        enableAdaptiveGeneMutation: Boolean,
+        additionalGeneMutationInfo: AdditionalGeneMutationInfo?
+    ): Boolean {
+        // select another disjunction based on impact
+        if (enableAdaptiveGeneMutation || selectionStrategy == SubsetGeneMutationSelectionStrategy.ADAPTIVE_WEIGHT) {
+            additionalGeneMutationInfo ?: throw IllegalStateException("")
+            if (additionalGeneMutationInfo.impact != null && additionalGeneMutationInfo.impact is DisjunctionListRxGeneImpact) {
+                val candidates = disjunctions.filterIndexed { index, _ -> index != activeDisjunction }
+                val impacts = candidates.map {
+                    additionalGeneMutationInfo.impact.disjunctions[disjunctions.indexOf(it)]
+                }
+
+                val selected = mwc.selectSubGene(
+                    candidateGenesToMutate = candidates,
+                    impacts = impacts,
+                    targets = additionalGeneMutationInfo.targets,
+                    forceNotEmpty = true,
+                    adaptiveWeight = true
+                )
+                activeDisjunction = disjunctions.indexOf(randomness.choose(selected))
+                return true
+            }
+            //throw IllegalArgumentException("mismatched gene impact")
+        }
+
+        //activate the next disjunction
+        activeDisjunction = (activeDisjunction + 1) % disjunctions.size
+        return true
+    }
+
+    override fun getValueAsPrintableString(
+        previousGenes: List<Gene>,
+        mode: GeneUtils.EscapeMode?,
+        targetFormat: OutputFormat?,
+        extraCheck: Boolean
+    ): String {
+        if (disjunctions.isEmpty()) {
+            return ""
+        }
+        return disjunctions[activeDisjunction]
+            .getValueAsPrintableString(previousGenes, mode, targetFormat)
+    }
+
+
+    override fun containsSameValueAs(other: Gene): Boolean {
+        if (other !is DisjunctionListRxGene) {
+            throw IllegalArgumentException("Invalid gene type ${other.javaClass}")
+        }
+
+        if (this.activeDisjunction != other.activeDisjunction) {
+            return false
+        }
+
+        return this.disjunctions[activeDisjunction]
+            .containsSameValueAs(other.disjunctions[activeDisjunction])
+    }
+
+    override fun mutationWeight(): Double = disjunctions.map { it.mutationWeight() }.sum() + 1
+
+    override fun unsafeCopyValueFrom(other: Gene): Boolean {
+        if (other !is DisjunctionListRxGene
+            || other.disjunctions.size != disjunctions.size
+        ) {
+            return false
+        }
+
+        var ok = true
+        for (i in 0 until disjunctions.size) {
+            ok = ok && this.disjunctions[i].unsafeCopyValueFrom(other.disjunctions[i])
+        }
+        if (ok) {
+            this.activeDisjunction = other.activeDisjunction
+        }
+        return ok
+    }
+
+    override fun isChildActive(child: Gene): Boolean {
+        verifyChild(child)
+        return child == disjunctions[activeDisjunction]
+    }
+
+    override fun tryToActivateGene(child: Gene): Boolean {
+        verifyChild(child)
+
+        activeDisjunction = disjunctions.indexOf(child)
+
+        return true
+    }
+
+    /**
+     * Ranks all branches by how much of [value] they can absorb, without mutating
+     * anything. Shared by both directions: [absorb] is [DisjunctionRxGene.absorbableCount]
+     * for lookahead's ranking, [DisjunctionRxGene.absorbableSuffixCount] for lookbehind's.
+     */
+    private fun rankBranches(
+        value: String,
+        absorb: (DisjunctionRxGene, String) -> Int
+    ): BranchRanking? {
+        if (value.isEmpty() || disjunctions.isEmpty()) {
+            return null
+        }
+        var bestCount = absorb(disjunctions[activeDisjunction], value)
+        var bestIndex = activeDisjunction
+        for (i in disjunctions.indices) {
+            if (i == activeDisjunction) {
+                continue
+            }
+            if (bestCount == value.length) {
+                break
+            }
+            val can = absorb(disjunctions[i], value)
+            if (can > bestCount) {
+                bestCount = can
+                bestIndex = i
+            }
+        }
+        return BranchRanking(bestCount, bestIndex)
+    }
+
+    /**
+     * Ranks every branch by how much of [value] it could absorb, without mutating, and
+     * reports the best [RxAbsorbable.absorbableCount].
+     * @see [RxAbsorbable.absorbableCount]
+     * @see [rankBranches]
+     */
+    override fun absorbableCount(value: String): Int =
+        rankBranches(value){ disjunction, value -> disjunction.absorbableCount(value) }?.absorbableCount ?: 0
+
+    /**
+     * True if at least one branch can render "", as we can select that branch and force it.
+     * @see [RxAbsorbable.canBeZeroWidth]
+     */
+    override val canBeZeroWidth: Boolean = disjunctions.any { it.canBeZeroWidth }
+
+    /**
+     * Shared rank-then-force logic behind [tryForce]/[tryForceSuffix]: ranks all branches via
+     * [absorb], switches [activeDisjunction] to the winner if needed, then delegates to [force]
+     * on that branch.
+     */
+    private fun forceBestBranch(
+        value: String,
+        absorb: (DisjunctionRxGene, String) -> Int,
+        force: (DisjunctionRxGene, String) -> Int
+    ): Int {
+        val (bestCount, bestIndex) = rankBranches(value, absorb) ?: BranchRanking(0, activeDisjunction)
+
+        if (bestCount > 0) {
+            if (bestIndex != activeDisjunction) {
+                tryToActivateGene(disjunctions[bestIndex])
+            }
+            return force(disjunctions[bestIndex], value)
+        }
+        return 0
+    }
+
+    /**
+     * Activates whichever branch can best absorb [value] (switching [activeDisjunction] if
+     * needed) and forces it there.
+     * @see [RxAbsorbable.tryForce]
+     * @see [rankBranches]
+     */
+    override fun tryForce(value: String): Int {
+        require(value.isNotEmpty())
+        return forceBestBranch(value,
+            absorb = { d, v -> d.absorbableCount(v) },
+            force = { d, v -> d.tryForce(v) }
+        )
+    }
+
+    /**
+     * Suffix counterpart of [absorbableCount]: ranks every branch by how much of
+     * [value]'s trailing characters it could absorb, without mutating.
+     * @see [RxAbsorbable.absorbableSuffixCount]
+     */
+    override fun absorbableSuffixCount(value: String): Int =
+        rankBranches(value) { d, v -> d.absorbableSuffixCount(v) }?.absorbableCount ?: 0
+
+    /**
+     * Suffix counterpart of [tryForce]: activates whichever branch can best absorb
+     * [value]'s trailing characters and forces it there, walking right-to-left.
+     * @see [RxAbsorbable.tryForceSuffix]
+     */
+    override fun tryForceSuffix(value: String): Int {
+        require(value.isNotEmpty())
+        return forceBestBranch(value,
+            absorb = { d, v -> d.absorbableSuffixCount(v) },
+            force = { d, v -> d.tryForceSuffix(v) }
+        )
+    }
+
+    /**
+     * Forces the active branch to zero width if it can; otherwise switches to the first
+     * branch that can and forces that one instead.
+     * @see [RxAbsorbable.forceZeroWidth]
+     */
+    override fun forceZeroWidth() {
+        require(canBeZeroWidth)
+        // try the active branch first to avoid an unnecessary switch
+        val order = listOf(activeDisjunction) + disjunctions.indices.filter { it != activeDisjunction }
+        val target = order.first { disjunctions[it].canBeZeroWidth }
+        disjunctions[target].forceZeroWidth()
+        if (target != activeDisjunction) {
+            tryToActivateGene(disjunctions[target])
+        }
+    }
+
+    /**
+     * Delegates to whichever branch is currently active, as only that branch's rendered
+     * value is ever observed, so only it needs repairing. See [DisjunctionRxGene.attemptAssertionRepair] for
+     * the actual repair logic and what its return value means.
+     */
+    fun attemptAssertionRepair(randomness: Randomness): AssertionRepairResult {
+        return disjunctions[activeDisjunction].attemptAssertionRepair(randomness)
+    }
+}

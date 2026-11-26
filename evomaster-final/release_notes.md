@@ -1,0 +1,258 @@
+# Version: SNAPSHOT
+
+Under development in `master` branch.
+
+### New Features
+- 25 new automated oracles to detect faults have been added, based on HTTP semantics. 
+- New test output option `JS_PLAYWRIGHT` to generate JavaScript tests where HTTP calls are done with PlayWright instead of SuperAgent. 
+
+### Fixed Bugs
+- Update to WFC 0.8.0, which fixed few bugs in Web Report
+- Fixed issue that auth configurations could not be read from read-only folders.
+- Fixed bug in minimization phase in white-box testing that led to lose coverage info
+
+# Version 6.1.1
+
+### New Features
+- REST APIs: native support for Overlay. It is now possible to provide as input one or more OAI Overlay files, which are automatically applied to the OpenAPI schema of the tested API.  
+- Support of WFC 0.6.0 for dynamic creation of users in auth configurations. 
+- `--fieldsToSkipInAssertions` can be used to manually specify which flaky fields to skip in assertion generation.
+
+### Addressed GitHub Issues
+- #1286: SSL verification error during the execution of generated tests 
+- #1278: Support Ignoring Response Fields in Black-Box Test Generation for Python Output
+- #1071: Error in EvoMaster 3.1.0: Black-Box Testing Initialization Failure with SSLException
+
+### Fixed Bugs
+- Resolved issue of wrong handling of empty bodies in PUT/PATCH/POST requests. 
+- Fixed sending of wrong content-type header when type is not supported in EvoMaster.
+
+
+# Version 6.1.0
+
+Botched release
+
+# Version 6.0.0
+
+### Breaking Changes
+- Now the default mode for EvoMaster is black-box testing. 
+  If you have workflows where you are running EvoMaster in white-box mode without specifying `--blackBox false`, those will break. Now, you will need to explicitly set that option. 
+
+### New Features
+
+- EvoMaster is now available on PyPi. Can be installed with a simple "pip install evomaster".
+- To simplify EvoMaster's use, parameters such as '--schema' and '--base' have been introduced, that deprecate the previous '--bbSwaggerUrl' and '--bbTargetUrl'. Those latter still work, to keep backward compatibility.  
+- Now EvoMaster will honor 429 responses, by waiting for the provided amount of time in the returned Retry-After header (or for a default amount of time if no header is returned, or its value is incorrect). 
+- Upgraded to WFC 0.5.1, which includes new tab views for 'Examples' and 'Warnings'.
+
+
+### Fixed Bugs
+- Few issues related to named examples in OpenAPI schemas have been fixed, including name-value mismatches and handling of allOf/anyOf/oneOf constraints. 
+- Fixed bug in handling of XML objects having a single entry.
+
+# Version 5.2.0
+
+### New Features
+
+- Several new security oracles have been added, and executed automatically after the main fuzzing session is completed.
+- Each new "phase" (e.g., minimization and security testing) after the search process has now a time-budget which is proportional to the search budget (default 10 percent).
+- Upgraded to WFC 0.4.0, which includes improvements to the Web Report (e.g., "low-code" view), and generation of self-contained index.html file (for whom cannot run a Python HTTP server on their machines, e.g., managers in industry with limited permissions on their corporate laptop).
+
+### Miscellaneous
+
+- Introduced a mascot for EvoMaster: a red-sorcerer black cat with an arrowhead tail. 
+
+### Fixed Bugs
+
+- Fixed issue in generated `statistics.csv`, where entries containing `,` commas are now quoted. 
+- Fixed issue in which progress bar was overriding warning messages. 
+
+# Version 5.1.0
+
+### New Features
+
+- Support for OpenAPI 3.1: proper handling of changes between 3.0 and 3.1 regarding nullability and numeric range inclusiveness.
+- Introduced `--maxTestsPerTestSuite`, with default value of 200. 
+  This is to avoid generating single output test files with thousands of tests.
+  Those will be split among different test suite files, with each containing at most _maxTestsPerTestSuite_ tests. 
+   A negative value means no constraint is applied (i.e., old behavior).  
+- If no authentication information is set up, or if it was done just for a single user, then now we issue descriptive warning messages with links to the documentation on how to set up authentication info.
+- For REAST APIs in which the chosen output format is either Java or Kotlin, there is now a new option `--dtoForRequestPayload` to enable the generation of statically typed DTOs for JSON request body payloads. This would replace current string payloads. This can be useful if you need to modify test cases manually after they are generated. However, as this might reduce test readability, this option is not on by default.
+- XML type is now fully supported in body payloads, including proper handling of XML extra information in the OpenAPI schemas. 
+
+### Fixed Bugs
+
+- making sure Docker image works for both amd64 and arm64 architectures.
+- fixed a connection leak when authentication fails.
+- fixed few edge cases that led to crashes related to handling of MongoDB objects.
+- fixed bug in handling of SQL databases, where commands leading to inconsistent state (eg, duplicated keys) were not properly removed. 
+
+### Addressed GitHub Issues
+
+- #1442: UninitializedPropertyAccessException: lateinit property mutator not initialized in MioAlgorithm when using --sqli true 
+
+# Version 5.0.2
+
+### Fixed Bugs
+
+- fixed issues when parsing OpenAPI schemas with PATCH methods and YAML size more than 3MB.
+
+# Version 5.0.0
+
+### Breaking Changes
+
+- _core_ process is moved to JDK 17, while _driver_ is still on 8 (and it will be for the foreseeable future). If you run EM from its installers or Docker, you will see no difference. However, if you run it via its jar file with '_java -jar_', then you need to make sure to have JDK 17 (or 21, but not 25). 
+
+- _auth_ declarations have been updated to latest _WFC_ version __0.2.0__. 
+  Those have breaking changes in the name of fields in the settings of _TokenHandler_. 
+  See WFC for updated documentation.
+
+### New Features
+
+- Option _--disabledOracleCodes_ to disable the checking of specific fault types based on their WFC fault codes. By default, all fault types are checked for. 
+- Option _--endpointExclude_ to exclude specific REST endpoints from the fuzzing.
+
+### Improvements
+
+- Generated tests for REST APIs now do have a better summaries for the use of "examples" entries.
+
+### Addressed GitHub Issues
+
+- #1263: Unable to insert data into MySQL 
+- #1299: A feature request to extract authentication token from a response header
+- #1400: EvoMaster crashes with "invalid start or end" error during Dolibarr API testing
+
+# Version 4.0.0
+
+### Breaking Changes
+- The packages in the definition of auth information in the embedded/external drivers are changed. Now they use WFC declarations, with packages in `com.webfuzzing.commons.auth`. The DTOs are the same, though. However, some names have dropped the `Dto` suffix. If you set auth configurations with `AuthUtils`, then likely you do not need to change anything. Otherwise, if you built DTOs manually, you will need to update them.   
+
+### New Features
+- Besides executable tests, now an index.html interactive web application is created in the same folder, to enable exploring and summarizing the results of the generated tests. 
+- Generated test suite files have now a license disclaimer stating these generated files are not subject to LGPL.
+- Support for object in example/examples in OpenAPI schemas.
+- In REST APIs, if OpenAPI schema has $ref entries pointing to external schema files, those will be automatically downloaded and processed.
+- Now generated tests have meaningful names, instead of being just numbers  like _test01()_.
+- For REST, a new security testing phase is executed, to check for access control vulnerabilities (e.g., BOLA and BFLA).
+- For black-box REST, now EvoMaster attempts to always DELETE data created in the tests with POST and PUT (i.e., tests try to clean up after themselves).
+- Added options to define dependencies and transformations among input values. For example, if an input is the signature/hash of other input variables, such rules can now be defined. Also useful when data needs to be encrypted at the application level. 
+
+### Addressed GitHub Issues
+- #1275: EvoMaster generates invalid Python variable names in Pytest due to Django app naming 
+- #1171: IllegalStateException: only support Map with String key in EvoMaster
+- #1159: EvoMaster crashed when reading em.yaml file 
+- #1154: Support for generating inputs dealing with RSA encryption 
+
+### Fixed Bugs
+- Fixed issues in which too many repeated schema faults (eg, when returned responses are arrays of objects) were wrongly flagged as distinct faults. 
+
+# Version: 3.4.0
+
+### New Features
+- Now EvoMaster is released also on Docker Hub, with id `webfuzzing/evomaster`. 
+  However, this is only for black-box mode. For white-box, it is still recommended to use an OS installer or the uber-jar file from release page.
+- For improving readability, generated tests now have summary comments (e.g., as JavaDoc for Java/Kotlin outputs).
+
+### Bug Fixes
+- Fixed missing java.util.Arrays in generated files, leading to compilation errors in some cases involving SQL database resets. 
+
+### Addressed GitHub Issues
+- #1150: java.util.NoSuchElementException: Key org.evomaster.core.search.gene.optional.OptionalGene@5dc8227c is missing in the map
+- #301: convert to Docker
+
+# Version: 3.3.0
+
+### New Features
+- MongoDB support. For white-box heuristics, can analyze all queries done toward MongoDB databases, as well as being able to insert data directly as part of the generated test cases.
+- improved fault detection for OpenAPI schema faults, in particular regarding the structure of the received responses, which are now validated. 
+- improved coverage criteria for black-box testing for REST APIs.
+- support for exploiting "links" declarations in OpenAPI schemas. 
+- improved re-used of data between endpoints (e.g., data returned from GET requests can be used as input for following requests using fields with similar names). 
+
+### Bug Fixes
+- bbSwaggerUrl now works when using a local path instead of URL (as was stated in documentation).
+- fixed wrong handling of "date-time" format in OpenAPI schemas. 
+
+
+# Version: 3.2.0
+
+### New Features
+- when running JAR file with JDK 17+, no longer need to manually specify --add-opens commands
+- schema validation for OpenAPI schemas, with summary of issues printed in the console logs
+- generated tests that detect faults have now comments highlighting those faults. 
+
+### Bug Fixes
+- fixed release of JAR requiring JDK 21 by mistake
+- fixed issue in Python and JavaScript output for when JSON responses are wrongly free text (e.g., unquoted strings)
+
+### Addressed GitHub Issues
+
+- #765: Details how to use evomaster + info on found faults
+- #822: additionalProperties: [true/false] causes crash
+- #986: Should this test be in EvoMaster_fault_representatives_Test.java and is resolveLocation() working as expected?
+- #989: TestCaseWriter login cookie variable name
+- #1055: Unable to start EVoMaster in public petstore API
+- #1069: Error in EvoMaster 3.1.0: Black-Box Testing Initialization Failure with InvocationTargetException and NoSuchMethodError
+
+---
+# Version: 3.1.0
+
+### New Features
+- new fully-supported output formats: Python and JavaScript 
+- support for JDK 21
+- body payloads for GET, HEAD and DELETE are not valid in OpenAPI. However, they can be valid in some special cases in HTTP (as of RFC 9110). Now, EvoMaster can test those cases as well, but only for DELETE (for GET it is not possible, as current version of HTTP library in EvoMaster is faulty, i.e., it cannot handle such case).
+- update of internal parameter settings to improve performance, based on large tuning experiments. 
+- --prematureStop option can now be used to stop search prematurely if no improvement has been obtained in the last specified amount of time 
+
+### Changes
+- output format for black-box testing now defaults to Python instead of throwing an error
+- --outputFolder now defaults to a more meaningful value, i.e., "generated_tests" 
+
+### Bug Fixes
+- better dealing with reset of SQL tables where names in queries used quotes, and/or table is not accessible in database.
+- fixed issue related to SQL insertion failures preventing all SQL insertions from being part of the generated tests, leading to flaky tests.
+- fixed handling of JsonProperty
+
+### Addressed GitHub Issues
+- #834: Authentication required when accessing schema
+- #957: Generated test cases fail due to 'checkInstrumentation' 
+- #962: Fail to parse endpoint due to body.content must not be null when requestBody has $ref
+- #988: Is it normal that EvoMaster combined "sucess" and "other" tests into "fault_representatives"?
+
+---
+# Version: 3.0.0
+
+### Breaking Changes
+- Authentication credential definitions have been overhauled. This breaks current white-box drivers. For example, `AuthenticationDto` is now moved into a `auth` sub-package, i.e., `org.evomaster.client.java.controller.api.dto.auth`. Cookie and token based authentication definitions are now replaced with `LoginEndpointDto`. See new [auth documentation](docs/auth.md). 
+- SQL related configuration DTOs have been moved into new `org.evomaster.client.java.sql` package from old naming `org.evomaster.client.java.controller.db`. 
+
+### New Features
+- Handling configuration files to specify _options parameters_ and _authentication credentials_ (especially needed for black-box testing). An empty `em.yaml` file is now created automatically if missing, with documentation as comments. Location can be changed with `--configPath` option. 
+- Possibility to filter endpoints to fuzz based on their OpenAPI tags (using `--endpointTagFilter`).
+- Bypassing HTTPS checks. Now it is possible to fuzz APIs using HTTPS where their certificates are expired or invalid. 
+
+### White-Box Improvements
+- Handling of `Base64.getDecoder()`
+- Handling of `@Email` javax constraints
+
+### Bug Fixes
+
+- fixed wrong number of covered endpoints in console logs
+- fixed issues in reading OpenAPI schemas from file-system on Windows
+- fixed issues related to endpoint definitions ending with a `/`, e.g., `/foo` and `/foo/` are technically 2 different endpoints.
+
+### Addressed GitHub Issues
+- #701: EvoMaster process terminated abruptly when using BlackBox and a local file for schema
+- #759: Cannot find EvoMaster_Test.java file in the output folder
+- #820: OpenApi spec default value is ignored
+- #862: Errors while saving tests to src/em
+- #873: Bug in GraphQL Blackbox mode
+- #906: WTSAlgorithm Crossover Bug
+- #914: duplicate of #701
+
+---
+# Version 2.0.0 and Earlier
+
+Unfortunately, we only started in 2024 to write release notes.
+There is no release notes for older versions of _EvoMaster_.
+

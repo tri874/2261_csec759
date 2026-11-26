@@ -1,0 +1,4 @@
+/src/client-java/instrumentation-shared/src/test/java/org/evomaster/client/java/instrumentation/shared/IPAddressValidatorTest.java
+/src/client-java/instrumentation-shared/src/test/java/org/evomaster/client/java/instrumentation/shared/RegexSharedUtilsTest.java
+/src/client-java/instrumentation-shared/src/test/java/org/evomaster/client/java/instrumentation/shared/RegexUtilsTest.java
+/src/client-java/instrumentation-shared/src/test/java/org/evomaster/client/java/instrumentation/shared/TaintInputNameTest.java

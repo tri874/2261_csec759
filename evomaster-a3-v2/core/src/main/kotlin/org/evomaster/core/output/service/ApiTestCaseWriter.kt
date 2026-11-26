@@ -1,0 +1,765 @@
+package org.evomaster.core.output.service
+
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.evomaster.core.database.mongo.MongoDbAction
+import org.evomaster.core.database.mongo.MongoDbActionResult
+import org.evomaster.core.output.*
+import org.evomaster.core.problem.externalservice.HostnameResolutionAction
+import org.evomaster.core.database.redis.RedisDbAction
+import org.evomaster.core.database.redis.RedisDbActionResult
+import org.evomaster.core.search.EvaluatedIndividual
+import org.evomaster.core.search.action.EvaluatedDbAction
+import org.evomaster.core.search.action.EvaluatedMongoDbAction
+import org.evomaster.core.search.action.EvaluatedRedisDbAction
+import org.evomaster.core.search.gene.utils.GeneUtils
+import org.evomaster.core.database.sql.SqlAction
+import org.evomaster.core.database.sql.SqlActionResult
+import org.evomaster.core.utils.StringUtils
+import java.math.BigDecimal
+import java.math.BigInteger
+
+abstract class ApiTestCaseWriter : TestCaseWriter() {
+
+    companion object{
+        private val mapper = ObjectMapper()
+        /*
+            HTML entities may be decoded differently by clients/servers, making exact string assertions flaky.
+            as this relates to asseration not sut, we fix it in the test generation instead of flakiness handling
+         */
+        private val HTML_ENTITY_REGEX = Regex("&(?:#[0-9]+|#x[0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]+);")
+    }
+
+    protected fun createUniqueResponseVariableName(): String {
+        val name = "res_$counter"
+        counter++
+        return name
+    }
+
+    protected fun createUniqueBodyVariableName(): String {
+        val name = "body_$counter"
+        counter++
+        return name
+    }
+
+    override fun handleTestInitialization(
+        lines: Lines,
+        baseUrlOfSut: String,
+        ind: EvaluatedIndividual<*>,
+        sqlInsertionVars: MutableList<Pair<String, String>>,
+        mongoInsertionVars: MutableList<Pair<String, String>>,
+        redisInsertionVars: MutableList<Pair<String, String>>,
+        testName: String
+    ) {
+
+        //TODO: REFACTOR TO HANDLE MULTIPLE DATABASES
+        val initializingSqlActions = ind.individual.seeInitializingActions().filterIsInstance<SqlAction>()
+        val initializingSqlActionResults = (ind.seeResults(initializingSqlActions))
+        if (initializingSqlActionResults.any { (it as? SqlActionResult) == null })
+            throw IllegalStateException("the type of results are expected as DbActionResults")
+
+        val initializingMongoActions = ind.individual.seeInitializingActions().filterIsInstance<MongoDbAction>()
+        val initializingMongoResults = (ind.seeResults(initializingMongoActions))
+        if (initializingMongoResults.any { (it as? MongoDbActionResult) == null })
+            throw IllegalStateException("the type of results are expected as MongoDbActionResults")
+
+        val initializingRedisActions = ind.individual.seeInitializingActions().filterIsInstance<RedisDbAction>()
+        val initializingRedisResults = (ind.seeResults(initializingRedisActions))
+        if (initializingRedisResults.any { (it as? RedisDbActionResult) == null })
+            throw IllegalStateException("the type of results are expected as RedisDbActionResults")
+
+        val initializingHostnameResolutionActions = ind.individual
+            .seeInitializingActions()
+            .filterIsInstance<HostnameResolutionAction>()
+
+        if (initializingSqlActions.isNotEmpty()) {
+            SqlWriter.handleDbInitialization(
+                    format,
+                initializingSqlActions.indices.map {
+                        EvaluatedDbAction(initializingSqlActions[it], initializingSqlActionResults[it] as SqlActionResult)
+                    },
+                    lines, sqlInsertionVars = sqlInsertionVars, skipFailure = config.skipFailureSQLInTestFile)
+        }
+
+        if (initializingMongoActions.isNotEmpty()) {
+            MongoWriter.handleMongoDbInitialization(
+                format,
+                initializingMongoActions.indices.map {
+                    EvaluatedMongoDbAction(initializingMongoActions[it], initializingMongoResults[it] as MongoDbActionResult)
+                },
+                lines, mongoInsertionVars = mongoInsertionVars, skipFailure = config.skipFailureSQLInTestFile)
+        }
+
+        if (initializingRedisActions.isNotEmpty()) {
+            RedisWriter.handleRedisDbInitialization(
+                format,
+                initializingRedisActions.indices.map {
+                    val result = initializingRedisResults[it]
+                    require(result is RedisDbActionResult) {
+                        "Expected RedisDbActionResult but got ${result::class.simpleName} at index $it"
+                    }
+                    EvaluatedRedisDbAction(initializingRedisActions[it], result)
+                },
+                lines,
+                redisInsertionVars = redisInsertionVars,
+                skipFailure = config.skipFailureSQLInTestFile)
+            // Same flag skipFailureSQLInTestFile as in mongo and sql.
+        }
+
+        if (initializingHostnameResolutionActions.isNotEmpty()) {
+            handleHostnameResolutionActions(lines, initializingHostnameResolutionActions)
+        }
+    }
+
+    /**
+     * handle assertion with text plain
+     */
+    fun handleTextPlainTextAssertion(bodyString: String?, flakyBodyString: String?, lines: Lines, bodyVarName: String?) {
+
+        val assertion = if (bodyString.isNullOrBlank()) {
+            emptyBodyCheck(bodyVarName)
+        } else {
+            //TODO in the call above BODY was used... what's difference from TEXT?
+            bodyIsString(bodyString, GeneUtils.EscapeMode.TEXT, bodyVarName)
+        }
+        // with bodyIsString, it may return null, then add this
+        if (assertion == null) {
+            return
+        }
+        if (flakyBodyString == null || flakyBodyString == bodyString) {
+            lines.add(assertion)
+        }else{
+            lines.addSingleCommentLine(flakyInfo("response in plain text", bodyString?:"null", flakyBodyString))
+            lines.addSingleCommentLine(assertion)
+        }
+    }
+
+    /**
+     * handle assertion with json body string
+     */
+    fun handleJsonStringAssertion(bodyString: String?, flakyBodyString : String?, lines: Lines, bodyVarName: String?, isTooLargeBody: Boolean) {
+        when (bodyString?.trim()?.first()) {
+            //TODO this should be handled recursively, and not ad-hoc here...
+            '[' -> {
+                try{
+                // This would be run if the JSON contains an array of objects.
+                val list = mapper.readValue(
+                    bodyString,
+                    object : TypeReference<List<*>>() {}
+                )
+                val flakyList = flakyBodyString?.let {  mapper.readValue(
+                    it,
+                    object : TypeReference<List<*>>() {}
+                )}
+
+                handleAssertionsOnList(list, flakyList, lines, "", bodyVarName)
+                } catch (e: JsonProcessingException) {
+                    lines.addSingleCommentLine("Failed to parse JSON response")
+                }
+            }
+            '{' -> {
+                // JSON contains an object
+                try {
+                    val resContents: Map<String, *> = mapper.readValue(
+                        bodyString,
+                        object : TypeReference<Map<String, *>>() {}
+                    )
+
+                    val flakyMap: Map<String, *>? = flakyBodyString?.let {
+                        mapper.readValue(it, object : TypeReference<Map<String, *>>() {})
+                    }
+
+                    handleAssertionsOnObject(resContents as Map<String, *>, flakyMap, lines, "", bodyVarName)
+                } catch (e: JsonProcessingException) {
+                    lines.addSingleCommentLine("Failed to parse JSON response")
+                }
+            }
+            '"' -> {
+                val isString = bodyIsString(bodyString, GeneUtils.EscapeMode.BODY, bodyVarName) ?: return
+                if (flakyBodyString == null || flakyBodyString == bodyString) {
+                    lines.add(isString)
+                }else{
+                    lines.addSingleCommentLine(flakyInfo("Body", bodyString, flakyBodyString))
+                    lines.addSingleCommentLine(isString)
+                }
+
+            }
+            else -> {
+                /*
+                    This branch will be called if the JSON is null (or has a basic type)
+                    Currently, it converts the contents to String.
+
+                    TODO do we have tests for it? and if it is true for RestAssured, anyway
+                    it does not the seem the case for Jest/SuperAgent
+                 */
+                when {
+                    isTooLargeBody -> lines.addSingleCommentLine("very large body, which was not handled during the search")
+
+                    bodyString.isNullOrBlank() -> lines.add(emptyBodyCheck(bodyVarName))
+
+                    else -> handlePrimitive(lines, bodyString, flakyBodyString,"", bodyVarName)
+                }
+            }
+        }
+    }
+
+
+    private fun handlePrimitive(lines: Lines, bodyString: String, flakyBodyString: String?, fieldPath: String, responseVariableName: String?) {
+
+        /*
+            If we arrive here, it means we have free text.
+            Such free text could be a primitive value, like a number or boolean.
+            if not, and it is a text, then most likely it is a bug in the API,
+            as free unquoted text would not be a valid JSON element.
+            Still, even in those cases, we want to capture such data in an assertion
+
+            https://www.rfc-editor.org/rfc/rfc8259.html
+         */
+
+        val s = bodyString.trim()
+
+        when {
+            format.isJavaOrKotlin() -> {
+
+                /*
+                    Unfortunately, a limitation of RestAssured is that for JSON it only handles
+                    object and array.
+                    The rest is either ignored or leads to crash
+                 */
+                val value = bodyIsString(s, GeneUtils.EscapeMode.BODY, responseVariableName) ?: return
+
+                val fs = flakyBodyString?.trim()
+                if (fs == null || fs == s) {
+                    lines.add(value)
+                }else{
+                    lines.addSingleCommentLine(flakyInfo("Body", s, fs))
+                    lines.addSingleCommentLine(value)
+                }
+
+            }
+            format.isJavaScript() || format.isCsharp() || format.isPython() -> {
+                try {
+                    val number = s.toDouble()
+                    // TODO only support flaky for JVM
+                    handleAssertionsOnField(number, null, lines, fieldPath, responseVariableName)
+                    return
+                } catch (e: NumberFormatException) {
+                }
+
+                if (s.equals("true", true) || s.equals("false", true)) {
+                    val tf = bodyString.toBoolean()
+                    // TODO flaky
+                    handleAssertionsOnField(tf, null, lines, fieldPath, responseVariableName)
+                    return
+                }
+
+                /*
+                    Note: for JS, this will not work, as call would crash due to invalid JSON
+                    payload (Java and Python don't seem to have such issue)
+                 */
+                // TODO flaky
+                bodyIsString(s, GeneUtils.EscapeMode.BODY, responseVariableName)?.let { lines.add(it) }
+            }
+            else -> throw IllegalStateException("Format not supported yet: $format")
+        }
+    }
+
+    protected fun handleAssertionsOnObject(resContents: Map<String, *>, flakyMap: Map<String, *>?, lines: Lines, fieldPath: String, responseVariableName: String?) {
+        if (flakyMap != null && flakyMap.size != resContents.size) {
+            lines.addSingleCommentLine(flakyInfo("mismatched size of fields for Object $fieldPath", resContents.size.toString(), flakyMap.size.toString()))
+        }
+
+        if (resContents.isEmpty()) {
+
+            val k = when {
+                /*
+                    TODO should do check for when there are spaces in the field name
+                    TODO also need more tests to check all these edge cases
+                 */
+                // field path starts with [ is an array index, do not need additional quote
+                format.isJavaOrKotlin() -> if (fieldPath.isEmpty()) "" else if (fieldPath.startsWith("'") || fieldPath.startsWith("[")) "$fieldPath." else "'$fieldPath'."
+                format.isJavaScript() -> if (fieldPath.isEmpty()) "" else "${if (fieldPath.startsWith("[") || fieldPath.startsWith(".")) "" else "."}$fieldPath"
+                format.isCsharp() -> if (fieldPath.isEmpty()) "" else "${if (fieldPath.startsWith("[")) "" else "."}$fieldPath"
+                format.isPython() -> if (fieldPath.isEmpty()) "" else "${if (fieldPath.startsWith("[") || fieldPath.startsWith(".")) "" else "."}$fieldPath"
+                else -> throw IllegalStateException("Format not supported yet: $format")
+            }
+
+            val instruction = when {
+                //TODO would not this fail on recursive/nested calls???
+                format.isJava() -> ".body(\"${k}isEmpty()\", is(true))"
+                format.isKotlin() -> ".body(\"${k}isEmpty()\", `is`(true))" //'is' is a keyword in Kotlin
+                format.isJavaScript() -> "expect(Object.keys($responseVariableName.body${k}).length).toBe(0);"
+                format.isCsharp() -> "Assert.True($responseVariableName${k}.ToString() == \"{}\");"
+                format.isPython() -> "assert len($responseVariableName.json()${k}) == 0"
+                else -> throw IllegalStateException("Format not supported yet: $format")
+            }
+
+            if (flakyMap.isNullOrEmpty()) {
+                lines.add(instruction)
+            }else{
+                lines.addSingleCommentLine(instruction)
+            }
+        }
+
+        resContents.entries
+                .filter { !isFieldToSkip(it.key) }
+                .forEach {
+
+                    var needsDot = true
+
+                    val fieldName = if (format.isJava()) {
+                        "'${it.key}'"
+                    } else if (format.isKotlin()){
+                        "'${handleDollarSign(it.key)}'"
+                    } else if (format.isJavaScript()) {
+                        //field name could have any character... need to use [] notation then
+                        if (it.key.matches(Regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
+                            it.key
+                        } else {
+                            needsDot = false
+                            "[\"${it.key}\"]"
+                        }
+                    } else if (format.isPython()) {
+                        needsDot = false
+                        "[\"${it.key}\"]"
+                    //TODO need to deal with '' C#? see EscapeRest
+                    } else {
+                        it.key
+                    }
+
+
+                    val extendedPath = if (format.isJavaOrKotlin() && fieldPath.isEmpty()) {
+                        fieldName
+                    } else if (needsDot) {
+                        "${fieldPath}.${fieldName}"
+                    } else {
+                        "${fieldPath}${fieldName}"
+                    }
+
+                    if (flakyMap == null || flakyMap.containsKey(it.key)) {
+                        handleAssertionsOnField(it.value, flakyMap?.get(it.key), lines, extendedPath, responseVariableName)
+                    }else{
+                        lines.addSingleCommentLine(flakyInfo("mismatched field name", fieldName, "NONE"))
+                    }
+                }
+    }
+    /*
+        a quick fix on handling dollar sign in assertion
+        TODO, might move to other places to systematically handle the assertions with special symbols
+     */
+    private fun handleDollarSign(text: String): String{
+        return text.replace("\$", "\\\$")
+    }
+    /**
+     * Formats a field path according to the active output format.
+     *
+     * Rules:
+     *  - Empty input returns an empty string.
+     *  - Java/Kotlin: wrap the path in single quotes and append a dot,
+     *    unless it already starts with a quote.
+     *  - Other formats: return unchanged if starting with '[' or '.';
+     *    otherwise prefix with a dot.
+     *
+     * @param fieldPath raw field path
+     * @return formatted field path for the target generator
+     */
+    private fun formatFieldPath(fieldPath: String): String {
+        if (fieldPath.isEmpty()) {
+            return ""
+        }
+        if (format.isJavaOrKotlin()) {
+            return if (fieldPath.startsWith("'")) "$fieldPath." else "'$fieldPath'."
+        }
+        return if (fieldPath.startsWith("[") || fieldPath.startsWith(".")) {
+            fieldPath
+        } else {
+            ".$fieldPath"
+        }
+    }
+
+    private fun handleAssertionsOnField(value: Any?, flakyValue: Any?, lines: Lines, fieldPath: String, responseVariableName: String?) {
+
+        if (value == null) {
+            val field = when {
+                format.isJavaScript() -> {
+                    if (format.isPlaywright()) {
+                        "(await $responseVariableName.json())"
+                    } else {
+                        "$responseVariableName.body"
+                    }
+                }
+                    else -> ""
+                }
+            val fieldWithDot = if (fieldPath.isEmpty() || fieldPath.startsWith("[")) fieldPath else if (fieldPath.startsWith(".")) fieldPath else ".$fieldPath"
+            val instruction = when {
+                format.isJavaOrKotlin() -> ".body(\"${fieldPath}\", nullValue())"
+                format.isJavaScript() ->
+                    if (format.isPlaywright()) "expect(($field)$fieldWithDot).toBe(null);"
+                    else "expect($field$fieldPath).toBe(null);"
+                format.isCsharp() -> "Assert.True($responseVariableName$fieldPath == null);"
+                format.isPython() -> "assert $responseVariableName.json()$fieldPath is None"
+                else -> throw IllegalStateException("Format not supported yet: $format")
+            }
+            if (flakyValue != null){
+                lines.addSingleCommentLine(flakyInfo("value of field $fieldPath","null", flakyValue!!.toString()))
+                lines.addSingleCommentLine(instruction)
+            }else{
+                lines.add(instruction)
+            }
+            return
+        }
+
+        when (value) {
+            is Map<*, *> -> {
+                handleAssertionsOnObject(value as Map<String, *>, flakyValue as? Map<String, *>,lines, fieldPath, responseVariableName)
+                return
+            }
+            is List<*> -> {
+                handleAssertionsOnList(value, flakyValue as? List<*>, lines, fieldPath, responseVariableName)
+                return
+            }
+        }
+
+        if (format.isJavaOrKotlin()) {
+            val left = when (value) {
+                is Boolean -> "equalTo($value)"
+                is Number -> "numberMatches(${handleNumberInJavaOrKotlinTest(value)})"
+                is String -> {
+                    val content = GeneUtils.applyEscapes(value, mode = GeneUtils.EscapeMode.ASSERTION, format = format)
+                    val assertionContent = handleHtmlEntity(content) ?: return
+                    "containsString(" +
+                            "\"$assertionContent" +
+                            "\")"
+                }
+                else -> throw IllegalStateException("Unsupported type: ${value::class}")
+            }
+            if (isSuitableToPrint(left)) {
+                if (flakyValue == null || flakyValue == value)
+                    lines.add(".body(\"$fieldPath\", $left)")
+                else{
+                    lines.addSingleCommentLine(flakyInfo("value of field \"$fieldPath\"", value.toString(), flakyValue.toString()))
+                    lines.addSingleCommentLine(".body(\"$fieldPath\", $left)")
+                }
+            }
+            return
+        }
+
+        if (format.isJavaScript() || format.isCsharp() || format.isPython()) {
+            val toPrint = valueToPrint(value, format)
+
+            if (isSuitableToPrint(toPrint)) {
+                if (format.isJavaScript() || format.isPython()) {
+                    val field = when {
+                        format.isJavaScript() -> {
+                        if (format.isPlaywright()) {
+                            "(await $responseVariableName.json())"
+                        } else {
+                            "$responseVariableName.body"
+                        }
+                    }
+                        else -> ""
+                    }
+
+                    val fieldWithDot = if (fieldPath.isEmpty() || fieldPath.startsWith("[")) fieldPath else if (fieldPath.startsWith(".")) fieldPath else ".$fieldPath"
+                    val assertionContent = if (format.isPython()) {
+                        "assert $responseVariableName.json()$fieldPath == $toPrint"
+                    }else if (format.isPlaywright()){ // playwright
+                        "expect($field$fieldWithDot).toBe($toPrint);"
+                    }else { // javascript
+                        "expect($field$fieldPath).toBe($toPrint);" // ($field$)fieldPath
+                    }
+
+                    if (flakyValue == null || flakyValue == value){
+                        lines.add(assertionContent)
+                    }else{
+                        val flakyToPrint = valueToPrint(flakyValue, format)
+                        lines.addSingleCommentLine(flakyInfo("value of field $fieldPath", toPrint, flakyToPrint))
+                        lines.addSingleCommentLine(assertionContent)
+                    }
+                } else {
+                    assert(format.isCsharp())
+                    if (fieldPath != ".traceId" || !lines.toString().contains("status == 400"))
+                        lines.add("Assert.True($responseVariableName$fieldPath == $toPrint);")
+                }
+            }
+            return
+        }
+
+        throw IllegalStateException("Not supported format $format")
+    }
+
+    private fun handleNumberInJavaOrKotlinTest(value: Any): String {
+        return when (value) {
+            is Byte, is Short, is Int -> value.toString()
+
+            is Long -> {
+                if (value > Int.MAX_VALUE || value < Int.MIN_VALUE) {
+                    "${value}L"
+                } else {
+                    value.toString()
+                }
+            }
+
+            is Float -> {
+                if (value.isNaN()) "Float.NaN"
+                else if (value == Float.POSITIVE_INFINITY) "Float.POSITIVE_INFINITY"
+                else if (value == Float.NEGATIVE_INFINITY) "Float.NEGATIVE_INFINITY"
+                else "${value}f"
+            }
+
+            is Double -> {
+                if (value.isNaN()) "Double.NaN"
+                else if (value == Double.POSITIVE_INFINITY) "Double.POSITIVE_INFINITY"
+                else if (value == Double.NEGATIVE_INFINITY) "Double.NEGATIVE_INFINITY"
+                else value.toString()
+            }
+
+            is BigInteger -> "BigInteger(\"$value\")"
+
+            is BigDecimal -> "BigDecimal(\"$value\")"
+
+            is Number -> value.toString()
+
+            else -> value.toString()
+        }
+    }
+
+    private fun valueToPrint(value: Any?, format: OutputFormat) : String{
+        assert(format.isJavaScript() || format.isCsharp() || format.isPython())
+        val toPrint = if (value is String) {
+            "\"" + GeneUtils.applyEscapes(value, mode = GeneUtils.EscapeMode.ASSERTION, format = format) + "\""
+        } else if(value is Boolean && format.isPython()) {
+            StringUtils.capitalization(value.toString())
+        } else {
+            value.toString()
+        }
+        return toPrint
+    }
+
+    protected fun handleAssertionsOnList(list: List<*>, flakyList: List<*>?, lines: Lines, fieldPath: String, responseVariableName: String?) {
+
+        val checkSize = collectionSizeCheck(responseVariableName, fieldPath, list.size)
+        if (flakyList == null || flakyList.size == list.size) {
+            lines.add(checkSize)
+        }else{
+            lines.addSingleCommentLine(flakyInfo("size of $fieldPath", list.size.toString(), flakyList.size.toString()))
+            lines.addSingleCommentLine(checkSize)
+        }
+
+
+        //assertions on contents
+        if (list.isEmpty()) {
+            return
+        }
+
+        /*
+             TODO could do the same for numbers
+         */
+        if (format.isJavaOrKotlin() && list.all { it is String } && list.isNotEmpty()) {
+            val items = (list as List<String>).joinToString {
+                "\"${GeneUtils.applyEscapes(it, mode = GeneUtils.EscapeMode.ASSERTION, format = format)}\""
+            }
+            if (!isSuitableToPrint(items)) {
+                return
+            }
+
+            if (flakyList != null && (!flakyList.containsAll(list) || flakyList.size != list.size)) {
+
+                val flakyItems = (flakyList as List<String>).joinToString {
+                    "\"${GeneUtils.applyEscapes(it, mode = GeneUtils.EscapeMode.ASSERTION, format = format)}\""
+                }
+
+                lines.addSingleCommentLine(flakyInfo("Body", items, flakyItems))
+                lines.addSingleCommentLine(".body(\"$fieldPath\", hasItems(${
+                    items
+                }))")
+
+            }else{
+                lines.add(".body(\"$fieldPath\", hasItems(${
+                    items
+                }))")
+            }
+            return
+        }
+
+        val limit = if (config.maxAssertionForDataInCollection >= 0) {
+            //there are more elements than we can print
+            config.maxAssertionForDataInCollection
+        } else {
+            Int.MAX_VALUE
+        }
+
+        val skipped = list.size - limit
+
+        for (i in list.indices) {
+            if (i == limit) {
+                break
+            }
+            if (flakyList != null && flakyList.size < i){
+                break
+            }
+            val flakyItem = if (flakyList != null) flakyList[i] else null
+
+            handleAssertionsOnField(list[i], flakyItem, lines, "$fieldPath[$i]", responseVariableName)
+        }
+        if (skipped > 0) {
+            lines.addSingleCommentLine("Skipping assertions on the remaining $skipped elements. This limit of $limit elements can be increased in the configurations")
+        }
+    }
+
+
+    protected fun emptyBodyCheck(responseVariableName: String?): String {
+        if (format.isJavaOrKotlin()) {
+            return ".body(isEmptyOrNullString())"
+        }
+
+        if (format.isJavaScript()) {
+            if (format.isPlaywright()) {
+                return "expect(await $responseVariableName.text()).toBe(\"\");"
+            }
+            /*
+                This is super ugly... but there is no clean solution for this
+                in Jest nor SuperAgent... :(
+                TODO might want to put it in supplementary function
+             */
+            return "expect(" +
+                    "$responseVariableName.body===null " +
+                    "|| $responseVariableName.body===undefined " +
+                    "|| $responseVariableName.body===\"\" " +
+                    "|| Object.keys($responseVariableName.body).length === 0" +
+                    ").toBe(true);"
+        }
+
+        if (format.isCsharp()) {
+            return "Assert.True(string.IsNullOrEmpty(await $responseVariableName.Content.ReadAsStringAsync()));"
+        }
+
+        if (format.isPython()) {
+            return "assert $responseVariableName.text == ''"
+        }
+
+        throw IllegalStateException("Unsupported format $format")
+    }
+
+    protected fun collectionSizeCheck(responseVariableName: String?, fieldPath: String, expectedSize: Int): String {
+
+        /*
+            TODO if size==0, maybe use something like isEmpty?
+         */
+
+        val instruction = when {
+            format.isJavaOrKotlin() -> {
+                val path = if (fieldPath.isEmpty()) "" else "$fieldPath."
+                ".body(\"${path}size()\", equalTo($expectedSize))"
+            }
+            format.isJavaScript() -> {
+                if (format.isPlaywright()) {
+                    val field = formatFieldPath(fieldPath)
+                    "expect((await $responseVariableName.json())$field).toHaveLength($expectedSize);"
+                } else {
+                    val field = "$responseVariableName.body"
+                    "expect($field$fieldPath.length).toBe($expectedSize);" // ($field$)fieldPath
+                }
+            }
+            format.isCsharp() ->
+                "Assert.True($responseVariableName$fieldPath.Count == $expectedSize);"
+            format.isPython() ->
+                "assert len($responseVariableName.json()$fieldPath) == $expectedSize"
+            else -> throw IllegalStateException("Not supported format $format")
+        }
+
+        return instruction
+    }
+
+    protected fun bodyIsString(bodyString: String, mode: GeneUtils.EscapeMode, responseVariableName: String?): String? {
+
+        val originalContent = GeneUtils.applyEscapes(bodyString, mode, format = format)
+        val content = handleHtmlEntity(originalContent) ?: return null
+
+        if (format.isJavaOrKotlin()) {
+            return ".body(containsString(\"$content\"))"
+        }
+
+        if (format.isPlaywright()) {
+            return "expect(await $responseVariableName.text()).toContain(\"$content\");"
+        }
+
+        if (format.isJavaScript()) {
+            return "expect($responseVariableName.text).toContain(\"$content\");"        }
+
+        if (format.isCsharp()) {
+            val k = when {
+                content.startsWith("\"") -> content.substring(1, content.length - 1)
+                content.startsWith("\\\"") -> content.substring(2, content.length - 2)
+                else -> content
+            }
+            return "Assert.True($responseVariableName.Contains(\"$k\"));"
+
+        }
+
+        if (format.isPython()) {
+            return "assert \"$content\" in $responseVariableName.text"
+        }
+
+        throw IllegalStateException("Not supported format $format")
+    }
+
+    /**
+     * handle assertion text that may contain HTML entities.
+     * If none are found, the original text is returned.
+     * Otherwise, returns the first non-empty text segment.
+     * Returns null if no non-empty segment can be extracted.
+     */
+    private fun handleHtmlEntity(content: String): String? {
+        if (!HTML_ENTITY_REGEX.containsMatchIn(content)) {
+            return content
+        }
+
+        return HTML_ENTITY_REGEX.split(content)
+                .map { it.trim() }
+                .firstOrNull { it.isNotEmpty() }
+    }
+
+
+    /**
+     * Some fields might lead to flackiness, eg assertions on timestamps.
+     */
+    protected fun isFieldToSkip(fieldName: String): Boolean {
+        val field = fieldName.lowercase()
+
+        /*
+            There are some fields like "id" which are often non-deterministic,
+            which unfortunately would lead to flaky tests
+        */
+        val defaultFieldsToSkip = listOf(
+                "id",
+                "timestamp", //needed since timestamps will change between runs
+                "self" //TODO: temporary hack. Needed since ports might change between runs.
+        )
+
+        val configuredFieldsToSkip = config.fieldsToSkipInAssertions
+                .split(",")
+                .map { it.trim().lowercase() }
+                .filter { it.isNotEmpty() }
+
+        return defaultFieldsToSkip.contains(field) || configuredFieldsToSkip.contains(field)
+    }
+
+    /**
+     * Some content may be lead to problems in the resultant test case.
+     * Null values, or content that is not yet handled are can lead to un-compilable generated tests.
+     * Removing strings that contain "logged" is a stopgap: Some fields mark that particular issues have been logged and will often provide object references and timestamps.
+     * Such information can cause failures upon re-run, as object references and timestamps will differ.
+     *
+     * FIXME need to refactor when dealing with escape refactoring / flaky handling
+     */
+    protected fun isSuitableToPrint(printableContent: String): Boolean {
+        return (
+                printableContent != "null" //TODO not so sure about this one... need to double-check
+                        && !printableContent.contains("logged")
+                        && !HTML_ENTITY_REGEX.containsMatchIn(printableContent)
+                        // is this for IP host:port addresses?
+                        && !printableContent.contains("""\w+:\d{4,5}""".toRegex()))
+    }
+}

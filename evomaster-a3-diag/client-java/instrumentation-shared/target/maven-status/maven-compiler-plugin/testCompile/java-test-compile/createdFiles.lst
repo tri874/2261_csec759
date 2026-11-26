@@ -1,0 +1,4 @@
+org/evomaster/client/java/instrumentation/shared/RegexUtilsTest.class
+org/evomaster/client/java/instrumentation/shared/RegexSharedUtilsTest.class
+org/evomaster/client/java/instrumentation/shared/TaintInputNameTest.class
+org/evomaster/client/java/instrumentation/shared/IPAddressValidatorTest.class
